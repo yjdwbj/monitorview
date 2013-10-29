@@ -14,11 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    setting_panel.cpp
+    setting_panel.cpp \
+    viewframe.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
-    global.h
+    global.h \
+    viewframe.h
 
 FORMS    +=
 

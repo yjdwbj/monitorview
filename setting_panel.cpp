@@ -12,6 +12,7 @@ SettingPanel::SettingPanel(QWidget *parent)
     connect(widget,SIGNAL(gridofnumer(int)),SIGNAL(sig_gridofnumber(int)));
     QVBoxLayout *main_layout = new QVBoxLayout(gbox);
     main_layout->addWidget(widget);
+    main_layout->setMargin(0);
     this->setLayout(main_layout);
 }
 

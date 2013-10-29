@@ -5,14 +5,18 @@
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QMessageBox>
  #include <QSignalMapper>
 #include <QVariant>
 #include <QPair>
 #include <QMenu>
+#include <QTimer>
 
 typedef QPair<int,QString> itemWidget;
 static const int othermenu =10;
 static const int fullscreen = 11;
+static bool fullscreentoggle = false;
 
 
 class VHWidget : public QGroupBox
@@ -47,11 +51,6 @@ public:
                 }
                 btn->setMenu(menu);
                 connect(menu,SIGNAL(triggered(QAction*)),SLOT(slot_MenuAction(QAction*)));
-//                connect(menu,SIGNAL(hovered(QAction*)),SLOT(slot_MenuAction(QAction*)));
-            }
-            else if(list.at(i).first == fullscreen)
-            {
-
             }
             else
             {

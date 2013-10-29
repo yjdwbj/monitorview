@@ -9,9 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     main_layout = new QHBoxLayout;
-    connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_gridnumberchanged(int)));
+    connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
+
 
 
     QWidget *w = new QWidget;
@@ -21,15 +22,32 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-void MainWindow::slot_gridnumberchanged(int num)
+void MainWindow::slot_GetViewFrameClicked(QRect rect)
 {
-    if(num != othermenu)
-    view->setGridnumber(num,num);
+    int x = rect.right();
+}
+
+void MainWindow::slot_GridNumberChanged(int num)
+{
+    if(num == fullscreen )
+        view->setFullScreen();
+    else if(num != othermenu)
+    {
+        view->setGridnumber(num,num);
+    }
     else
         view->setOnePlusSeven();
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if( e->text() == "f")
+    {
+        view->swapFullScreenOrNormal();
+    }
+}
+
 MainWindow::~MainWindow()
 {
-
+    delete view;
 }

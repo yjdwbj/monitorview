@@ -6,5 +6,6 @@
         <file>images/sixteen.png</file>
         <file>images/fullscreen.png</file>
         <file>images/other.png</file>
+        <file>images/backfullscreen.png</file>
     </qresource>
 </RCC>
