@@ -10,6 +10,9 @@ public:
     explicit SettingPanel(QWidget *parent = 0);
 
     ~SettingPanel();
+private slots:
+    void slot_addnewCamera();
+    void slot_searchCamera();
 private:
 //    QVBoxLayout *main_layout;
 signals:

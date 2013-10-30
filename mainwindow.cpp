@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     panel(new SettingPanel)
 {
 
+
     main_layout = new QHBoxLayout;
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     main_layout->addWidget(view);
@@ -43,7 +44,8 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 {
     if( e->text() == "f")
     {
-        view->swapFullScreenOrNormal();
+      //  fullscreentoggle = true;
+        view->swapFullScreenOrNormal(true);
     }
 }
 

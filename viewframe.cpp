@@ -1,32 +1,15 @@
 #include "viewframe.h"
-#include <QApplication>
-#include <QDesktopWidget>
+
+
 
 ViewFrame::ViewFrame(QWidget *parent)
     :QGroupBox(parent),
-      lay(new QGridLayout),
-      FSWidget(new QWidget),
-      toggleFS(new ToggleButton)
+      lay(new QGridLayout)
+//      FSWidget(new QWidget),
+//      toggleFS(new ToggleButton)
 
 {
-    toggleFS->setStyleSheet("background-image: url(:/lcy/images/:/lcy/images/backfullscreen.png);");
-    QImage img;
-    img.load(":/lcy/images/backfullscreen.png");
-    toggleFS->setFixedSize(img.size());
-    QDesktopWidget *dsk = qApp->desktop();
-    screenSize.setWidth(dsk->x());
-    screenSize.setHeight(dsk->y());
 
-
-
-    toggleFS->setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
-//    toggleFS->setWindowState(Qt::WindowNoState);
-    QPoint pos;
-    pos.setX(screenSize.width()- toggleFS->width());
-    pos.setY(screenSize.height()-toggleFS->height());
-    toggleFS->setGeometry(QRect(pos,toggleFS->size()));
-
-    connect(toggleFS,SIGNAL(toggled()),SLOT(swapFullScreenOrNormal()));
 
 
 //    signalMapper = new QSignalMapper(this);
@@ -73,6 +56,7 @@ void ViewFrame::setGridnumber(int row, int col)
     {
         MyFrame *f = new MyFrame("No Signals...");
         connect(f,SIGNAL(clicked_Frame(MyFrame*)),SLOT(slot_clicked_this(MyFrame*)));
+
         m_list.append(f);
 
     }
@@ -135,9 +119,9 @@ void ViewFrame::setOnePlusSeven()
 
 }
 
-void ViewFrame::swapFullScreenOrNormal()
+void ViewFrame::swapFullScreenOrNormal(bool flag)
 {
-    if(fullscreentoggle)
+    if(flag)
      {
         setFullScreen();
 
@@ -146,18 +130,19 @@ void ViewFrame::swapFullScreenOrNormal()
      {
          slot_BackToNormalWindown();
      }
-    fullscreentoggle = !fullscreentoggle;
+//    fullscreentoggle = !fullscreentoggle;
 }
 
 void ViewFrame::setFullScreen()
 {
 
-//    FSWidget= new QWidget;
-    FSWidget->setLayout(lay);
-    FSWidget->showFullScreen();
-    FSWidget->setWindowFlags(Qt::WindowStaysOnTopHint| Qt::FramelessWindowHint);
-    FSWidget->show();
-    toggleFS->show();
+    FSWidget= new FullScreen(lay);
+
+    connect(FSWidget,SIGNAL(GoBackToNormal(bool)),SLOT(swapFullScreenOrNormal(bool)));
+    toggleFS = new ToggleButton;
+    connect(toggleFS,SIGNAL(toggled(bool)),SLOT(swapFullScreenOrNormal(bool)));
+
+    FSWidget->setTogglebtn(toggleFS);
 
 //    timer1 = new QTimer;
 //    connect(timer1,SIGNAL(timeout()),SLOT(slot_timeout()));
@@ -172,6 +157,9 @@ void ViewFrame::slot_BackToNormalWindown()
     toggleFS->hide();
     this->setLayout(lay);
     FSWidget->hide();
+    delete FSWidget;
+    delete toggleFS;
+    this->parentWidget()->setFocus();
 }
 
 void ViewFrame::slot_timeout()

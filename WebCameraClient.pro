@@ -15,12 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     setting_panel.cpp \
-    viewframe.cpp
+    viewframe.cpp \
+    addnewcamera.cpp \
+    searchcamera.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
     global.h \
-    viewframe.h
+    viewframe.h \
+    addnewcamera.h \
+    searchcamera.h
 
 FORMS    +=
 

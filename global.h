@@ -6,12 +6,15 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QRadioButton>
 #include <QMessageBox>
- #include <QSignalMapper>
+#include <QApplication>
+#include <QSignalMapper>
 #include <QVariant>
 #include <QPair>
 #include <QMenu>
 #include <QTimer>
+
 
 typedef QPair<int,QString> itemWidget;
 static const int othermenu =10;

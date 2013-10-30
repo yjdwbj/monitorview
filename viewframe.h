@@ -6,31 +6,95 @@
 #include <QPainter>
 #include <QBrush>
 #include <QRgb>
+#include <QPicture>
+#include <QDesktopWidget>
+#include <qt_windows.h>
+
+
+
+
 
 class ToggleButton : public QWidget
 {
     Q_OBJECT
 public:
     explicit  ToggleButton(QWidget *parent =0)
-        :QWidget(parent)
+        :QWidget(parent),
+          timer1(new QTimer),
+          imgpath(":/lcy/images/backfullscreen.png")
     {
+        connect(timer1,SIGNAL(timeout()),SLOT(slot_timeout()));
+
+        QImage img;
+        img.load(imgpath);
+        setFixedSize(img.size());
+        QRect deskRect = QApplication::desktop()->availableGeometry();
+        move(deskRect.width()-width(),deskRect.height()-height());
+        setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+
+        timer1->start(timenum);
+        show();
+
+    }
+    ~ToggleButton()
+    {
+        setAttribute(Qt::WA_DeleteOnClose);
+    }
+    void showMe()
+    {
+        show();
+        timer1->start(timenum);
 
     }
 
 signals:
-    void toggled();
+    void toggled(bool);
+private slots:
+    void slot_timeout()
+    {
+        if(!underMouse())
+        {
+           this->hide();
+           timer1->stop();
+        }
+
+    }
 
 protected:
+//    bool nativeEvent(const QByteArray &eventType, void *message, long *result)
+//    {
+//        MSG *msg = reinterpret_cast<MSG*>(message);
+//        int msgType = msg->message;
+//        if(msgType == WM_MOUSEMOVE)
+//        {
+//            show();
+//        }
+//        return false;
+
+//    }
+
+    void paintEvent(QPaintEvent *e)
+    {
+        QPainter painter(this);
+        painter.drawPixmap(this->rect(),QPixmap(imgpath));
+    }
+
     void mousePressEvent(QMouseEvent *e)
     {
         if(e->button() == Qt::LeftButton &&
                 e->type() == QMouseEvent::MouseButtonPress)
         {
 
-
-            emit toggled();
+            emit toggled(false);
 
         }
+    }
+
+    void mouseMoveEvent(QMouseEvent *e)
+    {
+
+            show();
+
     }
 
     void keyPressEvent(QKeyEvent *e)
@@ -38,13 +102,53 @@ protected:
         if(e->text() == "f")
         {
 
-            emit toggled();
+            emit toggled(false);
 
         }
 
     }
 
+private:
+    QTimer *timer1;
+    QString imgpath;
+    int timenum = 8000;
+
 };
+
+class FullScreen : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit FullScreen(QGridLayout *lay, QWidget *parent =0 )
+        :QWidget(parent)
+    {
+       setLayout(lay);
+       showFullScreen();
+       setWindowFlags(Qt::FramelessWindowHint);
+       show();
+    }
+    ~FullScreen(){setAttribute(Qt::WA_DeleteOnClose);}
+    void setTogglebtn(ToggleButton *btn) {t = btn;}
+signals:
+    void GoBackToNormal(bool);
+protected:
+    void keyPressEvent(QKeyEvent *e)
+    {
+        if(e->text() == "f")
+           emit GoBackToNormal(false);
+
+    }
+
+    void mouseMoveEvent(QMouseEvent *e)
+    {
+        if(t)
+            t->showMe();
+    }
+
+private:
+    ToggleButton *t;
+};
+
 
 
 class MyFrame : public QFrame
@@ -64,7 +168,7 @@ public:
     }
 signals:
     void clicked_Frame(MyFrame*);
-    void clicked_noArg();
+    void mouse_move();
 
 protected:
     void paintEvent(QPaintEvent *e)
@@ -90,15 +194,13 @@ protected:
 
     }
 
-    void mousePressEvent(QMouseEvent *e)
-    {
-        e->accept();
-       if( (e->type() == QMouseEvent::MouseButtonPress)
-               && (e->button() == Qt::LeftButton ))
-       {
-           emit clicked_noArg();
-       }
-    }
+//    void mouseMoveEvent(QMouseEvent *e)
+//    {
+//        if(e->type == QMouseEvent::MouseMove)
+//        {
+//            emit mouse_move();
+//        }
+//    }
 
 private:
     QString text;
@@ -123,7 +225,7 @@ public:
     void setOnePlusSeven();
     void setFullScreen();
 public slots:
-    void swapFullScreenOrNormal();
+    void swapFullScreenOrNormal(bool flag);
 
 private slots:
     void slot_clicked_this(MyFrame*);
@@ -137,7 +239,7 @@ private:
 
     QSize screenSize;
     ToggleButton *toggleFS;
-    QWidget *FSWidget;
+    FullScreen *FSWidget;
     QTimer *timer1;
     QGridLayout *lay;
     QList<MyFrame*> m_list;
