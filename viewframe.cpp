@@ -1,4 +1,5 @@
 #include "viewframe.h"
+#include <QProcess>
 
 
 
@@ -24,6 +25,22 @@ ViewFrame::ViewFrame(QWidget *parent)
 
 }
 
+
+void ViewFrame::StartPlayer()
+{
+     QStringList cameralist =QString("camera1.avi,camera2.avi,camera3.avi").split(",");
+
+
+    const QString play = qApp->applicationDirPath()+tr("/mplayer.exe");
+    for(int i = 0; i < cameralist.count();i++)
+    {
+        QProcess* p = new QProcess;
+        QString fname = tr("http://192.168.115.10:8090/")+cameralist.at(i);
+        p->start(play,QStringList () <<  "-wid" << QString::number(m_list.at(i)->winId())
+                 << "-quiet" << "-loop" << "-1" << fname);
+//         while(p->waitForFinished());
+    }
+}
 
 //void ViewFrame::mouseDoubleClickEvent(QMouseEvent *e)
 //{

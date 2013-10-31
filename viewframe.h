@@ -214,16 +214,15 @@ public:
     explicit ViewFrame(QWidget *parent =0);
 
     ~ViewFrame(){
-        delete this;
-        delete toggleFS;
-        delete FSWidget;
+//        delete this;
+//        delete toggleFS;
+//        delete FSWidget;
 //        deleteLater();
     }
     void setGridnumber(int row,int col);
-
-
     void setOnePlusSeven();
     void setFullScreen();
+    void StartPlayer();
 public slots:
     void swapFullScreenOrNormal(bool flag);
 

@@ -26,8 +26,16 @@ public:
     explicit SearchCamera(QDialog *parent =0);
     ~SearchCamera(){}
 
+private slots:
+    void slot_SwitchCheckedAll();
+    void slot_SwitchCheckedNone();
+    void slot_Reload();
+    void slot_MapSignal(int id);
+
 private:
+    void Switch_CheckBox(bool);
     HostView *m_viewlist;
+    QSignalMapper *signalmap;
 };
 
 

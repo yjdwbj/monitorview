@@ -21,6 +21,7 @@ protected:
 private slots:
     void slot_GridNumberChanged(int);
     void slot_GetViewFrameClicked(QRect);
+    void slot_StartPlayer();
 private:
 
     ViewFrame *view;

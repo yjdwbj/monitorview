@@ -34,9 +34,20 @@ SettingPanel::SettingPanel(QWidget *parent)
     VHWidget *widget = new VHWidget(itemlist,VHWidget::Horizontal);
     connect(widget,SIGNAL(gridofnumer(int)),SIGNAL(sig_gridofnumber(int)));
 
+//    VHWidget *ctrol = new VHWidget(itemlist,VHWidget::Horizontal);
+    QPushButton *btn_open = new QPushButton("开始播放");
+    connect(btn_open,SIGNAL(clicked()),SIGNAL(StartPlayer()));
+
+//    ViewFrame *view_ctrl = new ViewFrame;
+//    view_ctrl->setGridnumber(2,3);
+//    view_ctrl->setFixedSize(150,100);
+
+
+
     QVBoxLayout *main_layout = new QVBoxLayout(gbox_main);
     main_layout->addWidget(gbox_addnew);
     main_layout->addWidget(widget);
+    main_layout->addWidget(btn_open);
     main_layout->setMargin(0);
     this->setLayout(main_layout);
 }
@@ -53,6 +64,11 @@ void SettingPanel::slot_searchCamera()
     SearchCamera *search = new SearchCamera;
 }
 
+
+void SettingPanel::slot_StartPlayer()
+{
+
+}
 
 SettingPanel::~SettingPanel()
 {

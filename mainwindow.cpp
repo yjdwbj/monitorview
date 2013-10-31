@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     main_layout = new QHBoxLayout;
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
+    connect(panel,SIGNAL(StartPlayer()),SLOT(slot_StartPlayer()));
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
 
@@ -21,6 +22,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(w);
 
+}
+
+void MainWindow::slot_StartPlayer()
+{
+    view->StartPlayer();
 }
 
 void MainWindow::slot_GetViewFrameClicked(QRect rect)
