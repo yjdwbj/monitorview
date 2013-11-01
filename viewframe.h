@@ -21,7 +21,8 @@ public:
     explicit  ToggleButton(QWidget *parent =0)
         :QWidget(parent),
           timer1(new QTimer),
-          imgpath(":/lcy/images/backfullscreen.png")
+          imgpath(":/lcy/images/backfullscreen.png"),
+          timenum(8000)
     {
         connect(timer1,SIGNAL(timeout()),SLOT(slot_timeout()));
 
@@ -73,7 +74,7 @@ protected:
 
 //    }
 
-    void paintEvent(QPaintEvent *e)
+    void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
         painter.drawPixmap(this->rect(),QPixmap(imgpath));
@@ -90,7 +91,7 @@ protected:
         }
     }
 
-    void mouseMoveEvent(QMouseEvent *e)
+    void mouseMoveEvent(QMouseEvent *)
     {
 
             show();
@@ -111,7 +112,7 @@ protected:
 private:
     QTimer *timer1;
     QString imgpath;
-    int timenum = 8000;
+    int timenum;
 
 };
 
@@ -141,6 +142,7 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *e)
     {
+        e->accept();
         if(t)
             t->showMe();
     }
@@ -223,12 +225,13 @@ public:
     void setOnePlusSeven();
     void setFullScreen();
     void StartPlayer();
+     QList<MyFrame*> getPlayFrame() const {return  m_list;}
 public slots:
     void swapFullScreenOrNormal(bool flag);
 
 private slots:
     void slot_clicked_this(MyFrame*);
-    void slot_testsignals(int);
+//    void slot_testsignals(int);
     void slot_timeout();
     void slot_BackToNormalWindown();
 

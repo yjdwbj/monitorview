@@ -19,7 +19,7 @@
 typedef QPair<int,QString> itemWidget;
 static const int othermenu =10;
 static const int fullscreen = 11;
-static bool fullscreentoggle = false;
+//static bool fullscreentoggle = false;
 
 
 class VHWidget : public QGroupBox
@@ -85,10 +85,6 @@ public:
     ~VHWidget(){}
 
 private slots:
-    void slot_customContextMenu(QPoint pos)
-    {
-
-    }
     void slot_MenuAction(QAction* act)
     {
         if(act->text().contains("x"))

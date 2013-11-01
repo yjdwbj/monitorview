@@ -9,6 +9,7 @@ HostView::HostView(QWidget *parent)
     :QTableWidget(parent)
 {
 
+    setContentsMargins(1,1,1,1);
     setShowGrid(false);
     setColumnCount(headerlist.count());
     setFixedWidth(700);
@@ -20,11 +21,14 @@ HostView::HostView(QWidget *parent)
 
     setHorizontalHeaderLabels(headerlist);
 
-    const QStringList itemlist = QString("test,192.168.8.10:9999,1111,255.255.255.0,192.168.8.1,8.8.8.8").split(",");
-
-
-    addNewLine(itemlist);
-    addNewLine(itemlist);
+    const QStringList camera1 = QString("camera1,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    const QStringList camera2 = QString("camera2,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    const QStringList camera3 = QString("camera3,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    const QStringList camera4 = QString("camera4,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    addNewLine(camera1);
+    addNewLine(camera2);
+    addNewLine(camera3);
+    addNewLine(camera4);
 
     show();
 }
@@ -44,6 +48,28 @@ void HostView::addNewLine(const QStringList &list)
     }
 }
 
+
+QStringList HostView::getViewCountList() const
+{
+    int rcout = this->rowCount();
+    QStringList list;
+    for(int i = 0 ; i < rcout ;i++ )
+    {
+        QCheckBox *box = qobject_cast<QCheckBox *>(cellWidget(i,0));
+        if(!box->isChecked())
+            continue;
+        QStringList t;
+        for(int j = 1 ; j < headerlist.count();j++)
+        {
+            t << item(i,j)->text();
+        }
+
+        list << t.join(",");
+        t.clear();
+    }
+
+    return list;
+}
 
 SearchCamera::SearchCamera(QDialog *parent)
     :QDialog(parent),
@@ -112,6 +138,7 @@ void SearchCamera::slot_MapSignal(int id)
         slot_Reload();
         break;
     case 3:
+        vaidlist = m_viewlist->getViewCountList();
         accept();
         break;
     case 4:
@@ -121,3 +148,4 @@ void SearchCamera::slot_MapSignal(int id)
 
 
 }
+

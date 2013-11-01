@@ -15,6 +15,9 @@ public:
     explicit HostView(QWidget *parent=0);
     ~HostView(){}
     void addNewLine(const QStringList &list);
+    QStringList getViewCountList()const ;
+private:
+        QStringList list;
 };
 
 
@@ -25,6 +28,7 @@ class SearchCamera : public QDialog
 public:
     explicit SearchCamera(QDialog *parent =0);
     ~SearchCamera(){}
+    QStringList getVaildCameraList() const {return m_viewlist->getViewCountList();}
 
 private slots:
     void slot_SwitchCheckedAll();
@@ -35,6 +39,7 @@ private slots:
 private:
     void Switch_CheckBox(bool);
     HostView *m_viewlist;
+    QStringList vaidlist;
     QSignalMapper *signalmap;
 };
 

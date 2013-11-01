@@ -27,6 +27,9 @@ SettingPanel::SettingPanel(QWidget *parent)
 
 
 
+
+
+
     QList<itemWidget> itemlist;
     itemlist  << qMakePair(1,tr(":/lcy/images/one.png")) << qMakePair(2,tr(":/lcy/images/four.png"))
               << qMakePair(3,tr(":/lcy/images/nine.png")) << qMakePair(4,tr(":/lcy/images/sixteen.png"))
@@ -44,7 +47,7 @@ SettingPanel::SettingPanel(QWidget *parent)
 
 
 
-    QVBoxLayout *main_layout = new QVBoxLayout(gbox_main);
+    main_layout = new QVBoxLayout(gbox_main);
     main_layout->addWidget(gbox_addnew);
     main_layout->addWidget(widget);
     main_layout->addWidget(btn_open);
@@ -62,6 +65,16 @@ void SettingPanel::slot_addnewCamera()
 void SettingPanel::slot_searchCamera()
 {
     SearchCamera *search = new SearchCamera;
+    if(search->exec())
+    {
+        QLayoutItem *litem = main_layout->takeAt(0);
+        if(litem)
+            litem->widget()->hide();
+        playlist = search->getVaildCameraList();
+        CameraView *cv = new CameraView(playlist);
+        main_layout->insertWidget(0,cv);
+
+    }
 }
 
 

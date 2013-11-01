@@ -4,6 +4,9 @@
 #include "global.h"
 #include "setting_panel.h"
 #include "viewframe.h"
+#include <QProcess>
+
+
 
 
 
@@ -20,13 +23,14 @@ protected:
 
 private slots:
     void slot_GridNumberChanged(int);
-    void slot_GetViewFrameClicked(QRect);
+//    void slot_GetViewFrameClicked(QRect);
     void slot_StartPlayer();
 private:
 
     ViewFrame *view;
     QHBoxLayout *main_layout;
     SettingPanel *panel;
+    QList<QProcess*> plist;
 };
 
 #endif // MAINWINDOW_H
