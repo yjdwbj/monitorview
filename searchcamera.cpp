@@ -21,10 +21,10 @@ HostView::HostView(QWidget *parent)
 
     setHorizontalHeaderLabels(headerlist);
 
-    const QStringList camera1 = QString("camera1,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
-    const QStringList camera2 = QString("camera2,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
-    const QStringList camera3 = QString("camera3,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
-    const QStringList camera4 = QString("camera4,192.168.115.10:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    const QStringList camera1 = QString("camera1,localhost:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    const QStringList camera2 = QString("camera2,localhost:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    const QStringList camera3 = QString("camera3,localhost:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    const QStringList camera4 = QString("camera4,localhost:8090,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
     addNewLine(camera1);
     addNewLine(camera2);
     addNewLine(camera3);

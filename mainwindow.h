@@ -4,6 +4,7 @@
 #include "global.h"
 #include "setting_panel.h"
 #include "viewframe.h"
+#include <vlc/vlc.h>
 #include <QProcess>
 
 
@@ -31,6 +32,11 @@ private:
     QHBoxLayout *main_layout;
     SettingPanel *panel;
     QList<QProcess*> plist;
+
+
+    libvlc_instance_t *_vlcinstance;
+    libvlc_media_player_t *_mp;
+    libvlc_media_t *_m;
 };
 
 #endif // MAINWINDOW_H
