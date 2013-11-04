@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include <QThread>
+
 
 
 
@@ -13,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     main_layout = new QHBoxLayout;
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
-    connect(panel,SIGNAL(StartPlayer()),SLOT(slot_StartPlayer()));
+    connect(panel,SIGNAL(StartPlay()),SLOT(slot_StartPlay()));
+    connect(panel,SIGNAL(StopPlay()),SLOT(slot_StopPlay()));
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
 
@@ -26,23 +29,53 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-void MainWindow::slot_StartPlayer()
+void MainWindow::vlcPlayRtsp()
 {
-     QList<MyFrame*> playframe = view->getPlayFrame();
-    const char * const vlc_args[] = {
-        "-I","dummy","--ignore-config","--extraintf=logger","--verbose=2"};
-//        "--plugin-path=O:\\tool\\WebCameraClient\\plugins\\"};
-//    _vlcinstance = libvlc_new(sizeof(vlc_args)/sizeof(vlc_args[0]),vlc_args);
-    _vlcinstance = libvlc_new(0,NULL);
+    QList<MyFrame*> playframe = view->getPlayFrame();
+    QStringList playlist = panel->getPlayList();
+    int num = playframe.count() < playlist.count() ? playframe.count() : playlist.count();
+    if(vlcItemList.count() == num)
+        return ;
+    for(int i = vlcItemList.count() ; i < num ; i++)
+    {
+
+        QString url = tr("rtsp://")+playlist.at(i).section(",",1,1);
+        QString fname =  url +tr("/")+ playlist.at(i).section(",",0,0) + tr(".mpg");
+        libvlc_instance_t *_vlc_inst = libvlc_new(0,NULL);
+        libvlc_media_t *_vlc_media  = libvlc_media_new_location(_vlc_inst,fname.toUtf8().data());
+        libvlc_media_player_t *_vlc_play=  libvlc_media_player_new_from_media(_vlc_media);
+        libvlc_media_release(_vlc_media);
+        libvlc_media_player_set_hwnd(_vlc_play,(void*)playframe.at(i)->winId());
+        libvlc_media_player_play(_vlc_play);
+        vlcItem tmp;
+        tmp._vlcInstance = _vlc_inst;
+        tmp._vlcMediaPlayer = _vlc_play;
+        vlcItemList.append(tmp);
+
+    }
 
 
-    _m = libvlc_media_new_path(_vlcinstance,"http://localhost:8090/camera1.avi");
-//    _mp = libvlc_media_player_new_from_media(_m);
-    libvlc_media_release(_m);
-    libvlc_media_player_set_media(_mp,_m);
-    libvlc_media_player_set_hwnd(_mp,reinterpret_cast<void*>(playframe.at(0)->winId()));
-    libvlc_media_player_play(_mp);
-//    QStringList cameralist =QString("camera1.avi,camera2.avi,camera3.avi").split(",");
+}
+
+void MainWindow::slot_StopPlay()
+{
+    foreach(vlcItem p,vlcItemList)
+    {
+        if(p._vlcMediaPlayer)
+        {
+            libvlc_media_player_stop(p._vlcMediaPlayer);
+            libvlc_media_player_release(p._vlcMediaPlayer);
+        }
+
+        if(p._vlcInstance)
+        libvlc_release(p._vlcInstance);
+    }
+    vlcItemList.clear();
+}
+
+void MainWindow::slot_StartPlay()
+{
+
 //    QStringList playlist = panel->getPlayList();
 
 //    int num = playframe.count() < playlist.count() ? playframe.count() : playlist.count();
@@ -63,6 +96,7 @@ void MainWindow::slot_StartPlayer()
 //       plist.at(i)->waitForStarted(5000);
 
 //   }
+    vlcPlayRtsp();
 }
 
 
@@ -94,7 +128,6 @@ MainWindow::~MainWindow()
         p->terminate();
         delete p;
     }
-    libvlc_media_player_stop(_mp);
-    libvlc_media_player_release(_mp);
-    libvlc_release(_vlcinstance);
+    slot_StopPlay();
+
 }

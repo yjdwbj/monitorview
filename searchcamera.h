@@ -5,20 +5,9 @@
 #include <QTableWidget>
 #include <QTableView>
 #include <QStandardItemModel>
-#include <QHeaderView>
+
 #include <QtWidgets/QCheckBox>
 
-class HostView : public QTableWidget
-{
-    Q_OBJECT
-public:
-    explicit HostView(QWidget *parent=0);
-    ~HostView(){}
-    void addNewLine(const QStringList &list);
-    QStringList getViewCountList()const ;
-private:
-        QStringList list;
-};
 
 
 
@@ -38,7 +27,7 @@ private slots:
 
 private:
     void Switch_CheckBox(bool);
-    HostView *m_viewlist;
+    ListView *m_viewlist;
     QStringList vaidlist;
     QSignalMapper *signalmap;
 };

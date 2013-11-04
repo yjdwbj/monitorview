@@ -16,14 +16,17 @@ SOURCES += main.cpp\
     setting_panel.cpp \
     viewframe.cpp \
     addnewcamera.cpp \
-    searchcamera.cpp
+    searchcamera.cpp \
+    detail_setting/camera_setting.cpp \
+    global.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
     global.h \
     viewframe.h \
     addnewcamera.h \
-    searchcamera.h
+    searchcamera.h \
+    detail_setting/camera_setting.h
 
 
 INCLUDEPATH += $$PWD\sdk\include

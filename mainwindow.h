@@ -8,8 +8,11 @@
 #include <QProcess>
 
 
-
-
+typedef struct {
+    libvlc_instance_t *_vlcInstance;
+    libvlc_media_player_t *_vlcMediaPlayer;
+}
+vlcItem;
 
 class MainWindow : public QMainWindow
 {
@@ -25,7 +28,8 @@ protected:
 private slots:
     void slot_GridNumberChanged(int);
 //    void slot_GetViewFrameClicked(QRect);
-    void slot_StartPlayer();
+    void slot_StartPlay();
+    void slot_StopPlay();
 private:
 
     ViewFrame *view;
@@ -34,9 +38,17 @@ private:
     QList<QProcess*> plist;
 
 
-    libvlc_instance_t *_vlcinstance;
-    libvlc_media_player_t *_mp;
-    libvlc_media_t *_m;
+//    libvlc_instance_t *_vlcInstance;
+//    libvlc_media_player_t *_vlcMediaPlayer;
+
+
+
+//    libvlc_event_manager_t *_vlcEvents;
+
+//    libvlc_media_t *_vlcMedia;
+    QList<vlcItem> vlcItemList;
+
+    void vlcPlayRtsp();
 };
 
 #endif // MAINWINDOW_H

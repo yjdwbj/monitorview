@@ -51,7 +51,8 @@ private:
     QStringList playlist;
 signals:
     void sig_gridofnumber(int);
-    void StartPlayer();
+    void StartPlay();
+    void StopPlay();
 
 };
 

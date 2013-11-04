@@ -9,10 +9,11 @@
 #include <QPicture>
 #include <QDesktopWidget>
 #include <qt_windows.h>
+#include "detail_setting/camera_setting.h"
 
 
 
-
+static QString actlist ("进入工作状态,退出工作状态,-,截图,报警,录像,停止报警,暂停错误报警,-,摄像机设置");
 
 class ToggleButton : public QWidget
 {
@@ -196,6 +197,33 @@ protected:
 
     }
 
+    void mousePressEvent(QMouseEvent *e)
+    {
+        if((e->type() == QMouseEvent::MouseButtonPress) &&
+                (e->button() == Qt::RightButton))
+        {
+
+            QMenu *menu = new QMenu();
+            QList<QAction*> list;
+            foreach(const QString &str,actlist.split(","))
+            {
+                if(str.startsWith("-"))
+                {
+                    list.append(menu->addSeparator());
+                }
+                else
+                    list << new QAction(str,menu);
+            }
+
+            connect(menu,SIGNAL(triggered(QAction*)),SLOT(slot_ProcessActions(QAction*)));
+
+//            this->setContextMenuPolicy(Qt::ActionsContextMenu);
+            menu->addActions(list);
+
+            menu->exec(this->mapToGlobal( e->pos()));
+        }
+    }
+
 //    void mouseMoveEvent(QMouseEvent *e)
 //    {
 //        if(e->type == QMouseEvent::MouseMove)
@@ -203,6 +231,16 @@ protected:
 //            emit mouse_move();
 //        }
 //    }
+
+private slots:
+    void slot_ProcessActions(QAction *p)
+    {
+        if(!p->text().compare("摄像机设置"))
+        {
+            CameraSetting *cs = new CameraSetting("test");
+            cs->exec();
+        }
+    }
 
 private:
     QString text;
