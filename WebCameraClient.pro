@@ -18,7 +18,9 @@ SOURCES += main.cpp\
     addnewcamera.cpp \
     searchcamera.cpp \
     detail_setting/camera_setting.cpp \
-    global.cpp
+    global.cpp \
+    detail_setting/setting_trap_time.cpp \
+    detail_setting/alarmaction.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
@@ -26,7 +28,9 @@ HEADERS  += mainwindow.h \
     viewframe.h \
     addnewcamera.h \
     searchcamera.h \
-    detail_setting/camera_setting.h
+    detail_setting/camera_setting.h \
+    detail_setting/setting_trap_time.h \
+    detail_setting/alarmaction.h
 
 
 INCLUDEPATH += $$PWD\sdk\include

@@ -10,6 +10,9 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QTimeEdit>
+#include <QtWidgets/QSpinBox>
 #include <QMessageBox>
 #include <QApplication>
 #include <QSignalMapper>
@@ -24,6 +27,23 @@ typedef QPair<int,QString> itemWidget;
 static const int othermenu =10;
 static const int fullscreen = 11;
 //static bool fullscreentoggle = false;
+
+
+///////////// GroupButtonWidget //////
+
+class GroupBtnWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    enum LayoutForm {
+        Horizontal,
+        Vertical
+    };
+    explicit GroupBtnWidget(const QStringList &list,const LayoutForm form = Horizontal,QWidget *parent=0);
+    ~GroupBtnWidget(){}
+signals:
+    void SignalById(int);
+};
 
 
 ////////////// VHWidget ///////////
@@ -57,10 +77,34 @@ class LabAndLineEdit : public QWidget
 {
     Q_OBJECT
 public:
-    explicit LabAndLineEdit(const QString &labstr,const QString &tip ="",const QString context="",QWidget *parent=0);
+    enum OneType {
+        Label,
+        PushButton
+    };
+
+    enum TwoType
+    {
+        LineEdit,
+        ComboBox,
+        SpinBox,
+        TimeEdit
+    };
+
+
+
+    explicit LabAndLineEdit(const QString &labstr,const QString &tip ="",const QString context="",int spcing =5,QWidget *parent=0);
     ~LabAndLineEdit(){}
 private:
-    QLineEdit *edit;
+
+    union { QLineEdit *le;
+            QComboBox *cbb;
+            QSpinBox *sp;
+            QTimeEdit *te;
+          } twoObj;
+    union {
+        QLabel *ll;
+        QPushButton *pb;
+    } oneObj;
 };
 
 

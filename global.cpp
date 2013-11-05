@@ -1,5 +1,22 @@
 #include "global.h"
 
+GroupBtnWidget::GroupBtnWidget(const QStringList &list,const LayoutForm form,QWidget *parent)
+    :QWidget(parent)
+{
+    QBoxLayout *layout = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
+    QSignalMapper *signalmap = new QSignalMapper(this);
+    int i = 0;
+    foreach(const QString &str,list)
+    {
+        QPushButton *btn = new QPushButton(str);
+        layout->addWidget(btn);
+        signalmap->setMapping(btn,i++);
+         connect(btn,SIGNAL(clicked()),signalmap,SLOT(map()));
+    }
+    connect(signalmap,SIGNAL(mapped(int)),SIGNAL(SignalById(int)));
+    this->setLayout(layout);
+}
+
 
 VHWidget::VHWidget(QList<itemWidget> &list, const LayoutForm form, QWidget *parent)
     :QGroupBox(parent)
@@ -68,21 +85,27 @@ void VHWidget::slot_MenuAction(QAction *act)
 }
 
 
-LabAndLineEdit::LabAndLineEdit(const QString &labstr, const QString &tip, const QString context, QWidget *parent)
+LabAndLineEdit::LabAndLineEdit(const OneType &ot,const TwoType &tt,const QString &labstr, const QString &tip, const QString context,int spcing, QWidget *parent)
     :QWidget(parent)
 {
-    edit = new QLineEdit(context);
-    edit->setToolTip(tip);
+
+    if(ot)
+        oneObj = new QLabel(labstr);
+    else
+        oneObj =new QPushButton(labstr);
+//    edit = new QLineEdit(context);
+//    edit->setToolTip(tip);
 
     QLabel *lab = new QLabel(labstr);
     lab->adjustSize();
     lab->setToolTip(tip);
     QHBoxLayout *lay = new QHBoxLayout;
-//        lay->addStretch(spcing);
+
     lay->setMargin(1);
-    lay->setSpacing(1);
+    lay->setSpacing(spcing);
     lay->addWidget(lab,Qt::AlignLeft);
     lay->addWidget(edit,Qt::AlignLeft);
+    lay->addStretch(0);
     setLayout(lay);
 }
 

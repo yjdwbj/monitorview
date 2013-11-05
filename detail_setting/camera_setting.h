@@ -22,10 +22,13 @@ private:
     QWidget *OtherInformation();
     QWidget *Alarm();
     QWidget *RecordVideo();
+    QWidget *AppendInformation();
 
 private slots:
     void slot_SearchCameraFromLan();
     void slot_MapSignal(int);
+
+    void slot_Alarm_Widget(int);
 
 };
 

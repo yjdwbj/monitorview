@@ -1,4 +1,5 @@
 #include "camera_setting.h"
+#include "setting_trap_time.h"
 
 CameraSetting::CameraSetting(const QString &name,QWidget *parent)
     :QDialog(parent),
@@ -10,6 +11,8 @@ CameraSetting::CameraSetting(const QString &name,QWidget *parent)
     mainTab->addTab(ConnectInformation("http://192.168.8.31"),"连接信息");
     mainTab->addTab(OtherInformation(),"其它信息");
     mainTab->addTab(Alarm(),"报警");
+    mainTab->addTab(RecordVideo(),"录像");
+    mainTab->addTab(AppendInformation(),"附加信息");
 
     main_layout->addWidget(cameraName,0,0,1,2);
     main_layout->addWidget(mainTab,1,0,1,2);
@@ -39,6 +42,7 @@ QWidget *CameraSetting::ConnectInformation(const QString &url)
     grid_layout->addWidget(btn_search,0,1);
     grid_layout->addWidget(watchID,1,0,1,2);
     grid_layout->addWidget(watchPasswd,2,0,1,2);
+    grid_layout->setRowStretch(2,0);
     QWidget *w = new QWidget;
     w->setLayout(grid_layout);
     return w;
@@ -66,24 +70,17 @@ QWidget *CameraSetting::Alarm()
 
     LabAndLineEdit *alarm_group = new LabAndLineEdit("报警组:");
     QGroupBox *gbox_trapTime = new QGroupBox("布防时间段");
-    QGridLayout *lay_trapTime = new QGridLayout(gbox_trapTime);
+    QVBoxLayout *lay_trapTime = new QVBoxLayout(gbox_trapTime);
     QString headLabels("星期,时间,触发方式,报警动作");
 
     ListView *lview = new ListView(headLabels.split(","));
-    lay_trapTime->addWidget(lview,0,0,1,4);
+    lay_trapTime->addWidget(lview);
     QString btn_list("添加,修改,删除,清除");
-    QSignalMapper *signalmap = new QSignalMapper;
-    int i = 0;
-    foreach(const QString &str,btn_list.split(","))
-    {
-        QPushButton *btn = new QPushButton(str);
-        lay_trapTime->addWidget(btn,1,i);
-        signalmap->setMapping(btn,i++);
-         connect(btn,SIGNAL(clicked()),signalmap,SLOT(map()));
-    }
-     connect(signalmap,SIGNAL(mapped(int)),this,SLOT(slot_MapSignal(int)));
-
+    GroupBtnWidget *gbtn = new GroupBtnWidget(btn_list.split(","));
+    connect(gbtn,SIGNAL(SignalById(int)),SLOT(slot_Alarm_Widget(int)));
+    lay_trapTime->addWidget(gbtn);
      main_layout->addWidget(enable_alarm);
+     main_layout->addWidget(alarm_group);
      main_layout->addWidget(gbox_trapTime);
      main_layout->addStretch();
      QWidget *w = new QWidget ;
@@ -92,6 +89,56 @@ QWidget *CameraSetting::Alarm()
 
 }
 
+void CameraSetting::slot_Alarm_Widget(int id)
+{
+    switch(id)
+    {
+    case 0:
+        AddTrapTimeDialog *dlg = new AddTrapTimeDialog;
+        dlg->exec();
+        break;
+    }
+}
+
+QWidget* CameraSetting::RecordVideo()
+{
+    QVBoxLayout *main_layout = new QVBoxLayout;
+    QCheckBox *enable_record = new QCheckBox("启用录像");
+    QRadioButton *allTime_record = new QRadioButton("所有时间进行录制");
+    QRadioButton *blowTime_record = new QRadioButton("只在下列时间段进行录制");
+
+    main_layout->addWidget(enable_record);
+    main_layout->addWidget(allTime_record);
+    main_layout->addWidget(blowTime_record);
+
+    ListView *time_View = new ListView(QString("星期,时间").split(","));
+    main_layout->addWidget(time_View);
+    QString btn_list("添加,修改,删除,清除");
+    GroupBtnWidget *gbtn = new GroupBtnWidget(btn_list.split(","));
+     main_layout->addWidget(gbtn);
+
+
+     QWidget *w = new QWidget ;
+     w->setLayout(main_layout);
+     return w;
+}
+
+
+QWidget* CameraSetting::AppendInformation()
+{
+    QString("姓名,电话,地址,备注");
+    QVBoxLayout *main_layout = new QVBoxLayout;
+    foreach(const QString &str ,QString("姓名,电话,地址,备注").split(",") )
+    {
+        LabAndLineEdit *t = new LabAndLineEdit(str+":");
+        main_layout->addWidget(t,Qt::AlignCenter);
+    }
+    main_layout->setSpacing(10);
+    main_layout->addStretch();
+    QWidget *w = new QWidget;
+    w->setLayout(main_layout);
+    return w;
+}
 
 void CameraSetting::slot_MapSignal(int id)
 {
