@@ -28,6 +28,22 @@ static const int othermenu =10;
 static const int fullscreen = 11;
 //static bool fullscreentoggle = false;
 
+static QString choices("全选,全不选");
+static QString yesorno("提交,取消");
+static QString weekNum("一,二,三,四,五,六,日");
+
+
+
+class GroupChecBox : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit GroupChecBox(const QStringList &list,const QString &prefix="",QWidget *parent=0);
+    ~GroupChecBox(){}
+};
+
+
+
 
 ///////////// GroupButtonWidget //////
 
@@ -39,7 +55,7 @@ public:
         Horizontal,
         Vertical
     };
-    explicit GroupBtnWidget(const QStringList &list,const LayoutForm form = Horizontal,QWidget *parent=0);
+    explicit GroupBtnWidget(const QStringList &list,const LayoutForm form = Horizontal,const int width=50,QWidget *parent=0);
     ~GroupBtnWidget(){}
 signals:
     void SignalById(int);
@@ -73,38 +89,24 @@ private:
 
 //////////////LabAndLineEdit/////////////
 
-class LabAndLineEdit : public QWidget
+class LabAndWidget : public QWidget
 {
     Q_OBJECT
 public:
-    enum OneType {
-        Label,
-        PushButton
+    enum LayoutForm {
+        Horizontal,
+        Vertical
     };
+     LabAndWidget(const QString &label,QLineEdit *le,LayoutForm form = Horizontal,const QString &tip ="",int spcing =5,QWidget *parent=0);
+     LabAndWidget(const QString &label,QComboBox *cbb, const QStringList &items,const QString &tip="", int spcing=5, QWidget *parent=0);
+     LabAndWidget(const QString &label, QSpinBox *sb, const int value, const QString &tip="", int spcing=5, QWidget *parent =0);
+     LabAndWidget(const QString &label, QTimeEdit *te, LayoutForm form = Horizontal, const QString &tip ="", int spcing = 5, QWidget *parent = 0);
+     ~LabAndWidget(){}
 
-    enum TwoType
-    {
-        LineEdit,
-        ComboBox,
-        SpinBox,
-        TimeEdit
-    };
-
-
-
-    explicit LabAndLineEdit(const QString &labstr,const QString &tip ="",const QString context="",int spcing =5,QWidget *parent=0);
-    ~LabAndLineEdit(){}
+     QWidget *getTwoObj() { return two;}
 private:
-
-    union { QLineEdit *le;
-            QComboBox *cbb;
-            QSpinBox *sp;
-            QTimeEdit *te;
-          } twoObj;
-    union {
-        QLabel *ll;
-        QPushButton *pb;
-    } oneObj;
+//    T one;
+    QWidget *two;
 };
 
 
@@ -115,6 +117,7 @@ class ListView : public QTableWidget
 {
     Q_OBJECT
 public:
+
     explicit ListView(const QStringList &list, QWidget *parent=0);
     ~ListView(){}
     void addNewLine(const QStringList &list);

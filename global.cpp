@@ -1,6 +1,20 @@
 #include "global.h"
 
-GroupBtnWidget::GroupBtnWidget(const QStringList &list,const LayoutForm form,QWidget *parent)
+GroupChecBox::GroupChecBox(const QStringList &list,const QString &prefix,QWidget *parent)
+    :QWidget(parent)
+{
+    QHBoxLayout *lay = new QHBoxLayout ;
+    foreach(const QString &str,list)
+    {
+        QCheckBox *cbox = new QCheckBox(prefix+str);
+        lay->addWidget(cbox);
+    }
+    setLayout(lay);
+}
+
+
+GroupBtnWidget::GroupBtnWidget(const QStringList &list,const LayoutForm form,
+                               const int width,QWidget *parent)
     :QWidget(parent)
 {
     QBoxLayout *layout = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
@@ -9,6 +23,7 @@ GroupBtnWidget::GroupBtnWidget(const QStringList &list,const LayoutForm form,QWi
     foreach(const QString &str,list)
     {
         QPushButton *btn = new QPushButton(str);
+        btn->setFixedWidth(width);
         layout->addWidget(btn);
         signalmap->setMapping(btn,i++);
          connect(btn,SIGNAL(clicked()),signalmap,SLOT(map()));
@@ -85,30 +100,78 @@ void VHWidget::slot_MenuAction(QAction *act)
 }
 
 
-LabAndLineEdit::LabAndLineEdit(const OneType &ot,const TwoType &tt,const QString &labstr, const QString &tip, const QString context,int spcing, QWidget *parent)
+LabAndWidget::LabAndWidget(const QString &label, QComboBox *cbb, const QStringList &items,
+                               const QString &tip, int spcing, QWidget *parent)
     :QWidget(parent)
 {
 
-    if(ot)
-        oneObj = new QLabel(labstr);
-    else
-        oneObj =new QPushButton(labstr);
-//    edit = new QLineEdit(context);
-//    edit->setToolTip(tip);
 
-    QLabel *lab = new QLabel(labstr);
+    QLabel *lab = new QLabel(label);
     lab->adjustSize();
     lab->setToolTip(tip);
     QHBoxLayout *lay = new QHBoxLayout;
-
+    cbb->addItems(items);
     lay->setMargin(1);
     lay->setSpacing(spcing);
     lay->addWidget(lab,Qt::AlignLeft);
-    lay->addWidget(edit,Qt::AlignLeft);
+    lay->addWidget(cbb,Qt::AlignLeft);
     lay->addStretch(0);
     setLayout(lay);
+    two = static_cast<QWidget*>(cbb);
 }
 
+LabAndWidget::LabAndWidget(const QString &label, QLineEdit *le,LayoutForm form ,const QString &tip,
+                               int spcing, QWidget *parent)
+    :QWidget(parent)
+{
+    QLabel *lab = new QLabel(label);
+    lab->adjustSize();
+    lab->setToolTip(tip);
+//    QHBoxLayout *lay = new QHBoxLayout;
+    QBoxLayout *lay = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
+    lay->setMargin(1);
+    lay->setSpacing(spcing);
+    lay->addWidget(lab);
+    lay->addWidget(le);
+    lay->addStretch();
+    setLayout(lay);
+     two = static_cast<QWidget*>(le);
+}
+
+LabAndWidget::LabAndWidget(const QString &label, QSpinBox *sb, const int value, const QString &tip,
+                               int spcing, QWidget *parent)
+    :QWidget(parent)
+{
+    QLabel *lab = new QLabel(label);
+    lab->adjustSize();
+    lab->setToolTip(tip);
+    QHBoxLayout *lay = new QHBoxLayout;
+    sb->setValue(value);
+    lay->setMargin(1);
+    lay->setSpacing(spcing);
+    lay->addWidget(lab,Qt::AlignLeft);
+    lay->addWidget(sb,Qt::AlignLeft);
+    lay->addStretch(0);
+    setLayout(lay);
+     two = static_cast<QWidget*>(sb);
+}
+
+LabAndWidget::LabAndWidget(const QString &label, QTimeEdit *te,LayoutForm form,
+                           const QString &tip,int spcing, QWidget *parent)
+    :QWidget(parent)
+{
+    QLabel *lab = new QLabel(label);
+    lab->adjustSize();
+    lab->setToolTip(tip);
+     QBoxLayout *lay = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
+    lay->setMargin(1);
+    lay->setSpacing(spcing);
+    lay->addWidget(lab,Qt::AlignLeft);
+    lay->addWidget(te,Qt::AlignLeft);
+    lay->addStretch(0);
+    setLayout(lay);
+     two = static_cast<QWidget*>(te);
+}
 
 ListView::ListView(const QStringList &list,QWidget *parent)
     :QTableWidget(parent)

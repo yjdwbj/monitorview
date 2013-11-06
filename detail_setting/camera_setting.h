@@ -9,6 +9,18 @@
 #include "../global.h"
 #include <QCheckBox>
 
+
+class RecordTime : public QDialog
+{
+    Q_OBJECT
+public:
+    explicit RecordTime(QWidget *parent = 0);
+    ~RecordTime(){}
+private slots:
+    void slot_signalbyid(int);
+};
+
+
 class CameraSetting : public QDialog
 {
     Q_OBJECT
@@ -29,6 +41,8 @@ private slots:
     void slot_MapSignal(int);
 
     void slot_Alarm_Widget(int);
+    void slot_Btn_Dialog(int);
+    void slot_RecordVideo_signals(int);
 
 };
 

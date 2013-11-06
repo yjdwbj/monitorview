@@ -3,12 +3,15 @@
 #include "../global.h"
 
 
+
 class AddTrapTimeDialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit AddTrapTimeDialog(QWidget *parent = 0);
     ~AddTrapTimeDialog(){}
+private slots:
+    void slot_Btn_Dialog(int id);
 
 };
 

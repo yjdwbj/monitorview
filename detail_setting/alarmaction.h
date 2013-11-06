@@ -8,7 +8,10 @@
 class AlarmAction : public QGroupBox
 {
     Q_OBJECT
+
+
 public:
+
     explicit AlarmAction(QWidget *parent = 0);
     ~AlarmAction(){ }
 private slots:
@@ -20,17 +23,9 @@ private:
     QHBoxLayout *main_layout;
     QTableWidget *tabWidgets ;
 
-    QWidget* ActionForAudio();
-    QWidget* ActionForVideo();
-    QWidget* ActionForPhoto();
-    QWidget* ActionForEmail();
-    QWidget* ActionForFTPUpload();
-    QWidget* ActionForDial_up();
-    QWidget* ActionForSMS();
-    QWidget* ActionForSkype();
-    QWidget* ActionForCallPreset();
-    QWidget* ActionForApplication();
-    QWidget* ActionForWebLink();
+
+
+    QWidget* WidgetFromLayout(const QString &name, QLayout *lay);
 
 };
 

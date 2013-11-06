@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     panel(new SettingPanel)
 {
 
-
+//    ReadQss();
+    this->setStyleSheet("QFrame {background-color: gray;}");
     main_layout = new QHBoxLayout;
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     connect(panel,SIGNAL(StartPlay()),SLOT(slot_StartPlay()));
@@ -53,6 +54,26 @@ void MainWindow::vlcPlayRtsp()
         vlcItemList.append(tmp);
 
     }
+}
+
+void MainWindow::ReadQss()
+{
+
+    QFile qss(":/lcy/images/systemsetting.qss");
+    if(!qss.open(QIODevice::ReadOnly|QIODevice::Text))
+        return;
+    this->setStyleSheet(qss.readAll());
+    qss.close();
+//    if(!QFileInfo(m_configfile).exists())
+//        s->writeCfgToFile(m_configfile);
+//    else
+//        s->readCfgToFile(m_configfile);
+//    if(s->exec())
+//    {
+//        s->UpdateCurrentIndexText();
+//        m_ToolBoxSettings->updateToolBox(s->getCurrentIndexText());
+//        s->writeCfgToFile(m_configfile);
+//    }
 
 
 }

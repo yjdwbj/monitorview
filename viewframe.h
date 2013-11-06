@@ -163,7 +163,7 @@ public:
     {
         text = str;
         setFrameShape(QFrame::StyledPanel);
-        setStyleSheet("background-color: #555555;");
+//        setStyleSheet("background-color: #555555;");
         setFrameShadow(QFrame::Plain);
     }
     ~MyFrame(){

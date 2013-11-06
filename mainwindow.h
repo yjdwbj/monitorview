@@ -37,6 +37,7 @@ private:
     SettingPanel *panel;
     QList<QProcess*> plist;
 
+    void ReadQss();
 
 //    libvlc_instance_t *_vlcInstance;
 //    libvlc_media_player_t *_vlcMediaPlayer;
