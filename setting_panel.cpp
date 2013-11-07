@@ -1,6 +1,10 @@
 #include "setting_panel.h"
 #include "addnewcamera.h"
+#include "system_setting.h"
 #include "searchcamera.h"
+
+
+static QString allbutton("开始所有|停止所有|系统设置|录像记录|报警记录|其它");
 
 SettingPanel::SettingPanel(QWidget *parent)
     :QWidget(parent)
@@ -37,11 +41,27 @@ SettingPanel::SettingPanel(QWidget *parent)
     VHWidget *widget = new VHWidget(itemlist,VHWidget::Horizontal);
     connect(widget,SIGNAL(gridofnumer(int)),SIGNAL(sig_gridofnumber(int)));
 
-//    VHWidget *ctrol = new VHWidget(itemlist,VHWidget::Horizontal);
-    QPushButton *btn_open = new QPushButton("开始播放");
-    connect(btn_open,SIGNAL(clicked()),SIGNAL(StartPlay()));
-    QPushButton *btn_stop = new QPushButton("停止播放");
-    connect(btn_stop,SIGNAL(clicked()),SIGNAL(StopPlay()));
+
+    QGridLayout *lay_control = new QGridLayout;
+
+    int x =0 ,y = 0,n=0;
+    QSignalMapper *ctrl_signal = new QSignalMapper;
+    foreach(const QString &str,allbutton.split("|"))
+    {
+        QPushButton *btn = new QPushButton(str);
+        btn->setFixedSize(60,60);
+        if(y > 2)
+        {
+            y=0;
+            x =1;
+        }
+
+        ctrl_signal->setMapping(btn,n++);
+        lay_control->addWidget(btn,x,y++);
+        connect(btn,SIGNAL(clicked()),ctrl_signal,SLOT(map()));
+    }
+
+    connect(ctrl_signal,SIGNAL(mapped(int)),SLOT(slot_Process_Ctrl_signals(int)));
 
 
 //    ViewFrame *view_ctrl = new ViewFrame;
@@ -53,10 +73,25 @@ SettingPanel::SettingPanel(QWidget *parent)
     main_layout = new QVBoxLayout(gbox_main);
     main_layout->addWidget(gbox_addnew);
     main_layout->addWidget(widget);
-    main_layout->addWidget(btn_open);
-    main_layout->addWidget(btn_stop);
+    main_layout->addLayout(lay_control);
     main_layout->setMargin(0);
     this->setLayout(main_layout);
+}
+
+
+void SettingPanel::slot_Process_Ctrl_signals(int id)
+{
+    switch(id)
+    {
+    case 0:emit StartPlay();break;
+    case 1: emit StopPlay(); break;
+    case 2:
+        SystemSetting *sys = new SystemSetting;
+        sys->exec();
+        break;
+
+
+    }
 }
 
 

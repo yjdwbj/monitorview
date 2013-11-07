@@ -46,6 +46,7 @@ private slots:
     void slot_addnewCamera();
     void slot_searchCamera();
     void slot_StartPlayer();
+    void slot_Process_Ctrl_signals(int);
 private:
     QVBoxLayout *main_layout;
     QStringList playlist;

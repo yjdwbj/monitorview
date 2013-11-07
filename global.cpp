@@ -1,15 +1,17 @@
 #include "global.h"
 
-GroupChecBox::GroupChecBox(const QStringList &list,const QString &prefix,QWidget *parent)
+GroupChecBox::GroupChecBox(const QStringList &list,const QString &prefix,
+                           LayoutOriant form,QWidget *parent)
     :QWidget(parent)
 {
-    QHBoxLayout *lay = new QHBoxLayout ;
+//    QHBoxLayout *lay = new QHBoxLayout ;
+    QBoxLayout *layout = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
     foreach(const QString &str,list)
     {
         QCheckBox *cbox = new QCheckBox(prefix+str);
-        lay->addWidget(cbox);
+        layout->addWidget(cbox);
     }
-    setLayout(lay);
+    setLayout(layout);
 }
 
 

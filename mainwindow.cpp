@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
 //    ReadQss();
-    this->setStyleSheet("QFrame {background-color: gray;}");
+
     main_layout = new QHBoxLayout;
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     connect(panel,SIGNAL(StartPlay()),SLOT(slot_StartPlay()));

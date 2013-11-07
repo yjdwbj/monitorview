@@ -31,14 +31,18 @@ static const int fullscreen = 11;
 static QString choices("全选,全不选");
 static QString yesorno("提交,取消");
 static QString weekNum("一,二,三,四,五,六,日");
-
+enum LayoutOriant {
+    Horizontal,
+    Vertical
+};
 
 
 class GroupChecBox : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GroupChecBox(const QStringList &list,const QString &prefix="",QWidget *parent=0);
+    explicit GroupChecBox(const QStringList &list,const QString &prefix="",
+                          LayoutOriant form = Horizontal,QWidget *parent=0);
     ~GroupChecBox(){}
 };
 
