@@ -10,6 +10,7 @@
 #include <QDesktopWidget>
 #include <qt_windows.h>
 #include "detail_setting/camera_setting.h"
+#include "control_widget.h"
 
 
 
@@ -159,7 +160,8 @@ class MyFrame : public QFrame
     Q_OBJECT
 public:
     explicit MyFrame(const QString &str="",QWidget *parent=0)
-        :QFrame(parent)
+        :QFrame(parent),
+          ctrl_widget(new ControlWidget)
     {
         text = str;
         setFrameShape(QFrame::StyledPanel);
@@ -168,6 +170,7 @@ public:
     }
     ~MyFrame(){
 //        delete this;
+        ctrl_widget->destroyed();
     }
 signals:
     void clicked_Frame(MyFrame*);
@@ -199,29 +202,38 @@ protected:
 
     void mousePressEvent(QMouseEvent *e)
     {
-        if((e->type() == QMouseEvent::MouseButtonPress) &&
-                (e->button() == Qt::RightButton))
+
+
+        if((e->type() == QMouseEvent::MouseButtonPress))
         {
-
-            QMenu *menu = new QMenu();
-            QList<QAction*> list;
-            foreach(const QString &str,actlist.split(","))
+            if((e->button() == Qt::RightButton))
             {
-                if(str.startsWith("-"))
+
+                QMenu *menu = new QMenu();
+                QList<QAction*> list;
+                foreach(const QString &str,actlist.split(","))
                 {
-                    list.append(menu->addSeparator());
+                    if(str.startsWith("-"))
+                    {
+                        list.append(menu->addSeparator());
+                    }
+                    else
+                        list << new QAction(str,menu);
                 }
-                else
-                    list << new QAction(str,menu);
+
+                connect(menu,SIGNAL(triggered(QAction*)),SLOT(slot_ProcessActions(QAction*)));
+
+    //            this->setContextMenuPolicy(Qt::ActionsContextMenu);
+                menu->addActions(list);
+
+                menu->exec(this->mapToGlobal( e->pos()));
             }
-
-            connect(menu,SIGNAL(triggered(QAction*)),SLOT(slot_ProcessActions(QAction*)));
-
-//            this->setContextMenuPolicy(Qt::ActionsContextMenu);
-            menu->addActions(list);
-
-            menu->exec(this->mapToGlobal( e->pos()));
+            else if((e->button() == Qt::LeftButton))
+            {
+                ctrl_widget->startTimer();
+            }
         }
+
     }
 
 //    void mouseMoveEvent(QMouseEvent *e)
@@ -244,6 +256,7 @@ private slots:
 
 private:
     QString text;
+    ControlWidget *ctrl_widget;
 
 };
 

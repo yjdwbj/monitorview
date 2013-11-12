@@ -81,26 +81,72 @@ SystemSetting::SystemSetting(QWidget *parent)
     listwidget(new QListWidget),
     stackLayout(new QStackedLayout)
 {
+    this->setWindowTitle("系统设置");
     QGridLayout *main_layout = new QGridLayout;
     listwidget->addItems(items.split("|"));
     connect(listwidget,SIGNAL(currentRowChanged(int)),SLOT(slot_ListRowChanged(int)));
 
     stackLayout->addWidget(getWidgetFromLayout(ViewPanel()));
     stackLayout->addWidget(getWidgetFromLayout(StoragePanel()));
+    stackLayout->addWidget(getWidgetFromLayout(AutoRunning()));
+    stackLayout->addWidget(getWidgetFromLayout(OtherPanel()));
 
     main_layout->addWidget(listwidget,0,0);
     main_layout->addLayout(stackLayout,0,1);
     GroupBtnWidget *btn = new GroupBtnWidget(yesorno.split(","));
+    connect(btn,SIGNAL(SignalById(int)),SLOT(slot_yesornocommit(int)));
     main_layout->addWidget(btn,1,1,1,2);
     setLayout(main_layout);
+}
+
+void SystemSetting::slot_yesornocommit(int id)
+{
+    id ? reject() : accept();
 }
 
 QLayout *SystemSetting::AutoRunning()
 {
     QCheckBox *StartAfterBoot = new QCheckBox("系统启动时自动运行程序");
     QGroupBox *gbox_login = new QGroupBox("自动使用下面操作员");
+    LabAndWidget *user = new LabAndWidget("操作员:",new QLineEdit);
+    LabAndWidget *pass = new LabAndWidget("密码:",new QLineEdit);
+    QCheckBox *tray = new QCheckBox("程序自动启动后进入系统托盘区");
+    QVBoxLayout *lay_login = new QVBoxLayout(gbox_login);
+    lay_login->addWidget(user);
+    lay_login->addWidget(pass);
+    lay_login->addWidget(tray);
+
+    QCheckBox *autoconnect = new QCheckBox("程序启动时自动连接所有摄像机");
+
+    QVBoxLayout *main_layout = new QVBoxLayout;
+    main_layout->addWidget(StartAfterBoot);
+    main_layout->addWidget(gbox_login);
+    main_layout->addWidget(autoconnect);
+    main_layout->addStretch();
+    return main_layout;
 }
 
+
+QLayout* SystemSetting::OtherPanel()
+{
+    QVBoxLayout *main_layout = new QVBoxLayout();
+    LabAndWidget *srvaddr = new LabAndWidget("服务器地址:",
+                                             new QLineEdit("video.zh-jl.com"));
+    LabAndWidget *page_up = new LabAndWidget("自动翻页时间间隔(秒):",
+                                             new QSpinBox,10);
+    LabAndWidget *loss_camera = new LabAndWidget("摄像机丢失图像后多少时间触发报警(秒):",
+                                          new QSpinBox,60);
+    QCheckBox *log_img = new  QCheckBox("图像丢失后进行声音报警");
+    QCheckBox *check_version = new QCheckBox("启动时检测是否有新版本");
+
+    main_layout->addWidget(srvaddr);
+    main_layout->addWidget(page_up);
+    main_layout->addWidget(loss_camera);
+    main_layout->addWidget(log_img);
+    main_layout->addWidget(check_version);
+    main_layout->addStretch();
+    return main_layout;
+}
 
 void SystemSetting::slot_ListRowChanged(int id)
 {

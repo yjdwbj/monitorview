@@ -9,5 +9,12 @@
         <file>images/backfullscreen.png</file>
         <file>images/systemsetting.qss</file>
         <file>images/large_button.png</file>
+        <file>images/guide.png</file>
+        <file>images/top.png</file>
+        <file>images/buttom.png</file>
+        <file>images/left.png</file>
+        <file>images/mid.png</file>
+        <file>images/play.png</file>
+        <file>images/right.png</file>
     </qresource>
 </RCC>

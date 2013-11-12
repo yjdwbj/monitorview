@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     global.cpp \
     detail_setting/setting_trap_time.cpp \
     detail_setting/alarmaction.cpp \
-    system_setting.cpp
+    system_setting.cpp \
+    control_widget.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     detail_setting/camera_setting.h \
     detail_setting/setting_trap_time.h \
     detail_setting/alarmaction.h \
-    system_setting.h
+    system_setting.h \
+    control_widget.h
 
 
 INCLUDEPATH += $$PWD\sdk\include

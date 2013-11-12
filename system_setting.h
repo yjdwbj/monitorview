@@ -19,10 +19,12 @@ private:
     QLayout *ViewPanel();
     QLayout *StoragePanel();
     QLayout *AutoRunning();
+    QLayout *OtherPanel();
     QWidget *getWidgetFromLayout(QLayout *lay){QGroupBox *w = new QGroupBox;w->setLayout(lay);return (QWidget*)w;}
 private slots:
     void slot_fontdialog();
     void slot_ListRowChanged(int);
+    void slot_yesornocommit(int);
 };
 
 #endif // SYSTEM_SETTING_H
