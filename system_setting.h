@@ -12,9 +12,13 @@ class SystemSetting : public QDialog
 public:
     explicit SystemSetting(QWidget *parent=0);
     ~SystemSetting(){}
+    QString getStoragePath() { return pathText->item(0)->text();}
 private:
     QListWidget *listwidget;
     QStackedLayout *stackLayout;
+    QSignalMapper *signalmap;
+    QListWidget *pathText;
+    QPushButton *btn_addPath ;
 
     QLayout *ViewPanel();
     QLayout *StoragePanel();
@@ -25,6 +29,8 @@ private slots:
     void slot_fontdialog();
     void slot_ListRowChanged(int);
     void slot_yesornocommit(int);
+    void slot_addORdeleteStoragePath(int);
+
 };
 
 #endif // SYSTEM_SETTING_H

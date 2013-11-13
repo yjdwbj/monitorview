@@ -64,17 +64,6 @@ private slots:
     }
 
 protected:
-//    bool nativeEvent(const QByteArray &eventType, void *message, long *result)
-//    {
-//        MSG *msg = reinterpret_cast<MSG*>(message);
-//        int msgType = msg->message;
-//        if(msgType == WM_MOUSEMOVE)
-//        {
-//            show();
-//        }
-//        return false;
-
-//    }
 
     void paintEvent(QPaintEvent *)
     {
@@ -155,108 +144,43 @@ private:
 
 
 
-class MyFrame : public QFrame
+class Frame : public QFrame
 {
     Q_OBJECT
 public:
-    explicit MyFrame(const QString &str="",QWidget *parent=0)
-        :QFrame(parent),
-          ctrl_widget(new ControlWidget)
-    {
-        text = str;
-        setFrameShape(QFrame::StyledPanel);
-        setStyleSheet("background-color: #555555;");
-        setFrameShadow(QFrame::Plain);
-    }
-    ~MyFrame(){
-//        delete this;
-        ctrl_widget->destroyed();
-    }
+    explicit Frame(const QString &str="",QWidget *parent=0);
+    ~Frame(){}
 signals:
-    void clicked_Frame(MyFrame*);
+    void clicked_Frame(Frame*);
     void mouse_move();
 
 protected:
-    void paintEvent(QPaintEvent *e)
-    {
-
-        QPainter p(this);
-        int x = this->height()/2;
-        int y = this->width() /2-30;
-        p.drawText(y,x,text);
-        e->accept();
-
-    }
-
-    void mouseDoubleClickEvent(QMouseEvent *e)
-    {
-         e->accept();
-        if( (e->type() == QMouseEvent::MouseButtonDblClick)
-                && (e->button() == Qt::LeftButton ))
-        {
-
-            emit clicked_Frame(this);
-        }
-
-    }
-
-    void mousePressEvent(QMouseEvent *e)
-    {
-
-
-        if((e->type() == QMouseEvent::MouseButtonPress))
-        {
-            if((e->button() == Qt::RightButton))
-            {
-
-                QMenu *menu = new QMenu();
-                QList<QAction*> list;
-                foreach(const QString &str,actlist.split(","))
-                {
-                    if(str.startsWith("-"))
-                    {
-                        list.append(menu->addSeparator());
-                    }
-                    else
-                        list << new QAction(str,menu);
-                }
-
-                connect(menu,SIGNAL(triggered(QAction*)),SLOT(slot_ProcessActions(QAction*)));
-
-    //            this->setContextMenuPolicy(Qt::ActionsContextMenu);
-                menu->addActions(list);
-
-                menu->exec(this->mapToGlobal( e->pos()));
-            }
-            else if((e->button() == Qt::LeftButton))
-            {
-                ctrl_widget->startTimer();
-            }
-        }
-
-    }
-
-//    void mouseMoveEvent(QMouseEvent *e)
-//    {
-//        if(e->type == QMouseEvent::MouseMove)
-//        {
-//            emit mouse_move();
-//        }
-//    }
-
+    void paintEvent(QPaintEvent *e);
+    void mouseDoubleClickEvent(QMouseEvent *e);
+    void mousePressEvent(QMouseEvent *e);
 private slots:
-    void slot_ProcessActions(QAction *p)
-    {
-        if(!p->text().compare("摄像机设置"))
-        {
-            CameraSetting *cs = new CameraSetting("test");
-            cs->exec();
-        }
-    }
-
+    void slot_ProcessActions(QAction *p);
 private:
     QString text;
     ControlWidget *ctrl_widget;
+
+};
+
+class WindowFrame : public  QWidget
+{
+    Q_OBJECT
+public:
+    explicit WindowFrame(const QString &str = "",QWidget *parent=0);
+    ~WindowFrame(){}
+    WId getWindowId() const {return frame->winId();}
+    Frame *frame ;
+private:
+    QLabel *lab_frameRate;
+    QLabel *lab_speedRate;
+    QPushButton *btn_warn;
+    QPushButton *btn_capture;
+    QPushButton *btn_snapshot;
+    QPushButton *btn_setting;
 
 };
 
@@ -276,12 +200,12 @@ public:
     void setOnePlusSeven();
     void setFullScreen();
     void StartPlayer();
-     QList<MyFrame*> getPlayFrame() const {return  m_list;}
+     QList<WindowFrame*> getPlayFrame() const {return  m_list;}
 public slots:
     void swapFullScreenOrNormal(bool flag);
 
 private slots:
-    void slot_clicked_this(MyFrame*);
+    void slot_clicked_this(Frame *);
 //    void slot_testsignals(int);
     void slot_timeout();
     void slot_BackToNormalWindown();
@@ -295,7 +219,7 @@ private:
     FullScreen *FSWidget;
     QTimer *timer1;
     QGridLayout *lay;
-    QList<MyFrame*> m_list;
+    QList<WindowFrame*> m_list;
 
 };
 #endif // VIEWFRAME_H

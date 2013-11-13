@@ -1,6 +1,7 @@
 #include "system_setting.h"
 #include <QTextEdit>
 #include <QFontDialog>
+#include <QFileDialog>
 
 static QString items("存储|显示|自动运行|其它");
 static QString btns("添加|删除");
@@ -13,13 +14,21 @@ QLayout* SystemSetting::StoragePanel()
 
     QGroupBox *gbox_path = new QGroupBox("录像报警数据保存路径:");
     QHBoxLayout *lay_path = new QHBoxLayout(gbox_path);
-    QTextEdit *text = new QTextEdit("eeeeeee");
-    text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    text->setFixedSize(220,55);
+//    QTextEdit *text = new QTextEdit("eeeeeee");
+//    text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+//    text->setFixedSize(220,55);
 //    text->scroll();
-    GroupBtnWidget *btnAd = new GroupBtnWidget(btns.split("|"),GroupBtnWidget::Vertical);
-    lay_path->addWidget(text);
-    lay_path->addWidget(btnAd);
+     pathText = new QListWidget;
+    pathText->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+//     btn_addPath = new QPushButton("添加");
+//     connect(btn_addPath,SIGNAL(clicked()),SLOT(slot_addStoragePath()));
+
+    GroupBtnWidget *btn_addPath = new GroupBtnWidget(btns.split("|"),GroupBtnWidget::Vertical);
+    lay_path->addWidget(pathText);
+    lay_path->addWidget(btn_addPath);
+    connect(btn_addPath,SIGNAL(SignalById(int)),SLOT(slot_addORdeleteStoragePath(int)));
+//    lay_path->addWidget(btnAd);
     QGroupBox *gbox_savedays = new QGroupBox("录像报警数据保留天数:");
     QVBoxLayout *lay_save = new QVBoxLayout(gbox_savedays);
     LabAndWidget *record = new LabAndWidget("录像记录:",new QSpinBox,7);
@@ -33,6 +42,24 @@ QLayout* SystemSetting::StoragePanel()
     lay->addWidget(gbox_savedays);
     lay->addWidget(record_len);
     return lay;
+}
+
+void SystemSetting::slot_addORdeleteStoragePath(int id)
+{
+    if(id)   // 1 == delete
+    {
+        pathText->takeItem(pathText->currentRow());
+    }
+    else  // 0 == add
+    {
+
+
+        QString path = QFileDialog::getExistingDirectory(this,"选择录像存储目录");
+        if(path.isEmpty())
+            return;
+        pathText->addItem(path);
+    }
+
 }
 
 
@@ -79,15 +106,16 @@ void SystemSetting::slot_fontdialog()
 SystemSetting::SystemSetting(QWidget *parent)
     :QDialog(parent),
     listwidget(new QListWidget),
-    stackLayout(new QStackedLayout)
+    stackLayout(new QStackedLayout),
+    signalmap(new QSignalMapper(this))
 {
     this->setWindowTitle("系统设置");
     QGridLayout *main_layout = new QGridLayout;
     listwidget->addItems(items.split("|"));
     connect(listwidget,SIGNAL(currentRowChanged(int)),SLOT(slot_ListRowChanged(int)));
 
-    stackLayout->addWidget(getWidgetFromLayout(ViewPanel()));
     stackLayout->addWidget(getWidgetFromLayout(StoragePanel()));
+    stackLayout->addWidget(getWidgetFromLayout(ViewPanel()));
     stackLayout->addWidget(getWidgetFromLayout(AutoRunning()));
     stackLayout->addWidget(getWidgetFromLayout(OtherPanel()));
 

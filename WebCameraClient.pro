@@ -37,13 +37,12 @@ HEADERS  += mainwindow.h \
     control_widget.h
 
 
-INCLUDEPATH += $$PWD\sdk\include
+INCLUDEPATH += O:/tool/WebCameraClient/sdk/include
 
-LIBS +=   -L$$PWD/sdk/lib \
-          $$PWD/sdk/lib/libvlccore.lib \
-          $$PWD/sdk/lib/libvlc.lib
-#          -l"O:/tool/WebCameraClient-build-Desktop_Qt_5_0_1_MinGW_32bit-Debug/debug/libvlc.dll" \
-#          -l"O:/tool/WebCameraClient-build-Desktop_Qt_5_0_1_MinGW_32bit-Debug/debug/libccore.dll"
+LIBS +=   -LO:/tool/WebCameraClient/sdk/lib \
+          O:/tool/WebCameraClient/sdk/lib/libvlccore.lib \
+          O:/tool/WebCameraClient/sdk/lib/libvlc.lib
+
 
 #LIBS += -lvlc
 RESOURCES += \

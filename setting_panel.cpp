@@ -61,7 +61,7 @@ SettingPanel::SettingPanel(QWidget *parent)
         connect(btn,SIGNAL(clicked()),ctrl_signal,SLOT(map()));
     }
 
-    connect(ctrl_signal,SIGNAL(mapped(int)),SLOT(slot_Process_Ctrl_signals(int)));
+    connect(ctrl_signal,SIGNAL(mapped(int)),SLOT(slot_Process_Ctrl_signals(int))); // control play
 
 
 //    ViewFrame *view_ctrl = new ViewFrame;

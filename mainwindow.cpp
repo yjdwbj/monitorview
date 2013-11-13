@@ -30,24 +30,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-void MainWindow::vlcPlayRtsp()
+void MainWindow::vlcPlayRtsp() // start play from rtsp service.
 {
-    QList<MyFrame*> playframe = view->getPlayFrame();
+    QList<WindowFrame*> playframe = view->getPlayFrame();
     QStringList playlist = panel->getPlayList();
     int num = playframe.count() < playlist.count() ? playframe.count() : playlist.count();
     if(vlcItemList.count() == num)
         return ;
     for(int i = vlcItemList.count() ; i < num ; i++)
     {
-
+        QString captureOption(":sout=#stream_out_duplicate{dst=display,dst=std{access=file,mux,ts,dst=");
+        captureOption+=tr("D:/camera-video/")+tr("camera")+QString::number(i)+tr(".mpg}}");
         QString url = tr("rtsp://")+playlist.at(i).section(",",1,1);
         QString fname =  url +tr("/")+ playlist.at(i).section(",",0,0) + tr(".mpg");
         libvlc_instance_t *_vlc_inst = libvlc_new(0,NULL);
         libvlc_media_t *_vlc_media  = libvlc_media_new_location(_vlc_inst,fname.toUtf8().data());
         libvlc_media_player_t *_vlc_play=  libvlc_media_player_new_from_media(_vlc_media);
         libvlc_media_release(_vlc_media);
-        libvlc_media_player_set_hwnd(_vlc_play,(void*)playframe.at(i)->winId());
+        libvlc_media_player_set_hwnd(_vlc_play,(void*)playframe.at(i)->getWindowId());
+        libvlc_media_add_option(_vlc_media,captureOption.toLocal8Bit().data());
         libvlc_media_player_play(_vlc_play);
+
         vlcItem tmp;
         tmp._vlcInstance = _vlc_inst;
         tmp._vlcMediaPlayer = _vlc_play;
