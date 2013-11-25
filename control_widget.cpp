@@ -9,7 +9,7 @@ GuideButton::GuideButton(QWidget *parent)
     :QWidget(parent),
       smap(new QSignalMapper(this))
 {
-    connect(parent,SIGNAL(destroyed()),SLOT(deleteLater()));
+//    connect(parent,SIGNAL(destroyed()),SLOT(deleteLater()));
     static QPixmap pixtop(QString(":/lcy/images/top.png"));
     static QPixmap pixright(QString(":/lcy/images/right.png"));
     static QPixmap pixleft(QString(":/lcy/images/left.png"));
@@ -78,7 +78,7 @@ ControlWidget::ControlWidget(QWidget *parent)
       main_layout(new QGridLayout),
       timer(new QTimer)
 {
-    connect(parent,SIGNAL(destroyed()),SLOT(deleteLater()));
+//    connect(parent,SIGNAL(destroyed()),SLOT(deleteLater()));
     GuideButton *btn_test = new GuideButton;
 
     connect(timer,SIGNAL(timeout()),SLOT(slot_TimerOut()));

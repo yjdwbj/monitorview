@@ -175,12 +175,18 @@ public:
     WId getWindowId() const {return frame->winId();}
     Frame *frame ;
 private:
+    void toggle_ctrlWidget_view(int);
     QLabel *lab_frameRate;
-    QLabel *lab_speedRate;
-    QPushButton *btn_warn;
-    QPushButton *btn_capture;
-    QPushButton *btn_snapshot;
-    QPushButton *btn_setting;
+    QHBoxLayout *ctrl_layout;
+    QSignalMapper *signalmap;
+    QList<QPixmap> pixmaplist;
+
+protected:
+     void paintEvent(QPaintEvent *e);
+
+private slots:
+     void slot_labelbtn_press(int);
+     void slot_call_CameraSetting();
 
 };
 
@@ -201,6 +207,8 @@ public:
     void setFullScreen();
     void StartPlayer();
      QList<WindowFrame*> getPlayFrame() const {return  m_list;}
+
+
 public slots:
     void swapFullScreenOrNormal(bool flag);
 

@@ -1,5 +1,21 @@
 #include "global.h"
 
+
+LabelBtn::LabelBtn(const QPixmap &pix, const QString &tip, QWidget *parent)
+    :QLabel(parent)
+{
+    this->setPixmap(pix);
+    this->setToolTip(tip);
+    this->setFixedSize(pix.size());
+}
+
+void LabelBtn::mousePressEvent(QMouseEvent *ev)
+{
+    if(ev->button() == Qt::LeftButton)
+        emit mouse_pressed();
+}
+
+
 GroupChecBox::GroupChecBox(const QStringList &list,const QString &prefix,
                            LayoutOriant form,QWidget *parent)
     :QWidget(parent)

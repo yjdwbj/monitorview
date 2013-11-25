@@ -16,7 +16,12 @@
         <file>images/play.png</file>
         <file>images/right.png</file>
         <file>images/guide.png</file>
-        <file>images/runorstop.png</file>
-        <file>images/record-state.png</file>
+        <file>images/state-16x16.png</file>
+        <file>images/record-state-16x16.png</file>
+        <file>images/settings16x16.png</file>
+        <file>images/waring-16x16.png</file>
+        <file>images/snapshot-16x16.png</file>
+        <file>images/cameraicon.png</file>
+        <file>images/camera_group.png</file>
     </qresource>
 </RCC>

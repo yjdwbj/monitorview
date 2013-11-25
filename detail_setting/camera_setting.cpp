@@ -7,6 +7,7 @@ RecordTime::RecordTime(QWidget *parent)
 
 {
 
+    setWindowFlags(Qt::WindowStaysOnTopHint);
     QVBoxLayout *main_layout = new QVBoxLayout;
     QGroupBox *gbox_week = new QGroupBox("星期");
     QVBoxLayout *lay_week = new QVBoxLayout(gbox_week);
@@ -45,8 +46,35 @@ CameraSetting::CameraSetting(const QString &name,QWidget *parent)
     :QDialog(parent),
       mainTab(new QTabWidget)
 {
-    setStyleSheet("QPushButton {width: 14px;font: bold 18px;}"
-                  "QPushButton::hover{ background: gray;font: bold 18px;width: 14px;}");
+    setStyleSheet("QPushButton {height: 20px;width:50px; background: gray;border-radius: 2px;"
+                  "border-style: inset;"
+                  "border-width: 1px;"
+                  "}"
+                  "QPushButton::hover{ height: 20px;width: 50px; background: white;"
+                  "border-radius: 2px;border-style: inset;"
+                  "border-width: 1px;"
+                  "}");
+//    background-image: url(:/lcy/images/large_button.png);
+//    background: #d4d4d4;
+//    border-radius: 10px;
+//    background-origin: margin;
+//    border-width: 2px;
+//    background-position: buttom center;
+//    setStyleSheet("QPushButton {"
+//                  "background-image: url(:/lcy/images/large_button.png);"
+//                  "background-position: top center;}"
+//                  "background: #d4d4d4;"
+//                  "background-origin: margin;"
+//                  "border-radius: 2px;"
+//                  "border-width: 0px;"
+//                  "border-style: outset;"
+//                  "QPushButton::hover {"
+//                  "background-image: url(:/lcy/images/large_button.png);"
+//                  "background-position: buttom center;"
+//                  "background: #d4d4d4;"
+//                  "border-radius: 2px;"
+//                  "border-width: 0px;"
+//                  "border-style: outset;}");
 
     QVBoxLayout *main_layout = new QVBoxLayout();
     LabAndWidget *cameraName = new LabAndWidget(tr("名称:"),new QLineEdit(name));
@@ -73,22 +101,33 @@ void CameraSetting::slot_Btn_Dialog(int id)
 
 QWidget *CameraSetting::ConnectInformation(const QString &url)
 {
-
-    QGridLayout *grid_layout = new QGridLayout;
+    this->setFixedWidth(440);
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
+    QHBoxLayout *lay_addr = new QHBoxLayout;
     LabAndWidget *accessAddr =
             new LabAndWidget(tr("访问地址:"),new QLineEdit(url),
             LabAndWidget::Horizontal,"比如地址：端口http://192.168.1.1:8080,域名http://www.example.com");
+    QLineEdit *edit = (QLineEdit*)accessAddr->getTwoObj();
+    edit->setFixedWidth(240);
+    QLabel *lab_commit= new QLabel("    比如地址：端口http://192.168.1.1:8080,默认端口80\n    域名http://www.example.com");
     QPushButton *btn_search = new QPushButton("查找");
     connect(btn_search,SIGNAL(clicked()),SLOT(slot_SearchCameraFromLan()));
     LabAndWidget *watchID = new LabAndWidget("观看帐号:",new QLineEdit("admin"));
-    LabAndWidget *watchPasswd = new LabAndWidget("观看密码:",new QLineEdit("....."));
-    grid_layout->addWidget(accessAddr,0,0);
-    grid_layout->addWidget(btn_search,0,1);
-    grid_layout->addWidget(watchID,1,0,1,2);
-    grid_layout->addWidget(watchPasswd,2,0,1,2);
-    grid_layout->setRowStretch(2,0);
+    LabAndWidget *watchPasswd = new LabAndWidget("观看密码:",new QLineEdit("******"));
+
+    lay_addr->setSpacing(1);
+    lay_addr->addWidget(accessAddr);
+    lay_addr->addWidget(btn_search);
+
+    QVBoxLayout *lay_main = new QVBoxLayout;
+    lay_main->addLayout(lay_addr);
+    lay_main->addWidget(lab_commit);
+    lay_main->addWidget(watchID);
+    lay_main->addWidget(watchPasswd);
+    lay_main->addStretch();
+
     QWidget *w = new QWidget;
-    w->setLayout(grid_layout);
+    w->setLayout(lay_main);
     return w;
 }
 
@@ -186,13 +225,13 @@ QWidget* CameraSetting::AppendInformation()
 {
     QString("姓名,电话,地址,备注");
     QVBoxLayout *main_layout = new QVBoxLayout;
+    main_layout->setSpacing(2);
     foreach(const QString &str ,QString("姓名,电话,地址,备注").split(",") )
     {
         LabAndWidget *t = new LabAndWidget(str+":",new QLineEdit);
         main_layout->addWidget(t,Qt::AlignCenter);
     }
-    main_layout->setSpacing(10);
-    main_layout->addStretch();
+    main_layout->addStretch(400);
     QWidget *w = new QWidget;
     w->setLayout(main_layout);
     return w;

@@ -1,5 +1,5 @@
 #include "viewframe.h"
-
+static QString tips("报警通知|启动/停止录像|抓图|设置");
 
 Frame::Frame(const QString &str,QWidget *parent)
     :QFrame(parent),
@@ -86,36 +86,115 @@ void Frame::slot_ProcessActions(QAction *p)
 WindowFrame::WindowFrame(const QString &str,QWidget *parent)
     :QWidget(parent),
       lab_frameRate(new QLabel),
-      lab_speedRate(new QLabel),
-      btn_warn(new QPushButton),
-      btn_capture(new QPushButton),
-      btn_snapshot(new QPushButton),
-      btn_setting(new QPushButton),
-      frame (new Frame(str))
+      frame (new Frame(str)),
+      signalmap(new QSignalMapper(this)),
+      ctrl_layout(new QHBoxLayout)
 {
+
+    pixmaplist << QPixmap(":/lcy/images/state-16x16.png")
+              << QPixmap(":/lcy/images/waring-16x16.png")
+              << QPixmap(":/lcy/images/record-state-16x16.png")
+              << QPixmap(":/lcy/images/snapshot-16x16.png")
+              << QPixmap(":/lcy/images/settings16x16.png");
+
+
     QVBoxLayout *main_layout = new QVBoxLayout;
     main_layout->setMargin(0);
-    main_layout->setSpacing(1);
+    main_layout->setSpacing(0);
 
-
-    QHBoxLayout *ctrl_layout = new QHBoxLayout;
-    ctrl_layout->setSpacing(1);
+    ctrl_layout->setSpacing(2);
     ctrl_layout->setMargin(0);
     ctrl_layout->addWidget(lab_frameRate);
-    lab_frameRate->setPixmap(QPixmap(":/lcy/images/runorstop.png").copy(0,16,16,16));
-    ctrl_layout->addWidget(lab_speedRate);
+    lab_frameRate->setPixmap(pixmaplist.at(0).copy(0,0,16,16));
+     ctrl_layout->addStretch();
 
-    ctrl_layout->addStretch();
-    ctrl_layout->addWidget(btn_warn);
-    ctrl_layout->addWidget(btn_capture);
-    btn_capture->setIcon(QPixmap(":/lcy/images/record-state.png").copy(0,0,16,16));
-//    btn_capture->setMask(QPixmap(":/lcy/images/record-state.png").copy(0,0,16,16).mask());
-    ctrl_layout->addWidget(btn_snapshot);
-    ctrl_layout->addWidget(btn_setting);
+
+
+    int pixnum =pixmaplist.size();
+    for(int i =1 ; i < pixnum;i++)
+    {
+        QPixmap p = pixmaplist.at(i).copy(0,0,16,16);
+        LabelBtn *btn = new LabelBtn(p,tips.section("|",i-1,i-1));
+        ctrl_layout->addWidget(btn);
+        signalmap->setMapping(btn,i);
+        connect(btn,SIGNAL(mouse_pressed()),signalmap,SLOT(map()));
+    }
+    connect(signalmap,SIGNAL(mapped(int)),SLOT(slot_labelbtn_press(int)));
     main_layout->addWidget(frame);
     main_layout->addLayout(ctrl_layout);
     setLayout(main_layout);
+    toggle_ctrlWidget_view(0);
 
+
+}
+
+void WindowFrame::toggle_ctrlWidget_view(int flag)
+{
+    int n = ctrl_layout->count();
+    for(int i = 0 ; i < n;i++)
+    {
+        QWidget *w = ctrl_layout->itemAt(i)->widget();
+        if(w)
+            flag ? w->show() : w->hide();
+    }
+}
+
+
+
+void WindowFrame::slot_labelbtn_press(int id)
+{
+    QAction *setting = new QAction(QString("设置"),this);
+    switch(id)
+    {
+    case 1:
+    {
+        QMenu *pmenu = new QMenu();
+        QAction *offalarm = new QAction(QIcon(pixmaplist.at(1).copy(0,0,16,16)),tr("不启用报警"),this);
+        QAction *onalarm = new QAction(QIcon(pixmaplist.at(1).copy(0,16,16,16)),tr("启用报警"),this);
+
+        pmenu->addAction(offalarm);
+        pmenu->addAction(onalarm);
+        pmenu->addAction(setting);
+        pmenu->popup(this->cursor().pos());
+    }
+        break;
+    case 2:
+    {
+        QMenu *pmenu = new QMenu();
+        QAction *offrecord =  new QAction(QIcon(pixmaplist.at(2).copy(0,0,16,16)),
+                                       QString("不启用录像"),this);
+        QAction *onplan = new QAction(QIcon(pixmaplist.at(2).copy(0,16,16,16)),
+                                      QString("启用计划录像"),this);
+        QAction *always = new QAction(QIcon(pixmaplist.at(2).copy(0,32,16,16)),
+                                      QString("一直录像"),this);
+        pmenu->addAction(offrecord);
+        pmenu->addAction(onplan);
+        pmenu->addAction(always);
+        pmenu->addAction(setting);
+        pmenu->popup(this->cursor().pos());
+
+    }
+        break;
+    case 3:
+        break;
+    case 4:
+        slot_call_CameraSetting();
+        break;
+    }
+}
+
+void WindowFrame::slot_call_CameraSetting()
+{
+    CameraSetting *cs = new CameraSetting("test");
+    cs->exec();
+}
+
+
+void WindowFrame::paintEvent(QPaintEvent *e)
+{
+    QPainter paint(this);
+    paint.setBrush(QBrush(QColor(44,44,44)));
+    paint.drawRect(this->rect());
 }
 
 
@@ -144,7 +223,8 @@ ViewFrame::ViewFrame(QWidget *parent)
 
 void ViewFrame::StartPlayer()
 {
-
+    CameraSetting *cs = new CameraSetting("test");
+    cs->exec();
 }
 
 //void ViewFrame::mouseDoubleClickEvent(QMouseEvent *e)
@@ -177,7 +257,7 @@ void ViewFrame::setGridnumber(int row, int col)
     while(m_list.size() < sum)
     {
         WindowFrame *f = new WindowFrame("No Signals...");
-        connect(f->frame,SIGNAL(clicked_Frame(WindowFrame*)),SLOT(slot_clicked_this(WindowFrame*)));
+        connect(f->frame,SIGNAL(clicked_Frame(Frame*)),SLOT(slot_clicked_this(Frame*)));
 
         m_list.append(f);
 

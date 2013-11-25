@@ -192,6 +192,8 @@ static QLayout* ActionForSMS()
 
       QPushButton *btn_test = new QPushButton("测试");
       btn_test->setFixedWidth(50);
+      sms_layout->setSpacing(3);
+
 
       sms_layout->addWidget(sms_port);
       sms_layout->addWidget(sms_phone);
@@ -199,6 +201,7 @@ static QLayout* ActionForSMS()
       sms_layout->addWidget(cbox_invatel);
       sms_layout->addWidget(sb_num);
       sms_layout->addWidget(btn_test);
+      sms_layout->addStretch();
       return sms_layout;
 
 }
@@ -294,7 +297,7 @@ AlarmAction::AlarmAction(QWidget *parent)
        funclist[TermList.at(9).toStdString()]= &ActionForApplication;
        funclist[TermList.at(10).toStdString()]= &ActionForWebLink;
 
-
+       this->setWindowFlags(Qt::WindowStaysOnTopHint);
     this->setTitle("报警动作");
     tabWidgets->setColumnCount(1);
     tabWidgets->horizontalHeader()->setHidden(true);
@@ -323,8 +326,10 @@ AlarmAction::AlarmAction(QWidget *parent)
 
     main_layout->addWidget(tabWidgets);
     main_layout->addLayout(lay_stack);
+    main_layout->addStretch();
     setLayout(main_layout);
     connect(signalmap,SIGNAL(mapped(int)),SLOT(slot_ActionHasTriggered(int)));
+    this->adjustSize();
 //    connect(tabWidgets,SIGNAL(pressed(QModelIndex)),SLOT(slot_ItemHasClicked(QModelIndex)));
 
 }
@@ -340,10 +345,13 @@ void AlarmAction::slot_ItemHasClicked(QModelIndex midx)
 QWidget*  AlarmAction::WidgetFromLayout(const QString &name,  QLayout *lay)
 {
     QTabWidget *tab = new QTabWidget();
+//    tab->setFixedWidth(400);
 
    QWidget *w = new QWidget;
    w->setLayout(lay);
+   w->adjustSize();
    tab->addTab(w,name);
+
    return (QWidget *)tab;
 }
 

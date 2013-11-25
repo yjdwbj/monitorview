@@ -21,6 +21,10 @@
 #include <QMenu>
 #include <QTimer>
 #include <QHeaderView>
+#include <QMouseEvent>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+
 
 
 typedef QPair<int,QString> itemWidget;
@@ -37,6 +41,19 @@ enum LayoutOriant {
 };
 
 
+class LabelBtn : public QLabel
+{
+    Q_OBJECT
+public:
+    explicit LabelBtn(const QPixmap &pix, const QString &tip="",QWidget *parent=0);
+    ~LabelBtn(){}
+protected:
+    void mousePressEvent(QMouseEvent *ev);
+signals:
+    void mouse_pressed();
+};
+
+
 class GroupChecBox : public QWidget
 {
     Q_OBJECT
@@ -44,6 +61,32 @@ public:
     explicit GroupChecBox(const QStringList &list,const QString &prefix="",
                           LayoutOriant form = Horizontal,QWidget *parent=0);
     ~GroupChecBox(){}
+};
+
+
+/////////// DatabaseManager ///////
+
+class DataBase : public QObject
+{
+public:
+    DataBase(QObject *parent = 0);
+    ~DataBase(){}
+    bool openDB()
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        QString dbpath(qApp->applicationDirPath()+QString("/camera.db"));
+        db.setDatabaseName(dbpath);
+        return db.open();
+    }
+
+    bool deleteDB()
+    {
+        db.close();
+    }
+
+    QSqlError getLastError(){return db.lastError();}
+private:
+    QSqlDatabase db;
 };
 
 
@@ -59,7 +102,7 @@ public:
         Horizontal,
         Vertical
     };
-    explicit GroupBtnWidget(const QStringList &list,const LayoutForm form = Horizontal,const int width=50,QWidget *parent=0);
+    explicit GroupBtnWidget(const QStringList &list,const LayoutForm form = Horizontal,const int width=60,QWidget *parent=0);
     ~GroupBtnWidget(){}
 signals:
     void SignalById(int);

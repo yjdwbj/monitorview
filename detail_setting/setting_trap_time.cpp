@@ -14,12 +14,17 @@ static QString triggerTerm("移动侦测,报警输入1,报警输入2,报警输�
 AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
     :QDialog(parent)
 {
-
+    setStyleSheet("QPushButton {width: 18px;font: bold 16px;}"
+                  "QPushButton::hover{ background: gray;font: bold 18px;width: 14px;}"
+                  "QGroupBox {font:  13px;}");
+    setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowTitle("添加布防时间段");
     QVBoxLayout *main_layout = new QVBoxLayout;
 
     QGroupBox *gbox_week = new QGroupBox("星期");
+
     QVBoxLayout *lay_week = new QVBoxLayout(gbox_week);
+    lay_week->setSpacing(3);
 //    GroupBtnWidget *btn_week = new GroupBtnWidget(choices.split(","));
 //    GroupChecBox *week_box = new GroupChecBox(week.split(","),"星期");
     lay_week->addWidget(new GroupBtnWidget(choices.split(",")));
@@ -30,6 +35,8 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
 
     QGroupBox *gbox_time = new QGroupBox("时间");
     QHBoxLayout *lay_time = new QHBoxLayout(gbox_time);
+    lay_time->setSpacing(3);
+
 
 
     LabAndWidget *start_time = new LabAndWidget("起始时间:",new QTimeEdit(QTime(0,0)));
@@ -49,7 +56,9 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
 
 
     QGroupBox *gbox_trigger = new QGroupBox("触发条件");
+    gbox_trigger->adjustSize();
     QGridLayout *lay_trigger = new QGridLayout(gbox_trigger);
+    lay_trigger->setSpacing(3);
     lay_trigger->addWidget(new GroupBtnWidget(choices.split(",")),0,0,1,2);
     int i = 0;
     foreach(const QString &str,triggerTerm.split(","))
@@ -63,6 +72,7 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
     GroupBtnWidget *btn_dialog = new GroupBtnWidget(QString("提交,取消").split(","));
     connect(btn_dialog,SIGNAL(SignalById(int)),SLOT(slot_Btn_Dialog(int)));
     main_layout->addWidget(btn_dialog);
+    this->setFixedWidth(500);
 
     setLayout(main_layout);
 

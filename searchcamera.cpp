@@ -17,6 +17,7 @@ SearchCamera::SearchCamera(QDialog *parent)
     const QStringList camera2 = QString("camera2,192.168.8.31,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
     const QStringList camera3 = QString("camera3,192.168.8.31,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
     const QStringList camera4 = QString("camera4,192.168.8.31,1111,255.255.255.0,192.168.115.1,8.8.8.8").split(",");
+    m_viewlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_viewlist->addNewLine(camera1);
     m_viewlist->addNewLine(camera2);
     m_viewlist->addNewLine(camera3);
