@@ -41,6 +41,41 @@ enum LayoutOriant {
 };
 
 
+typedef struct {
+    int id;
+    char *name;
+    int hostinfo;
+    char *verifyid;
+    char *logo_name;
+    char *logo_passwd;
+    bool yuntai;
+    bool reflactimage;
+    char *append_name;
+    char *append_phone;
+    char *append_commit;
+    int  alarm;
+    int  record;
+}_StructSettings;
+
+
+static void initStruct(_StructSettings set)
+{
+    set.id = -1;
+    set.name = NULL;
+    set.hostinfo = -1;
+    set.verifyid = NULL;
+    set.logo_name = NULL;
+    set.logo_passwd = NULL;
+    set.yuntai = false;
+    set.reflactimage = false;
+    set.append_name = NULL;
+    set.append_phone = NULL;
+    set.append_commit = NULL;
+    set.alarm = -1;
+    set.record = -1;
+}
+
+
 class LabelBtn : public QLabel
 {
     Q_OBJECT

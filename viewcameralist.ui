@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>736</width>
+    <height>250</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="4">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="5">
+    <spacer name="horizontalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
+      <string>显示已经添加的摄像机</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="7">
+    <widget class="QPushButton" name="pushButton_4">
+     <property name="text">
+      <string>提交</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="9">
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>30</number>
+     </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderStretchLastSection">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>序号</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>名称</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>访问地址</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>机身码</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>子网掩码</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>网关</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>DNS服务器</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>MAC地址</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="6">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>摄像机数量：</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>全不选</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="7">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="6">
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="text">
+      <string>刷新</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>全选</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="8">
+    <widget class="QPushButton" name="pushButton_5">
+     <property name="text">
+      <string>取消</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <spacer name="horizontalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>slot_SwitchCheckedNone()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>144</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>146</x>
+     <y>303</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>slot_SwitchCheckedAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>56</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>58</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_4</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>599</x>
+     <y>229</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>628</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>694</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>696</x>
+     <y>357</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slot_SwitchCheckedAll()</slot>
+  <slot>slot_SwitchCheckedNone()</slot>
+ </slots>
+</ui>

@@ -17,12 +17,15 @@ SOURCES += main.cpp\
     viewframe.cpp \
     addnewcamera.cpp \
     searchcamera.cpp \
-    detail_setting/camera_setting.cpp \
     global.cpp \
-    detail_setting/setting_trap_time.cpp \
-    detail_setting/alarmaction.cpp \
     system_setting.cpp \
-    control_widget.cpp
+    control_widget.cpp \
+    lansearchcamera.cpp \
+    setting_trap_time.cpp \
+    camera_setting.cpp \
+    alarmaction.cpp \
+    camera_settings.cpp \
+    sqldriver.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
@@ -30,20 +33,30 @@ HEADERS  += mainwindow.h \
     viewframe.h \
     addnewcamera.h \
     searchcamera.h \
-    detail_setting/camera_setting.h \
-    detail_setting/setting_trap_time.h \
-    detail_setting/alarmaction.h \
     system_setting.h \
-    control_widget.h
+    control_widget.h \
+    lansearchcamera.h \
+    camera_setting.h \
+    alarmaction.h \
+    setting_trap_time.h \
+    camera_settings.h \
+    sqldriver.h
 
 
-INCLUDEPATH += O:/tool/WebCameraClient/sdk/include
+INCLUDEPATH += $$PWD/sdk/include
 
-LIBS +=   -LO:/tool/WebCameraClient/sdk/lib \
-          O:/tool/WebCameraClient/sdk/lib/libvlccore.lib \
-          O:/tool/WebCameraClient/sdk/lib/libvlc.lib
+LIBS +=   -L$$PWD/lib \
+          $$PWD/sdk/lib/libvlccore.lib \
+          $$PWD/sdk/lib/libvlc.lib \
+
 
 
 #LIBS += -lvlc
 RESOURCES += \
     default.qrc
+
+FORMS += \
+    lansearchcamera.ui \
+    camera_settings.ui \
+    viewcameralist.ui
+

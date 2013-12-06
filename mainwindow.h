@@ -23,6 +23,7 @@ public:
     ~MainWindow();
 protected:
     void keyPressEvent(QKeyEvent *e);
+//    bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 
 
 private slots:
@@ -30,12 +31,14 @@ private slots:
 //    void slot_GetViewFrameClicked(QRect);
     void slot_StartPlay();
     void slot_StopPlay();
+    void slot_viewCtrolWidget(int);
 private:
 
     ViewFrame *view;
     QHBoxLayout *main_layout;
     SettingPanel *panel;
     QList<QProcess*> plist;
+    bool eventFilter(QObject *, QEvent *);
 
     void ReadQss();
 

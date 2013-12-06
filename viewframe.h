@@ -9,12 +9,17 @@
 #include <QPicture>
 #include <QDesktopWidget>
 #include <qt_windows.h>
-#include "detail_setting/camera_setting.h"
+#include "camera_setting.h"
 #include "control_widget.h"
 
 
 
+
 static QString actlist ("进入工作状态,退出工作状态,-,截图,报警,录像,停止报警,暂停错误报警,-,摄像机设置");
+
+
+
+
 
 class ToggleButton : public QWidget
 {
@@ -144,25 +149,34 @@ private:
 
 
 
-class Frame : public QFrame
+class Frame : public QWidget
 {
     Q_OBJECT
 public:
     explicit Frame(const QString &str="",QWidget *parent=0);
     ~Frame(){}
+    QWidget *player;
+    bool isPlaying()const {return m_playing;}
+    void setPlaying(bool f) {m_playing = f;}
 signals:
     void clicked_Frame(Frame*);
     void mouse_move();
+    void show_camera_settings();
 
 protected:
-    void paintEvent(QPaintEvent *e);
+//    void paintEvent(QPaintEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *e);
-    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
 private slots:
     void slot_ProcessActions(QAction *p);
+    void slot_timerout();
 private:
+
     QString text;
+    QTimer *ctrl_timer;
     ControlWidget *ctrl_widget;
+    bool m_playing;
+    bool isClicked;
 
 };
 
@@ -171,18 +185,26 @@ class WindowFrame : public  QWidget
     Q_OBJECT
 public:
     explicit WindowFrame(const QString &str = "",QWidget *parent=0);
-    ~WindowFrame(){}
+    ~WindowFrame(){ delete frame; this->destroyed(this);}
     WId getWindowId() const {return frame->winId();}
-    Frame *frame ;
-private:
+//    WId getWindowId() const {return playerwindow->videoLayer()->winId();}
     void toggle_ctrlWidget_view(int);
+    Frame *frame ;
+//    MplayerWindow *playerwindow;
+//    MplayerLayer *player;
+private:
+
     QLabel *lab_frameRate;
+    QLabel *logo;
     QHBoxLayout *ctrl_layout;
     QSignalMapper *signalmap;
     QList<QPixmap> pixmaplist;
 
 protected:
      void paintEvent(QPaintEvent *e);
+
+
+//     bool eventFilter(QObject *obj, QEvent *e);
 
 private slots:
      void slot_labelbtn_press(int);
@@ -207,7 +229,6 @@ public:
     void setFullScreen();
     void StartPlayer();
      QList<WindowFrame*> getPlayFrame() const {return  m_list;}
-
 
 public slots:
     void swapFullScreenOrNormal(bool flag);

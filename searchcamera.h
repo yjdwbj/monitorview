@@ -9,27 +9,30 @@
 #include <QtWidgets/QCheckBox>
 
 
-
+namespace Ui {
+class Dialog;
+}
 
 class SearchCamera : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SearchCamera(QDialog *parent =0);
-    ~SearchCamera(){}
-    QStringList getVaildCameraList() const {return m_viewlist->getViewCountList();}
+    explicit SearchCamera(QWidget *parent =0);
+    ~SearchCamera(){ delete ui;}
+    QStringList getVaildCameraList() const;
+    void addNewLine(QStringList list);
+    QStringList getViewCountList() const;
 
 private slots:
     void slot_SwitchCheckedAll();
     void slot_SwitchCheckedNone();
-    void slot_Reload();
-    void slot_MapSignal(int id);
 
 private:
+    void emulator_readfile();
     void Switch_CheckBox(bool);
-    ListView *m_viewlist;
     QStringList vaidlist;
     QSignalMapper *signalmap;
+    Ui::Dialog *ui;
 };
 
 

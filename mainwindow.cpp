@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     connect(panel,SIGNAL(StartPlay()),SLOT(slot_StartPlay()));
     connect(panel,SIGNAL(StopPlay()),SLOT(slot_StopPlay()));
+    connect(panel,SIGNAL(addedNewCamera(int)),SLOT(slot_viewCtrolWidget(int)));
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
 
@@ -25,9 +26,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QWidget *w = new QWidget;
     w->setLayout(main_layout);
+    resize(QSize(800,400));
 
     setCentralWidget(w);
 
+}
+
+
+void MainWindow::slot_viewCtrolWidget(int num)
+{
+
+     QList<WindowFrame*> playframe = view->getPlayFrame();
+
+     num = playframe.count() < num ? playframe.count() : num;
+     for(int i = 0 ; i < num ; i++)
+     {
+         playframe[i]->toggle_ctrlWidget_view(1);
+     }
 }
 
 void MainWindow::vlcPlayRtsp() // start play from rtsp service.
@@ -41,15 +56,19 @@ void MainWindow::vlcPlayRtsp() // start play from rtsp service.
     {
         QString captureOption(":sout=#stream_out_duplicate{dst=display,dst=std{access=file,mux,ts,dst=");
         captureOption+=tr("D:/camera-video/")+tr("camera")+QString::number(i)+tr(".mpg}}");
-        QString url = tr("rtsp://")+playlist.at(i).section(",",1,1);
-        QString fname =  url +tr("/")+ playlist.at(i).section(",",0,0) + tr(".mpg");
+        QString url = tr("rtsp://192.168.8.31/")+playlist.at(i);
+        QString fname =  url + tr(".mpg");
         libvlc_instance_t *_vlc_inst = libvlc_new(0,NULL);
         libvlc_media_t *_vlc_media  = libvlc_media_new_location(_vlc_inst,fname.toUtf8().data());
         libvlc_media_player_t *_vlc_play=  libvlc_media_player_new_from_media(_vlc_media);
-        libvlc_media_release(_vlc_media);
+//        libvlc_video_set_mouse_input(_vlc_play,false);
+//        libvlc_media_release(_vlc_media);
         libvlc_media_player_set_hwnd(_vlc_play,(void*)playframe.at(i)->getWindowId());
+        playframe.at(i)->frame->setPlaying(true);
+
         libvlc_media_add_option(_vlc_media,captureOption.toLocal8Bit().data());
         libvlc_media_player_play(_vlc_play);
+
 
         vlcItem tmp;
         tmp._vlcInstance = _vlc_inst;
@@ -80,6 +99,19 @@ void MainWindow::ReadQss()
 
 
 }
+
+bool MainWindow::eventFilter(QObject *o, QEvent *e)
+{
+    if(e->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent *me = static_cast<QMouseEvent*>(e);
+        if(me->button() == Qt::RightButton)
+            QMessageBox::warning(this,"o","eee");
+    }
+    return QMainWindow::eventFilter(o,e);
+
+}
+
 
 void MainWindow::slot_StopPlay()
 {

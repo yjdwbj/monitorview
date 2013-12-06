@@ -7,7 +7,9 @@
 
 GuideButton::GuideButton(QWidget *parent)
     :QWidget(parent),
-      smap(new QSignalMapper(this))
+      smap(new QSignalMapper(this)),
+      t1(new QTimer),
+      opacity(1.0)
 {
 //    connect(parent,SIGNAL(destroyed()),SLOT(deleteLater()));
     static QPixmap pixtop(QString(":/lcy/images/top.png"));
@@ -16,7 +18,7 @@ GuideButton::GuideButton(QWidget *parent)
     static QPixmap pixmid(QString(":/lcy/images/mid.png"));
     static QPixmap pixbuttom(QString(":/lcy/images/buttom.png"));
 
-
+    setAttribute( Qt::WA_PaintOnScreen, true );
 
     setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
     QPushButton *btn_top = new QPushButton(QIcon(pixtop),"");
@@ -60,9 +62,9 @@ GuideButton::GuideButton(QWidget *parent)
 
     setLayout(main_layout);
 
-
-
-
+    setWindowOpacity(opacity);
+    connect(t1,SIGNAL(timeout()),SLOT(slot_Timer1out()));
+    show();
 }
 
 void GuideButton::paintEvent(QPaintEvent *e)
@@ -72,16 +74,24 @@ void GuideButton::paintEvent(QPaintEvent *e)
 
 }
 
+void GuideButton::slot_Timer1out()
+{
+    opacity = opacity - 0.2;
+    setWindowOpacity(opacity);
+    t1->start(1000);
+}
+
 
 ControlWidget::ControlWidget(QWidget *parent)
     :QWidget(parent),
       main_layout(new QGridLayout),
       timer(new QTimer)
+
 {
 //    connect(parent,SIGNAL(destroyed()),SLOT(deleteLater()));
     GuideButton *btn_test = new GuideButton;
 
-    connect(timer,SIGNAL(timeout()),SLOT(slot_TimerOut()));
+//    connect(timer,SIGNAL(timeout()),SLOT(slot_TimerOut()));
     setWindowFlags( Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
     main_layout->addWidget(btn_test,0,0);
     main_layout->setMargin(1);
@@ -89,14 +99,16 @@ ControlWidget::ControlWidget(QWidget *parent)
     this->setFixedSize(mask.size());
     this->setMask(mask.mask());
     setLayout(main_layout);
+
+    show();
+
 }
+
+
 
 ControlWidget::~ControlWidget()
 {
     this->deleteLater();
 }
 
-void ControlWidget::slot_TimerOut()
-{
-    hide();
-}
+

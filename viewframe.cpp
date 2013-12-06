@@ -1,48 +1,53 @@
 #include "viewframe.h"
+#include "camera_settings.h"
 static QString tips("报警通知|启动/停止录像|抓图|设置");
 
+
+
+
+
+
+
 Frame::Frame(const QString &str,QWidget *parent)
-    :QFrame(parent),
-      ctrl_widget(new ControlWidget)
+    :QWidget(parent),
+      player(new QWidget(this)),
+      m_playing(false),
+      isClicked(false),
+      ctrl_timer(new QTimer)
 {
-    text = str;
-    setFrameShape(QFrame::StyledPanel);
-    setStyleSheet("background-color: #555555;");
-    setFrameShadow(QFrame::Plain);
+    connect(ctrl_timer,SIGNAL(timeout()),SLOT(slot_timerout()));
+    player->setAttribute(Qt::WA_NativeWindow);
+    QVBoxLayout *l = new QVBoxLayout();
+    l->setMargin(0);
+    l->addWidget(player);
+    setLayout(l);
+    setStyleSheet("background-color : #666666;");
 }
 
-void Frame::paintEvent(QPaintEvent *e)
-{
 
-    QPainter p(this);
-    int x = this->height()/2;
-    int y = this->width() /2-30;
-    p.drawText(y,x,text);
-    e->accept();
-
-}
 
 void Frame::mouseDoubleClickEvent(QMouseEvent *e)
 {
-     e->accept();
+
     if( (e->type() == QMouseEvent::MouseButtonDblClick)
             && (e->button() == Qt::LeftButton ))
     {
 
         emit clicked_Frame(this);
+        e->accept();
     }
 
 }
 
-void Frame::mousePressEvent(QMouseEvent *e)
+void Frame::mouseReleaseEvent(QMouseEvent *e)
 {
 
+    if(!isPlaying())
+        return;
 
-    if((e->type() == QMouseEvent::MouseButtonPress))
-    {
         if((e->button() == Qt::RightButton))
         {
-
+            e->accept();
             QMenu *menu = new QMenu();
             QList<QAction*> list;
             foreach(const QString &str,actlist.split(","))
@@ -59,15 +64,34 @@ void Frame::mousePressEvent(QMouseEvent *e)
             menu->addActions(list);
 
             menu->exec(this->mapToGlobal( e->pos()));
+            emit clicked_Frame(this);
         }
         else if((e->button() == Qt::LeftButton))
         {
-            ctrl_widget->startTimer();
-            QPoint m = this->mapToGlobal(e->pos());
-            ctrl_widget->move(m.rx(),m.ry());
-        }
-    }
 
+
+            if(!isClicked)
+            {
+                isClicked = true;
+                ctrl_widget = new ControlWidget();
+                QPoint m = this->mapToGlobal(e->pos());
+                ctrl_widget->move(m.rx(),m.ry());
+                ctrl_timer->start(5000);
+            }
+            else
+            {
+                QPoint m = this->mapToGlobal(e->pos());
+                ctrl_widget->move(m.rx(),m.ry());
+            }
+        }
+}
+
+
+void Frame::slot_timerout()
+{
+    delete ctrl_widget;
+    ctrl_widget = 0;
+    isClicked = false;
 }
 
 
@@ -75,8 +99,7 @@ void Frame::slot_ProcessActions(QAction *p)
 {
     if(!p->text().compare("摄像机设置"))
     {
-        CameraSetting *cs = new CameraSetting("test");
-        cs->exec();
+        emit show_camera_settings();
     }
 
 }
@@ -86,16 +109,20 @@ void Frame::slot_ProcessActions(QAction *p)
 WindowFrame::WindowFrame(const QString &str,QWidget *parent)
     :QWidget(parent),
       lab_frameRate(new QLabel),
-      frame (new Frame(str)),
+
+      frame(new Frame(str)),
       signalmap(new QSignalMapper(this)),
       ctrl_layout(new QHBoxLayout)
 {
+
 
     pixmaplist << QPixmap(":/lcy/images/state-16x16.png")
               << QPixmap(":/lcy/images/waring-16x16.png")
               << QPixmap(":/lcy/images/record-state-16x16.png")
               << QPixmap(":/lcy/images/snapshot-16x16.png")
               << QPixmap(":/lcy/images/settings16x16.png");
+
+
 
 
     QVBoxLayout *main_layout = new QVBoxLayout;
@@ -120,13 +147,16 @@ WindowFrame::WindowFrame(const QString &str,QWidget *parent)
         connect(btn,SIGNAL(mouse_pressed()),signalmap,SLOT(map()));
     }
     connect(signalmap,SIGNAL(mapped(int)),SLOT(slot_labelbtn_press(int)));
+    connect(frame,SIGNAL(show_camera_settings()),SLOT(slot_call_CameraSetting()));
     main_layout->addWidget(frame);
     main_layout->addLayout(ctrl_layout);
     setLayout(main_layout);
+    setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     toggle_ctrlWidget_view(0);
-
-
 }
+
+
+
 
 void WindowFrame::toggle_ctrlWidget_view(int flag)
 {
@@ -183,17 +213,20 @@ void WindowFrame::slot_labelbtn_press(int id)
     }
 }
 
+
+
 void WindowFrame::slot_call_CameraSetting()
 {
-    CameraSetting *cs = new CameraSetting("test");
+    camera_settings *cs = new camera_settings();
     cs->exec();
+    delete cs;
 }
 
 
 void WindowFrame::paintEvent(QPaintEvent *e)
 {
     QPainter paint(this);
-    paint.setBrush(QBrush(QColor(44,44,44)));
+    paint.setBrush(QBrush(QColor(66,66,66)));
     paint.drawRect(this->rect());
 }
 
@@ -215,17 +248,19 @@ ViewFrame::ViewFrame(QWidget *parent)
 
 
     setGridnumber(1,1);
-    this->setFixedSize(540,400);
+    this->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+//    this->resize(QSize(540,540));
     this->setLayout(lay);
 
 }
 
 
-void ViewFrame::StartPlayer()
-{
-    CameraSetting *cs = new CameraSetting("test");
-    cs->exec();
-}
+
+//void ViewFrame::StartPlayer()
+//{
+//    CameraSetting *cs = new CameraSetting("test");
+//    cs->exec();
+//}
 
 //void ViewFrame::mouseDoubleClickEvent(QMouseEvent *e)
 //{
@@ -239,6 +274,9 @@ void ViewFrame::StartPlayer()
 //    e->accept();
 //}
 
+
+
+
 void ViewFrame::setGridnumber(int row, int col)
 {
     int sum = row *col;
@@ -250,6 +288,7 @@ void ViewFrame::setGridnumber(int row, int col)
         for(int i= 0 ; i < m_list.size();i++)
         {
             lay->removeWidget(m_list.at(i));
+            m_list.at(i)->destroyed();
         }
 
     }
@@ -257,7 +296,7 @@ void ViewFrame::setGridnumber(int row, int col)
     while(m_list.size() < sum)
     {
         WindowFrame *f = new WindowFrame("No Signals...");
-        connect(f->frame,SIGNAL(clicked_Frame(Frame*)),SLOT(slot_clicked_this(Frame*)));
+//        connect(f->frame,SIGNAL(clicked_Frame(Frame*)),SLOT(slot_clicked_this(Frame*)));
 
         m_list.append(f);
 
@@ -293,6 +332,7 @@ void ViewFrame::setOnePlusSeven()
         for(int i= 0 ; i < m_list.size();i++)
         {
             lay->removeWidget(m_list.at(i));
+            m_list.at(i)->destroyed();
         }
 
     }
@@ -300,7 +340,7 @@ void ViewFrame::setOnePlusSeven()
     while(m_list.size() < 8)
     {
         WindowFrame *f = new WindowFrame("No Signals...");
-        connect(f->frame,SIGNAL(clicked_Frame(Frame*)),SLOT(slot_clicked_this(Frame*)));
+//        connect(f->frame,SIGNAL(clicked_Frame(Frame*)),SLOT(slot_clicked_this(Frame*)));
         m_list.append(f);
     }
 

@@ -1,4 +1,5 @@
 #include "system_setting.h"
+#include "sqldriver.h"
 #include <QTextEdit>
 #include <QFontDialog>
 #include <QFileDialog>
@@ -10,14 +11,12 @@ static QString btns("添加|删除");
 QLayout* SystemSetting::StoragePanel()
 {
 
+
     QVBoxLayout *lay = new QVBoxLayout;
 
     QGroupBox *gbox_path = new QGroupBox("录像报警数据保存路径:");
     QHBoxLayout *lay_path = new QHBoxLayout(gbox_path);
-//    QTextEdit *text = new QTextEdit("eeeeeee");
-//    text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-//    text->setFixedSize(220,55);
-//    text->scroll();
+
      pathText = new QListWidget;
     pathText->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 

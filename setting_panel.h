@@ -7,7 +7,7 @@
 
 static QString CameraMenu ("进入工作状态|退出工作状态|停止报警|暂停错误报警|摄像机设置|-|删除摄像机|新增组|新增摄像机|自动查找及新增摄像机");
 static QString GroupMenu("连接|断开连接|-|新增摄像机|自动查找及新增摄像机|-|新增组|修改组|删除组");
-static QString MenuAction("进入工作状态|退出工作状态|停止报警|暂停错误报警|摄像机设置|删除摄像机|新增组|新增摄像机|自动查找及新增摄像机|修改组|删除组|连接|断开连接");
+static QString MenuAction("进入工作状态|退出工作状态|停止报警|暂停错误报警|摄像机设置|删除摄像机|删除组|新增组|新增摄像机|自动查找及新增摄像机|修改组|连接|断开连接");
 
 
 class GroupDialog : public QDialog
@@ -43,15 +43,22 @@ class CameraView : public QTreeWidget
     Q_OBJECT
 public:
     explicit CameraView(QWidget *parent =0);
-    void addItem(const QStringList &list,bool isgroup,QTreeWidget *root=0);
+    void addItem(const QStringList &list,bool isgroup,QTreeWidgetItem *root=0);
     QStringList getCameraList()const {return oldlist;}
     ~CameraView(){}
+
+
 private slots:
-    void slot_ViewMenu(QAction*);
+    void slot_itemclicked(QTreeWidgetItem *,int);
+
 private:
     QStringList oldlist;
     QIcon CameraIcon;
     QIcon GroupIcon;
+signals:
+    void this_is_empty();
+    void searchCameraAndAdded();
+    void triggerViewMenu(QAction*);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -67,21 +74,25 @@ public:
 
     ~SettingPanel();
 //    void setViewFrame(ViewFrame *e) { vf =e;}
-     inline QStringList getPlayList() const {return playlist;}
+      QStringList getPlayList() const ;
 private slots:
     void slot_addnewCamera();
     void slot_searchCamera();
     void slot_addCameraGroup();
     void slot_StartPlayer();
     void slot_Process_Ctrl_signals(int);
+    void slot_ProcessMenuAction(QAction*);
 private:
     QVBoxLayout *main_layout;
     QStringList playlist;
     CameraView *m_TreeView;
+    QGroupBox *gbox_addnew;
 signals:
     void sig_gridofnumber(int);
     void StartPlay();
     void StopPlay();
+    void addedNewCamera(int);
+
 
 };
 

@@ -55,6 +55,7 @@ VHWidget::VHWidget(QList<itemWidget> &list, const LayoutForm form, QWidget *pare
     :QGroupBox(parent)
 {
     signalMapper = new QSignalMapper(this);
+    this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
     QBoxLayout *layout = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
     layout->setSpacing(5);
     layout->addStretch();
@@ -200,6 +201,7 @@ ListView::ListView(const QStringList &list,QWidget *parent)
     setShowGrid(false);
     setColumnCount(orglist.count());
 //    setFixedWidth(700);
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
