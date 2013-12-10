@@ -12,7 +12,7 @@ class camera_settings : public QDialog
     Q_OBJECT
     
 public:
-    explicit camera_settings(const QString &name="",QWidget *parent = 0);
+    explicit camera_settings(int index=0,const QString &name="",QWidget *parent = 0);
     ~camera_settings();
     
 private slots:
@@ -22,8 +22,11 @@ private slots:
 
     void on_btn_add_2_clicked();
 
+    void on_pushButton_15_clicked();
+
 private:
     Ui::camera_settings *ui;
+    QString m_verifyid;
 };
 
 #endif // CAMERA_SETTINGS_H

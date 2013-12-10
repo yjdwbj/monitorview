@@ -13,7 +13,9 @@ Frame::Frame(const QString &str,QWidget *parent)
       player(new QWidget(this)),
       m_playing(false),
       isClicked(false),
-      ctrl_timer(new QTimer)
+      ctrl_timer(new QTimer),
+      m_CameraVerifyId(""),
+      m_CameraName("")
 {
     connect(ctrl_timer,SIGNAL(timeout()),SLOT(slot_timerout()));
     player->setAttribute(Qt::WA_NativeWindow);
@@ -169,7 +171,26 @@ void WindowFrame::toggle_ctrlWidget_view(int flag)
     }
 }
 
+void WindowFrame::slot_call_ctlalarm_menu(QAction *act)
+{
+    if(!act->text().compare("设置"))
+    {
+        camera_settings *cs = new camera_settings(2,frame->getCameraName());
+        cs->exec();
+        delete cs;
+    }
+}
 
+
+void WindowFrame::slot_call_ctlrecord_menu(QAction *act)
+{
+    if(!act->text().compare("设置"))
+    {
+        camera_settings *cs = new camera_settings(3,frame->getCameraName());
+        cs->exec();
+        delete cs;
+    }
+}
 
 void WindowFrame::slot_labelbtn_press(int id)
 {
@@ -178,7 +199,7 @@ void WindowFrame::slot_labelbtn_press(int id)
     {
     case 1:
     {
-        QMenu *pmenu = new QMenu();
+        QMenu *pmenu = new QMenu();  // alarm settings
         QAction *offalarm = new QAction(QIcon(pixmaplist.at(1).copy(0,0,16,16)),tr("不启用报警"),this);
         QAction *onalarm = new QAction(QIcon(pixmaplist.at(1).copy(0,16,16,16)),tr("启用报警"),this);
 
@@ -186,6 +207,7 @@ void WindowFrame::slot_labelbtn_press(int id)
         pmenu->addAction(onalarm);
         pmenu->addAction(setting);
         pmenu->popup(this->cursor().pos());
+        connect(pmenu,SIGNAL(triggered(QAction*)),SLOT(slot_call_ctlalarm_menu(QAction*)));
     }
         break;
     case 2:
@@ -202,7 +224,7 @@ void WindowFrame::slot_labelbtn_press(int id)
         pmenu->addAction(always);
         pmenu->addAction(setting);
         pmenu->popup(this->cursor().pos());
-
+        connect(pmenu,SIGNAL(triggered(QAction*)),SLOT(slot_call_ctlrecord_menu(QAction*)));
     }
         break;
     case 3:
@@ -211,13 +233,15 @@ void WindowFrame::slot_labelbtn_press(int id)
         slot_call_CameraSetting();
         break;
     }
+
+
 }
 
 
 
 void WindowFrame::slot_call_CameraSetting()
 {
-    camera_settings *cs = new camera_settings();
+    camera_settings *cs = new camera_settings(0,frame->getCameraName());
     cs->exec();
     delete cs;
 }

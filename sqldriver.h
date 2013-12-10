@@ -12,35 +12,35 @@ class SqlInstance
 {
 public:
       SqlInstance();
-      ~SqlInstance(){db.close();}
-//     void opendb();
-     void AddHostInfo(const QStringList &list);
-     int GetHostInfo();
-     int GetTableCount(const QString &table_name);
-     QStringList GetCameraSettings(int id)const;
-     QStringList GetFieldsList(const QString &table_name, const QStringList &list);
-     QStringList GetRecordByCondition(const QString &table_name, const QString &filed,
+
+
+
+     static int GetTableCount(const QString &table_name);
+     static QStringList GetCameraSettings(int id);
+    static  QStringList GetColumnsList(const QString &table_name, const QStringList &list,
+                               const QString &condition=QString(),
+                               const QString &expectation=QString());
+
+     static QStringList GetColumnList(const QString &table_name, const QString &filed);
+     static QString GetColumnFirst(const QString &table_name,const QString &filed, const QString &condition,
+                            const QString &expectation);
+     static QStringList GetRowList(const QString &table_name,const QString &filed,
                                       const QString &expectation);
 
-     QString GetFirstFieldByCondition(const QString &table_name,const QString &filed,
-                                      const QString &condition,const QString &expectation);
-//     QString GetFieldByName(const QString &table_name,const QString &filed);
+     static void AddAlarmAction(QStringList &list);
 
-
-     QStringList GetFieldsListByCondition(const QString &table_name, const QString &field);
-     void AddCameraSetting(const QStringList &list);
-
-     void AddAlarmAction(QStringList &list);
-
-     void DeleteCamera(const QString &name);
-     void DeleteRecordByCondition(const QString &table_name ,const QString &field,
+     static void DeleteCamera(const QString &name);
+     static void DeleteRecordByCondition(const QString &table_name ,const QString &field,
                                   const QString &condition);
-      void closedb() {db.close();}
-
+     static void InsertItem(const QString &table, const QStringList &itemlist);
+     static void UpdateItem(const QString &table, const QString &filed,
+                            const QString &newValue, const QString &condition,
+                            const QString &expectation);
 
 private:
-    QSqlDatabase db;
-    QString AppendSingleQuotationMarks(const QString &s);
+    static QString AppendSingleQuotationMarks(const QString &s);
+    static  QSqlDatabase opendb();
+
 
 
 };

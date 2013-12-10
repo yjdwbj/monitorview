@@ -7,85 +7,41 @@
 
 SqlInstance::SqlInstance()
 {
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(qApp->applicationDirPath()+"/camera.db");
 
-    if(!db.open())
-    {
-        QMessageBox(QMessageBox::Critical,QString("数据库错误"),QString("不能打开数据库!"));
-        qDebug() << QString("不能打开数据库!");
 
-        return;
-    }
+
 }
 
 
-//void SqlInstance::opendb()
-//{
+QSqlDatabase SqlInstance::opendb()
+{
+    QSqlDatabase db;
+    if(QSqlDatabase::contains("QSQLITE"))
+        db = QSqlDatabase::database("QSQLITE");
+    else
+        db = QSqlDatabase::addDatabase("QSQLITE");
 
-//}
-
-//void SqlInstance::closedb()
-//{
-//    db.close();
-//}
+        db.setDatabaseName(qApp->applicationDirPath()+"/camera.db");
+    if(!db.isOpen())
+    {
+        db.open();
+    }
+    return db;
+}
 
 void SqlInstance::DeleteCamera(const QString &name)
 {
-//    QSqlQuery query(db);
-//    QString  select("delete from hostinfo where host_id == "
-//                    "(select hostinfo_id from camera_settings where camera_name == '"+name+"')");
-//    query.exec(select);
-    QString camera_name = GetFirstFieldByCondition("camera_settings","hostinfo_id","camera_name",name);
+    QString camera_name = GetColumnFirst("camera_settings","hostinfo_id","camera_name",name);
     DeleteRecordByCondition("hostinfo","host_id",camera_name);
-
-//    select= "delete  from camera_settings where camera_name == '"+name+"'";
-
     DeleteRecordByCondition("camera_settings","camera_name",name);
 
-
-//    query.exec(select);
-//    err =  query.lastError();
-//    err =  query.lastError();
-
 }
 
-QString SqlInstance::GetFirstFieldByCondition(const QString &table_name, const QString &filed,
-                                              const QString &condition,const QString &expectation)
-{
 
 
-        QSqlQuery query(db);
-        QString  select("select ");
-        select.append(filed);
-        select.append(" from ");
-        select.append(table_name);
-        select.append( " where ");
-        select.append(condition);
-        select.append( " == ");
-
-        select.append(AppendSingleQuotationMarks(expectation));
-        query.exec(select);
-        query.first();
-        return query.value(0).toString();
-
-}
-
-//QString SqlInstance::GetFieldByName(const QString &table_name, const QString &filed)
-//{
-//    QSqlQuery query(db);
-//    QString  select("select ");
-//    select.append(filed);
-//    select.append(" from ");
-//    select.append(table_name);
-
-//    query.exec(select);
-//    query.first();
-//    return query.value(0).toString();
-//}
 
 
-QString SqlInstance::AppendSingleQuotationMarks(const QString &s)
+ QString SqlInstance::AppendSingleQuotationMarks(const QString &s)
 {
     QString c(s);
     if(!c.startsWith('\''))
@@ -102,82 +58,130 @@ void SqlInstance::DeleteRecordByCondition(const QString &table_name, const QStri
                                           const QString &expectation)
 {
 
-
-
-    QSqlQuery query(db);
     QString  select("delete from ");
     select.append(table_name);
     select.append( " where ");
     select.append(field);
     select.append( " == ");
     select.append(AppendSingleQuotationMarks(expectation));
-    query.exec(select);
+     QSqlQuery query(select,opendb());
+     query.exec();
+     QSqlDatabase::removeDatabase("qt_sql_default_connection");
 }
 
 int SqlInstance::GetTableCount(const QString &table_name)
 {
+
     int i = 0;
-    QSqlQuery query(db);
+
     QString select("select * from "+table_name);
-    query.prepare(select);
-    query.exec(select);
+    QSqlQuery query(select,opendb());
+    query.exec();
+
     while(query.next())
         i++;
-
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
     return i;
 }
 
 
-QStringList SqlInstance::GetFieldsListByCondition(const QString &table_name, const QString &field)
+
+/* select filed1,filed1,... from table where conditiopn == expectation */
+QStringList SqlInstance::GetColumnsList(const QString &table_name, const QStringList &fileds,
+                                       const QString &condition, const QString &expectation)
 {
-    QSqlQuery query(db);
+
+
     QString select("select ");
-    select.append(field);
-    select.append( " from ");
+    foreach(const QString &str,fileds)
+    {
+        select.append(str+",");
+    }
+   select = select.remove(select.length()-1,1);
+   select.append(" from ");
+   select.append(table_name);
+   if(!condition.isEmpty() && !expectation.isEmpty() )
+   {
+       select.append(" where ");
+       select.append(condition);
+       select.append(" == ");
+       select.append(AppendSingleQuotationMarks(expectation));
+   }
+
+   QSqlQuery query(select,opendb());
+
+   query.exec();
+
+   QStringList list;
+
+   while(query.next())
+   {
+       QStringList r;
+       for(int i = 0 ; i < fileds.count() ;i++)
+       {
+          r << query.value(i).toString();;
+       }
+       list << r.join(',');
+   }
+
+   QSqlDatabase::removeDatabase("qt_sql_default_connection");
+
+   return list;
+}
+
+/* select id from table_name */
+QStringList SqlInstance::GetColumnList(const QString &table_name, const QString &filed)
+{
+
+
+
+    QString select("select ");
+    select.append(filed);
+    select.append(" from ");
     select.append(table_name);
-    query.exec(select);
+     QSqlQuery query(select,opendb());
+
+    query.exec();
     QStringList list;
     while(query.next())
-    {
         list << query.value(0).toString();
-    }
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
     return list;
 }
 
-
-QStringList SqlInstance::GetFieldsList(const QString &table_name,const QStringList &list)
+QString SqlInstance::GetColumnFirst(const QString &table_name, const QString &filed,
+                                    const QString &condition, const QString &expectation)
 {
-    QSqlQuery query(db);
+
+
+
+
     QString select("select ");
-    foreach(const QString &str,list)
-    {
-        select.append("str,");
-    }
-   select = select.remove(select.length()-1);
-   select.append(" from ");
-   select.append(table_name);
-   query.exec(select);
-   query.first();
-
-   QStringList r;
-   for(int i = 0 ; i < list.count() ;i++)
-   {
-       r << query.value(i).toString();
-   }
+    select.append(filed);
+    select.append(" from ");
+    select.append(table_name);
+    select.append(" where ");
+    select.append(condition);
+    select.append(" == ");
+    select.append(AppendSingleQuotationMarks(expectation));
+     QSqlQuery query(select,opendb());
+    query.exec();
+    query.first();
+    QString value = query.value(0).toString();
 
 
-   return r;
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+    return value;
 }
 
 
-
-
-QStringList SqlInstance::GetRecordByCondition(const QString &table_name,const QString &filed,
+QStringList SqlInstance::GetRowList(const QString &table_name,const QString &filed,
                                               const QString &expectation)
 {
 
     /* exmaple : select *  from table_name where filed == condition */
-    QSqlQuery query(db);
+
+
 
     QString select("select * from ");
     select.append(table_name);
@@ -185,7 +189,8 @@ QStringList SqlInstance::GetRecordByCondition(const QString &table_name,const QS
     select.append(filed);
     select.append(" == ");
     select.append(AppendSingleQuotationMarks(expectation));
-    query.exec(select);
+    QSqlQuery query(select,opendb());
+    query.exec();
     QSqlRecord record = query.record();
     QStringList list;
     query.first();
@@ -193,43 +198,55 @@ QStringList SqlInstance::GetRecordByCondition(const QString &table_name,const QS
     {
         list << query.value(i).toString();
     }
+
+     QSqlDatabase::removeDatabase("qt_sql_default_connection");
     return list;
 }
 
 
 
-void SqlInstance::AddCameraSetting(const QStringList &list)
+void SqlInstance::InsertItem(const QString &table, const QStringList &itemlist)
 {
-
-    if(!db.isOpen())
-        return;
-    QStringList cameraset ;
-    QStringList ll(list);
-    for(int i = 0 ; i < ll.count() ;i++)
+    QString select("insert into ");
+    select.append(table);
+    select.append(" values (");
+    int num = itemlist.count();
+    for(int i = 0; i < num ; i++)
     {
-        QString s = list.at(i);
-        s.prepend('\'').append('\'');
-        ll.replace(i,s);
+        select.append("?,");
     }
-    cameraset << ll.at(0) << ll.at(1) << ll.at(0) << ll.at(3)
-              << "'admin'" << "'admin'" << "'0'" << "'0'" << "''" << "''" << "''" << "''"
-                 << ll.at(0) << ll.at(0);
-    QString select("insert into camera_settings values (" +cameraset.join(",")+")");
-    QSqlQuery query(db);
-    query.exec(select);
-    QStringList hostinfo;
+    select.remove(select.length()-1,1);
+    select.append(")");
 
-    hostinfo << ll.at(0)  << ll.at(2) << ll.at(4) << ll.at(5)
-             << ll.at(6) << "''" << ll.at(7) ;
-    AddHostInfo(hostinfo);
+     QSqlQuery query(opendb());
+     query.prepare(select);
+     num = 0;
+     foreach(const QString &str,itemlist)
+     {
+         query.bindValue(num++,str);
+     }
+
+     query.exec();
+     QSqlDatabase::removeDatabase("qt_sql_default_connection");
+
 }
 
-void SqlInstance::AddHostInfo(const QStringList &list)
+void SqlInstance::UpdateItem(const QString &table, const QString &filed, const QString &newValue,
+                             const QString &condition, const QString &expectation)
 {
-    QSqlQuery query(db);
-    QString select("insert into hostinfo values (" +list.join(",")+")");
-
-    query.exec(select);
+    QString select("update ");
+    select.append(table);
+    select.append(" set ");
+    select.append(filed);
+    select.append(" = ? where ");
+    select.append(condition);
+    select.append(" == ?");
+    QSqlQuery query(opendb());
+    query.prepare(select);
+    query.addBindValue(newValue);
+    query.addBindValue(expectation);
+    query.exec();
+     QSqlDatabase::removeDatabase("qt_sql_default_connection");
 
 }
 

@@ -158,6 +158,11 @@ public:
     QWidget *player;
     bool isPlaying()const {return m_playing;}
     void setPlaying(bool f) {m_playing = f;}
+    void setCameraName(const QString &name ) { m_CameraName = name;}
+    QString getCameraName() const{return m_CameraName;}
+
+    void setCameraVerifyId(const QString &id) { m_CameraVerifyId = id;}
+    QString getCameraVerifyId() const {return m_CameraVerifyId;}
 signals:
     void clicked_Frame(Frame*);
     void mouse_move();
@@ -176,6 +181,8 @@ private:
     QTimer *ctrl_timer;
     ControlWidget *ctrl_widget;
     bool m_playing;
+    QString m_CameraName;
+    QString m_CameraVerifyId;
     bool isClicked;
 
 };
@@ -209,6 +216,9 @@ protected:
 private slots:
      void slot_labelbtn_press(int);
      void slot_call_CameraSetting();
+     void slot_call_ctlalarm_menu(QAction*);
+     void slot_call_ctlrecord_menu(QAction*);
+
 
 };
 

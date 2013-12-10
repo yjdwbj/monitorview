@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QThread>
+#include "sqldriver.h"
 
 
 
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     connect(panel,SIGNAL(StartPlay()),SLOT(slot_StartPlay()));
     connect(panel,SIGNAL(StopPlay()),SLOT(slot_StopPlay()));
-    connect(panel,SIGNAL(addedNewCamera(int)),SLOT(slot_viewCtrolWidget(int)));
+//    connect(panel,SIGNAL(addedNewCamera(int)),SLOT(slot_viewCtrolWidget(int)));
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
 
@@ -86,16 +87,6 @@ void MainWindow::ReadQss()
         return;
     this->setStyleSheet(qss.readAll());
     qss.close();
-//    if(!QFileInfo(m_configfile).exists())
-//        s->writeCfgToFile(m_configfile);
-//    else
-//        s->readCfgToFile(m_configfile);
-//    if(s->exec())
-//    {
-//        s->UpdateCurrentIndexText();
-//        m_ToolBoxSettings->updateToolBox(s->getCurrentIndexText());
-//        s->writeCfgToFile(m_configfile);
-//    }
 
 
 }
@@ -166,6 +157,26 @@ void MainWindow::slot_GridNumberChanged(int num)
     }
     else
         view->setOnePlusSeven();
+
+    QList<WindowFrame*> playframe = view->getPlayFrame();
+    QStringList playlist = panel->getPlayList();
+    int n = playframe.count() < playlist.count() ? playframe.count() : playlist.count();
+    if(vlcItemList.count() == n)
+        return ;
+    SqlInstance sql;
+
+    QStringList l = sql.GetColumnsList("camera_settings",QStringList() << "camera_name"
+                                      << "camera_verifyid");
+    for(int i = vlcItemList.count() ; i < n ; i++)
+    {
+
+        if(l.isEmpty())
+            continue;
+        playframe[i]->toggle_ctrlWidget_view(1);
+        playframe[i]->frame->setCameraName(l.at(i).split(',').first());
+        playframe[i]->frame->setCameraVerifyId(l.at(i).split(',').last());
+    }
+//    sql.closedb();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)

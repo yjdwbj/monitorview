@@ -147,7 +147,7 @@ void SettingPanel::slot_ProcessMenuAction(QAction *act)
     {
          QTreeWidgetItem *w =  m_TreeView->currentItem();
 
-         camera_settings *cs = new camera_settings( w ? w->text(0):"");
+         camera_settings *cs = new camera_settings(0, w ? w->text(0):"");
         cs->exec();
         delete cs;
     }
@@ -157,7 +157,7 @@ void SettingPanel::slot_ProcessMenuAction(QAction *act)
     {
         SqlInstance sql;
         sql.DeleteCamera(m_TreeView->currentItem()->text(0));
-        sql.closedb();
+//        sql.closedb();
         m_TreeView->takeTopLevelItem(m_TreeView->indexOfTopLevelItem(m_TreeView->currentItem()));
         if(!m_TreeView->topLevelItemCount())
            {
@@ -249,8 +249,8 @@ SettingPanel::SettingPanel(QWidget *parent)
     this->adjustSize();
 
     SqlInstance sql;
-    QStringList namelist = sql.GetFieldsListByCondition("camera_settings","camera_name");
-    sql.closedb();
+    QStringList namelist = sql.GetColumnList("camera_settings","camera_name");
+//    sql.closedb();
     foreach(const QString &str,namelist)
     {
         m_TreeView->addItem(QStringList() << str,false);
@@ -322,17 +322,33 @@ void SettingPanel::slot_searchCamera()
         playlist = search->getVaildCameraList();
         SqlInstance sql;
         int num = sql.GetTableCount("camera_settings");
+        QStringList org;
 
-        foreach(const QString &str,playlist)
+        foreach(const QString &str,playlist) // insert record to sql db;
         {
             QString v = QString::number(num++)+","+str;
+            org = v.split(',');
+           QStringList cameraset;
+           cameraset << org.at(0) << org.at(1) << org.at(0) << org.at(3)
+           << "admin" << "admin" << "0" << "0" << "" << "" << "" << ""
+                         << org.at(0) << org.at(0);
+           SqlInstance::InsertItem("camera_settings",cameraset);
+           QStringList hostinfo;
 
-            sql.AddCameraSetting(v.split(','));
+           hostinfo << org.at(0)  << org.at(2) << org.at(4) << org.at(5)
+                    << org.at(6) << "" << org.at(7) <<  org.at(8);
+          SqlInstance::InsertItem("hostinfo",hostinfo);
+
         }
-        sql.closedb();
 
+        QStringList vaildlist = SqlInstance::GetColumnList("camera_settings","camera_name");
 
-        m_TreeView->addItem(playlist,false,m_TreeView->currentItem());
+        if(m_TreeView->topLevelItemCount() > 0)
+            m_TreeView->addItem(vaildlist,false,!m_TreeView->currentItem()->type() ?
+                                m_TreeView->currentItem() : (QTreeWidgetItem*)(0));
+        else
+            m_TreeView->addItem(vaildlist,false,(QTreeWidgetItem*)(0));
+
         gbox_addnew->hide();
         m_TreeView->show();
         emit addedNewCamera(playlist.count());
@@ -346,23 +362,10 @@ void SettingPanel::slot_searchCamera()
 QStringList SettingPanel::getPlayList() const
 {
     SqlInstance sql;
-    QStringList ipname = sql.GetFieldsListByCondition("camera_settings","camera_name");
-//    QStringList hostinfo =  sql.GetFieldsListByCondition("camera_settings","hostinfo_id");
-//    QStringList ipaddress;
-//    QStringList plist;
-//    foreach(const QString &id,hostinfo)
-//    {
-//        ipaddress << sql.GetFirstFieldByCondition("hostinfo","address","host_id",id);
-//    }
+    QStringList ipname = sql.GetColumnList("camera_settings","camera_name");
 //    sql.closedb();
-//    for(int i = 0 ; i < ipaddress.count();i++)
-//    {
-//        plist << ipaddress.at(i) + "/" + ipname.at(i);
-//    }
-//    return plist;
+
     return ipname;
-
-
 
 }
 

@@ -58,22 +58,6 @@ typedef struct {
 }_StructSettings;
 
 
-static void initStruct(_StructSettings set)
-{
-    set.id = -1;
-    set.name = NULL;
-    set.hostinfo = -1;
-    set.verifyid = NULL;
-    set.logo_name = NULL;
-    set.logo_passwd = NULL;
-    set.yuntai = false;
-    set.reflactimage = false;
-    set.append_name = NULL;
-    set.append_phone = NULL;
-    set.append_commit = NULL;
-    set.alarm = -1;
-    set.record = -1;
-}
 
 
 class LabelBtn : public QLabel
@@ -97,34 +81,6 @@ public:
                           LayoutOriant form = Horizontal,QWidget *parent=0);
     ~GroupChecBox(){}
 };
-
-
-/////////// DatabaseManager ///////
-
-class DataBase : public QObject
-{
-public:
-    DataBase(QObject *parent = 0);
-    ~DataBase(){}
-    bool openDB()
-    {
-        db = QSqlDatabase::addDatabase("QSQLITE");
-        QString dbpath(qApp->applicationDirPath()+QString("/camera.db"));
-        db.setDatabaseName(dbpath);
-        return db.open();
-    }
-
-    bool deleteDB()
-    {
-        db.close();
-    }
-
-    QSqlError getLastError(){return db.lastError();}
-private:
-    QSqlDatabase db;
-};
-
-
 
 
 ///////////// GroupButtonWidget //////
