@@ -1,5 +1,6 @@
 #include "viewframe.h"
 #include "camera_settings.h"
+#include "sqldriver.h"
 static QString tips("报警通知|启动/停止录像|抓图|设置");
 
 
@@ -169,6 +170,7 @@ void WindowFrame::toggle_ctrlWidget_view(int flag)
         if(w)
             flag ? w->show() : w->hide();
     }
+
 }
 
 void WindowFrame::slot_call_ctlalarm_menu(QAction *act)
@@ -177,6 +179,7 @@ void WindowFrame::slot_call_ctlalarm_menu(QAction *act)
     {
         camera_settings *cs = new camera_settings(2,frame->getCameraName());
         cs->exec();
+
         delete cs;
     }
 }
@@ -242,7 +245,15 @@ void WindowFrame::slot_labelbtn_press(int id)
 void WindowFrame::slot_call_CameraSetting()
 {
     camera_settings *cs = new camera_settings(0,frame->getCameraName());
-    cs->exec();
+    if(cs->exec())
+    {
+//        frame->setCameraName(cs->getCameraName());
+//        m_TreeView = QApplication::activeWindow()->findChild<CameraView*>("ViewCamera");
+//        if(m_TreeView)
+//        {
+//            m_TreeView->updateItem(frame->getCameraVerifyId(),frame->getCameraName());
+//        }
+    }
     delete cs;
 }
 
@@ -262,10 +273,7 @@ ViewFrame::ViewFrame(QWidget *parent)
 //      toggleFS(new ToggleButton)
 
 {
-
-
-
-//    signalMapper = new QSignalMapper(this);
+    setObjectName("ViewFrame");
     lay->setSpacing(1);
     lay->setMargin(0);
 //    lay->setVerticalSpacing(10);
@@ -280,23 +288,6 @@ ViewFrame::ViewFrame(QWidget *parent)
 
 
 
-//void ViewFrame::StartPlayer()
-//{
-//    CameraSetting *cs = new CameraSetting("test");
-//    cs->exec();
-//}
-
-//void ViewFrame::mouseDoubleClickEvent(QMouseEvent *e)
-//{
-//    if( (e->type() == QMouseEvent::MouseButtonDblClick)
-//            && (e->button() == Qt::LeftButton ))
-//    {
-////            setFrameShadow(QFrame::Sunken);
-////            this->setFocus();
-////        emit clickedtopos(e->pos());
-//    }
-//    e->accept();
-//}
 
 
 
@@ -417,6 +408,33 @@ void ViewFrame::setFullScreen()
 }
 
 
+void ViewFrame::updateItem(const QString &id,const QString &newName)
+{
+    foreach(WindowFrame *w,m_list) // change camera name by id;
+    {
+        if(w->frame->getCameraVerifyId().compare(id))
+            continue;
+        w->frame->setCameraName(newName);
+        break;
+    }
+}
+
+
+
+void ViewFrame::slot_deleteCamera(QString id)
+{
+
+     foreach(WindowFrame *w,m_list)
+     {
+         if(w->frame->getCameraVerifyId().compare(id) )
+             continue;
+         w->toggle_ctrlWidget_view(0);
+         break;
+     }
+
+}
+
+
 void ViewFrame::slot_BackToNormalWindown()
 {
 
@@ -432,8 +450,19 @@ void ViewFrame::slot_timeout()
 {
     this->setLayout(lay);
     FSWidget->hide();
-
 }
+
+WId ViewFrame::getPlayFrameWId(const QString &id)
+{
+    foreach(const WindowFrame *w, m_list)
+    {
+        if(w->frame->getCameraVerifyId().compare(id))
+            continue;
+        return w->frame->winId();
+    }
+    return WId(0);
+}
+
 
 void ViewFrame::slot_clicked_this(Frame *w)
 {

@@ -1,5 +1,6 @@
 #include "searchcamera.h"
 #include "ui_viewcameralist.h"
+#include "sqldriver.h"
 #include <QMetaObject>
 #include <map>
 
@@ -31,9 +32,21 @@ void SearchCamera::emulator_readfile()
     QByteArray ba = fd.readAll();
     fd.close();
     QStringList linelist(QString(ba).split(QRegExp("(\n|\r\n)"),QString::SkipEmptyParts));
-
+    QStringList existlist = SqlInstance::getColumnList("camera_settings","camera_verifyid");
+    bool e = true;
     foreach(const QString &s,linelist)
     {
+        e = true;
+        foreach(const QString &str,existlist)
+        {
+            if(s.contains(str))
+            {
+                e = false;
+                break;
+            }
+
+        }
+        if(e)
         addNewLine(s.split("|"));
     }
 }

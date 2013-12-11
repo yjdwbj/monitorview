@@ -3,6 +3,10 @@
 #include "ui_camera_settings.h"
 #include "lansearchcamera.h"
 #include "sqldriver.h"
+#include "setting_panel.h"
+#include "viewframe.h"
+class ViewFrame;
+class CameraView;
 
 
 camera_settings::camera_settings(int index, const QString &name, QWidget *parent) :
@@ -17,13 +21,13 @@ camera_settings::camera_settings(int index, const QString &name, QWidget *parent
     {
 
 
-        QStringList camera = SqlInstance::GetRowList("camera_settings","camera_name",name);
+        QStringList camera = SqlInstance::getRowList("camera_settings","camera_name",name);
         m_verifyid = camera.at(3);
         if(!camera.isEmpty())
         {
             ui->edt_user->setText(camera.at(4));
             ui->edt_passwd->setText(camera.at(5));
-            QStringList l = SqlInstance::GetColumnsList("hostinfo",QStringList() << "address" << "port",
+            QStringList l = SqlInstance::getColumnsList("hostinfo",QStringList() << "address" << "port",
                               "host_id",camera.at(2));
             if(!l.isEmpty())
             {
@@ -63,10 +67,56 @@ void camera_settings::on_btn_add_2_clicked()
 
 void camera_settings::on_pushButton_15_clicked()
 {
-    SqlInstance::UpdateItem("camera_settings","camera_name",
-                            ui->edt_cameraName->text(),"camera_verifyid",m_verifyid);
-    SqlInstance::UpdateItem("camera_settings","camera_login_passwd",
+
+    m_cameraName = ui->edt_cameraName->text();
+    SqlInstance::updateItem("camera_settings","camera_name",
+                            m_cameraName,"camera_verifyid",m_verifyid);
+    SqlInstance::updateItem("camera_settings","camera_login_passwd",
                             ui->edt_passwd->text(),"camera_verifyid",m_verifyid);
-    SqlInstance::UpdateItem("camera_settings","camera_login_name",
+    SqlInstance::updateItem("camera_settings","camera_login_name",
                             ui->edt_user->text(),"camera_verifyid",m_verifyid);
+
+
+
+    QWidgetList aw = QApplication::allWidgets();
+    int i = 0;
+    foreach(QWidget *w,aw)
+    {
+        if(!w->objectName().compare("ViewFrame"))
+        {
+            ViewFrame *v = (ViewFrame*)w;
+            v->updateItem(m_verifyid,m_cameraName);
+            i++;
+        }else if(!w->objectName().compare("ViewCamera"))
+        {
+            CameraView *c = (CameraView*)w;
+            c->updateItem(m_verifyid,m_cameraName);
+            i++;
+        }
+        if(i>1)
+            break;
+    }
+
+
+
+
+}
+
+
+
+
+void camera_settings::on_cbox_enablerecord_toggled(bool checked)
+{
+
+        ui->rdb_alltimerecord->setEnabled(checked);
+        ui->rdb_specialtime->setEnabled(checked);
+
+}
+
+void camera_settings::on_rdb_specialtime_toggled(bool checked)
+{
+        ui->tablewidget_traptime->setEnabled(checked);
+        ui->btn_addtraptime->setEnabled(checked);
+        ui->btn_altertraptime->setEnabled(checked);
+
 }

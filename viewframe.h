@@ -11,6 +11,7 @@
 #include <qt_windows.h>
 #include "camera_setting.h"
 #include "control_widget.h"
+#include "setting_panel.h"
 
 
 
@@ -186,7 +187,7 @@ private:
     bool isClicked;
 
 };
-
+class CameraView;
 class WindowFrame : public  QWidget
 {
     Q_OBJECT
@@ -194,18 +195,17 @@ public:
     explicit WindowFrame(const QString &str = "",QWidget *parent=0);
     ~WindowFrame(){ delete frame; this->destroyed(this);}
     WId getWindowId() const {return frame->winId();}
-//    WId getWindowId() const {return playerwindow->videoLayer()->winId();}
     void toggle_ctrlWidget_view(int);
     Frame *frame ;
-//    MplayerWindow *playerwindow;
-//    MplayerLayer *player;
+
 private:
 
     QLabel *lab_frameRate;
-    QLabel *logo;
+//    QLabel *logo;
     QHBoxLayout *ctrl_layout;
     QSignalMapper *signalmap;
     QList<QPixmap> pixmaplist;
+    CameraView *m_TreeView;
 
 protected:
      void paintEvent(QPaintEvent *e);
@@ -239,13 +239,16 @@ public:
     void setFullScreen();
     void StartPlayer();
      QList<WindowFrame*> getPlayFrame() const {return  m_list;}
+     WId getPlayFrameWId(const QString &id);
+     void updateItem(const QString &id, const QString &newName);
 
 public slots:
     void swapFullScreenOrNormal(bool flag);
 
+    void slot_deleteCamera(QString id);
+
 private slots:
     void slot_clicked_this(Frame *);
-//    void slot_testsignals(int);
     void slot_timeout();
     void slot_BackToNormalWindown();
 

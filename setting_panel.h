@@ -43,8 +43,10 @@ class CameraView : public QTreeWidget
     Q_OBJECT
 public:
     explicit CameraView(QWidget *parent =0);
-    void addItem(const QStringList &list,bool isgroup,QTreeWidgetItem *root=0);
-    QStringList getCameraList()const {return oldlist;}
+    void addItem(const QString &nameid,QTreeWidgetItem *root=0);
+    void addGroup(const QString &name,QTreeWidgetItem *root=0);
+    void updateItem(const QString &key,const QString &value);
+
     ~CameraView(){}
 
 
@@ -55,6 +57,9 @@ private:
     QStringList oldlist;
     QIcon CameraIcon;
     QIcon GroupIcon;
+
+    QMap<QString,QString> mapVerifyId;
+
 signals:
     void this_is_empty();
     void searchCameraAndAdded();
@@ -87,11 +92,15 @@ private:
     QStringList playlist;
     CameraView *m_TreeView;
     QGroupBox *gbox_addnew;
+
+    void addCameraFromSql();
 signals:
     void sig_gridofnumber(int);
     void StartPlay();
     void StopPlay();
     void addedNewCamera(int);
+    void updateItemValue(QString);
+    void deleteCamera(QString);
 
 
 };

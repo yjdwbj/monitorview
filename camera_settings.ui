@@ -44,7 +44,7 @@
    <item>
     <widget class="QTabWidget" name="tab_Widget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_connect">
       <attribute name="title">
@@ -413,7 +413,7 @@
       <attribute name="title">
        <string>录像</string>
       </attribute>
-      <widget class="QCheckBox" name="checkBox_4">
+      <widget class="QCheckBox" name="cbox_enablerecord">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -424,6 +424,9 @@
        </property>
        <property name="text">
         <string>启用录像</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
       <widget class="QGroupBox" name="groupBox_2">
@@ -440,7 +443,10 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="QTableWidget" name="tableWidget_2">
+         <widget class="QTableWidget" name="tablewidget_traptime">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
            <bool>false</bool>
           </attribute>
@@ -498,28 +504,40 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_add_2">
+           <widget class="QPushButton" name="btn_addtraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>添加</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_10">
+           <widget class="QPushButton" name="btn_altertraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>修改</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_11">
+           <widget class="QPushButton" name="btn_deletetraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>删除</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_12">
+           <widget class="QPushButton" name="btn_cleartraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>清除</string>
             </property>
@@ -529,7 +547,10 @@
         </item>
        </layout>
       </widget>
-      <widget class="QRadioButton" name="radioButton">
+      <widget class="QRadioButton" name="rdb_alltimerecord">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -541,8 +562,14 @@
        <property name="text">
         <string>所有时间进行了录制</string>
        </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
       </widget>
-      <widget class="QRadioButton" name="radioButton_2">
+      <widget class="QRadioButton" name="rdb_specialtime">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>20</x>

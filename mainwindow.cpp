@@ -19,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     connect(panel,SIGNAL(StartPlay()),SLOT(slot_StartPlay()));
     connect(panel,SIGNAL(StopPlay()),SLOT(slot_StopPlay()));
-//    connect(panel,SIGNAL(addedNewCamera(int)),SLOT(slot_viewCtrolWidget(int)));
+    connect(panel,SIGNAL(deleteCamera(QString)),view,SLOT(slot_deleteCamera(QString)));
+    connect(panel,SIGNAL(addedNewCamera(int)),SLOT(slot_viewCtrolWidget(int)));
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
 
@@ -53,18 +54,21 @@ void MainWindow::vlcPlayRtsp() // start play from rtsp service.
     int num = playframe.count() < playlist.count() ? playframe.count() : playlist.count();
     if(vlcItemList.count() == num)
         return ;
+    QString verifyid ;
     for(int i = vlcItemList.count() ; i < num ; i++)
     {
+        verifyid = playlist.at(i);
         QString captureOption(":sout=#stream_out_duplicate{dst=display,dst=std{access=file,mux,ts,dst=");
         captureOption+=tr("D:/camera-video/")+tr("camera")+QString::number(i)+tr(".mpg}}");
-        QString url = tr("rtsp://192.168.8.31/")+playlist.at(i);
+        QString url = tr("rtsp://192.168.8.31/")+verifyid;
         QString fname =  url + tr(".mpg");
         libvlc_instance_t *_vlc_inst = libvlc_new(0,NULL);
         libvlc_media_t *_vlc_media  = libvlc_media_new_location(_vlc_inst,fname.toUtf8().data());
         libvlc_media_player_t *_vlc_play=  libvlc_media_player_new_from_media(_vlc_media);
-//        libvlc_video_set_mouse_input(_vlc_play,false);
-//        libvlc_media_release(_vlc_media);
-        libvlc_media_player_set_hwnd(_vlc_play,(void*)playframe.at(i)->getWindowId());
+        WId wid = view->getPlayFrameWId(verifyid);
+        if(wid == 0)
+            continue;
+        libvlc_media_player_set_hwnd(_vlc_play,(void*)wid);
         playframe.at(i)->frame->setPlaying(true);
 
         libvlc_media_add_option(_vlc_media,captureOption.toLocal8Bit().data());
@@ -122,27 +126,6 @@ void MainWindow::slot_StopPlay()
 
 void MainWindow::slot_StartPlay()
 {
-
-//    QStringList playlist = panel->getPlayList();
-
-//    int num = playframe.count() < playlist.count() ? playframe.count() : playlist.count();
-//    while(plist.count() < num)
-//    {
-//        QProcess* p = new QProcess;
-//        plist.append(p);
-//    }
-
-
-//   const QString play = qApp->applicationDirPath()+tr("/mplayer.exe");
-//   for(int i = 0; i < num;i++)
-//   {
-
-//       QString http = tr("http://")+playlist.at(i).section(",",1,1);
-//       QString fname =  http +tr("/")+ playlist.at(i).section(",",0,0);
-//       plist.at(i)->start(play,QStringList () <<  "-wid" << QString::number(playframe.at(i)->winId())<< fname.append(".avi"));
-//       plist.at(i)->waitForStarted(5000);
-
-//   }
     vlcPlayRtsp();
 }
 
@@ -161,11 +144,11 @@ void MainWindow::slot_GridNumberChanged(int num)
     QList<WindowFrame*> playframe = view->getPlayFrame();
     QStringList playlist = panel->getPlayList();
     int n = playframe.count() < playlist.count() ? playframe.count() : playlist.count();
-    if(vlcItemList.count() == n)
-        return ;
-    SqlInstance sql;
+//    if(vlcItemList.count() == n)
+//        return ;
 
-    QStringList l = sql.GetColumnsList("camera_settings",QStringList() << "camera_name"
+
+    QStringList l = SqlInstance::getColumnsList("camera_settings",QStringList() << "camera_name"
                                       << "camera_verifyid");
     for(int i = vlcItemList.count() ; i < n ; i++)
     {
@@ -176,8 +159,9 @@ void MainWindow::slot_GridNumberChanged(int num)
         playframe[i]->frame->setCameraName(l.at(i).split(',').first());
         playframe[i]->frame->setCameraVerifyId(l.at(i).split(',').last());
     }
-//    sql.closedb();
+
 }
+
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {

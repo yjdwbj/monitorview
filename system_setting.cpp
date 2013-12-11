@@ -20,14 +20,13 @@ QLayout* SystemSetting::StoragePanel()
      pathText = new QListWidget;
     pathText->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-//     btn_addPath = new QPushButton("添加");
-//     connect(btn_addPath,SIGNAL(clicked()),SLOT(slot_addStoragePath()));
+
 
     GroupBtnWidget *btn_addPath = new GroupBtnWidget(btns.split("|"),GroupBtnWidget::Vertical);
     lay_path->addWidget(pathText);
     lay_path->addWidget(btn_addPath);
     connect(btn_addPath,SIGNAL(SignalById(int)),SLOT(slot_addORdeleteStoragePath(int)));
-//    lay_path->addWidget(btnAd);
+
     QGroupBox *gbox_savedays = new QGroupBox("录像报警数据保留天数:");
     QVBoxLayout *lay_save = new QVBoxLayout(gbox_savedays);
     LabAndWidget *record = new LabAndWidget("录像记录:",new QSpinBox,7);

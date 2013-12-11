@@ -32,24 +32,19 @@ private slots:
     void slot_StartPlay();
     void slot_StopPlay();
     void slot_viewCtrolWidget(int);
+
 private:
 
     ViewFrame *view;
     QHBoxLayout *main_layout;
     SettingPanel *panel;
     QList<QProcess*> plist;
+
+    void updateViewFrame();
     bool eventFilter(QObject *, QEvent *);
 
     void ReadQss();
 
-//    libvlc_instance_t *_vlcInstance;
-//    libvlc_media_player_t *_vlcMediaPlayer;
-
-
-
-//    libvlc_event_manager_t *_vlcEvents;
-
-//    libvlc_media_t *_vlcMedia;
     QList<vlcItem> vlcItemList;
 
     void vlcPlayRtsp();

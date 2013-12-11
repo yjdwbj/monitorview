@@ -4,6 +4,7 @@
 #include "searchcamera.h"
 #include "camera_settings.h"
 #include "sqldriver.h"
+#include <QMap>
 
 
 static QString allbutton("开始所有|停止所有|系统设置|录像记录|报警记录|其它");
@@ -12,6 +13,7 @@ static QString allbutton("开始所有|停止所有|系统设置|录像记录|�
 CameraView::CameraView(QWidget *parent)
     :QTreeWidget(parent)
 {
+    setObjectName("ViewCamera");
     CameraIcon = QIcon(":/lcy/images/cameraicon.png");
     GroupIcon = QIcon(":/lcy/images/camera_group.png");
     this->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -27,18 +29,48 @@ void CameraView::slot_itemclicked(QTreeWidgetItem *w, int c)
     this->setItemSelected(w,true);
 }
 
-void CameraView::addItem(const QStringList &list,bool isgroup,QTreeWidgetItem *root)
+void CameraView::addItem(const QString &nameid, QTreeWidgetItem *root)
 {
-    oldlist = list;
+        QString key = nameid.section(",",0,0);
+        QString value = nameid.section(",",1,1);
+        QMap<QString,QString>::const_iterator it = mapVerifyId.find(key);
+        if(!it.key().isEmpty())
+            return;
 
-
-    foreach(const QString &str,list)
-    {
-
-        QTreeWidgetItem *w = new QTreeWidgetItem(root,QStringList(str.section(",",0,0)),isgroup ? 0 : 1000);
-        w->setIcon(0,isgroup ?  GroupIcon : CameraIcon);
+        mapVerifyId[key]=value;
+        QTreeWidgetItem *w = new QTreeWidgetItem(root,QStringList(value),1000);
+        w->setIcon(0,CameraIcon);
         this->addTopLevelItem(w);
+}
+
+void CameraView::updateItem(const QString &key, const QString &value)
+{
+
+    int n = this->topLevelItemCount();
+    for(int i = 0; i < n ;i++)
+    {
+        QTreeWidgetItem *w = topLevelItem(i);
+        if(w)
+        {
+           QString k = mapVerifyId.key(w->text(0));
+           if(!k.compare(key))
+           {
+               mapVerifyId[key] = value;
+               w->setText(0,value);
+               break;
+           }
+        }
     }
+
+
+}
+
+
+void CameraView::addGroup(const QString &name, QTreeWidgetItem *root)
+{
+    QTreeWidgetItem *w = new QTreeWidgetItem(root,QStringList(name));
+    w->setIcon(0,GroupIcon);
+    this->addTopLevelItem(w);
 }
 
 void CameraView::mouseDoubleClickEvent(QMouseEvent *event)
@@ -148,22 +180,28 @@ void SettingPanel::slot_ProcessMenuAction(QAction *act)
          QTreeWidgetItem *w =  m_TreeView->currentItem();
 
          camera_settings *cs = new camera_settings(0, w ? w->text(0):"");
-        cs->exec();
+        if(cs->exec())
+        {
+            w->setText(0,cs->getCameraName());
+            emit updateItemValue(cs->getVerifyId());
+        }
         delete cs;
     }
         break;
     case 5: // delete camera
     case 6:
     {
-        SqlInstance sql;
-        sql.DeleteCamera(m_TreeView->currentItem()->text(0));
-//        sql.closedb();
+
+        QString id = SqlInstance::getColumnFirst("camera_settings","camera_verifyid",
+                                                 "camera_name",m_TreeView->currentItem()->text(0));
+        SqlInstance::deleteCamera(m_TreeView->currentItem()->text(0));
         m_TreeView->takeTopLevelItem(m_TreeView->indexOfTopLevelItem(m_TreeView->currentItem()));
         if(!m_TreeView->topLevelItemCount())
            {
             m_TreeView->hide();
             gbox_addnew->show();
            }
+        emit deleteCamera(id);
     }
 
 
@@ -247,16 +285,7 @@ SettingPanel::SettingPanel(QWidget *parent)
     this->setLayout(main_layout);
     this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
     this->adjustSize();
-
-    SqlInstance sql;
-    QStringList namelist = sql.GetColumnList("camera_settings","camera_name");
-//    sql.closedb();
-    foreach(const QString &str,namelist)
-    {
-        m_TreeView->addItem(QStringList() << str,false);
-    }
-
-
+    addCameraFromSql();
 
     if(m_TreeView->topLevelItemCount() > 0)
     {
@@ -293,7 +322,7 @@ void SettingPanel::slot_addCameraGroup()
    if(g->exec())
    {
        gbox_addnew->hide();
-       m_TreeView->addItem(QStringList(g->edit->text()),true);
+       m_TreeView->addGroup(g->edit->text());
        m_TreeView->show();
        m_TreeView->setCurrentItem(m_TreeView->topLevelItem(m_TreeView->topLevelItemCount()-1),1);
        m_TreeView->setItemSelected(m_TreeView->currentItem(),true);
@@ -303,68 +332,69 @@ void SettingPanel::slot_addCameraGroup()
 
 void SettingPanel::slot_addnewCamera()
 {
-    SetCameraType *type = new SetCameraType;
+
 
 }
 
 void SettingPanel::slot_searchCamera()
 {
-
-
-
     SearchCamera *search = new SearchCamera();
 
     if(search->exec())
     {
-
-
-
         playlist = search->getVaildCameraList();
-        SqlInstance sql;
-        int num = sql.GetTableCount("camera_settings");
+        int num = SqlInstance::getMaximumId("camera_settings","camera_id");
         QStringList org;
 
         foreach(const QString &str,playlist) // insert record to sql db;
         {
-            QString v = QString::number(num++)+","+str;
+            QString v = QString::number(++num)+","+str;
             org = v.split(',');
            QStringList cameraset;
            cameraset << org.at(0) << org.at(1) << org.at(0) << org.at(3)
            << "admin" << "admin" << "0" << "0" << "" << "" << "" << ""
                          << org.at(0) << org.at(0);
-           SqlInstance::InsertItem("camera_settings",cameraset);
+           SqlInstance::insertItem("camera_settings",cameraset);
            QStringList hostinfo;
 
            hostinfo << org.at(0)  << org.at(2) << org.at(4) << org.at(5)
                     << org.at(6) << "" << org.at(7) <<  org.at(8);
-          SqlInstance::InsertItem("hostinfo",hostinfo);
+          SqlInstance::insertItem("hostinfo",hostinfo);
 
         }
 
-        QStringList vaildlist = SqlInstance::GetColumnList("camera_settings","camera_name");
-
-        if(m_TreeView->topLevelItemCount() > 0)
-            m_TreeView->addItem(vaildlist,false,!m_TreeView->currentItem()->type() ?
-                                m_TreeView->currentItem() : (QTreeWidgetItem*)(0));
-        else
-            m_TreeView->addItem(vaildlist,false,(QTreeWidgetItem*)(0));
+        addCameraFromSql();
 
         gbox_addnew->hide();
         m_TreeView->show();
         emit addedNewCamera(playlist.count());
-
     }
     delete  search;
 
 }
 
+void SettingPanel::addCameraFromSql()
+{
+    QStringList nameidlist  = SqlInstance::getColumnsList("camera_settings",
+        QString("camera_verifyid,camera_name").split(','));
+
+    foreach(const QString &str,nameidlist)
+    {
+
+        if(m_TreeView->topLevelItemCount() > 0  &&
+               m_TreeView->currentItem() )
+            m_TreeView->addItem(str,!m_TreeView->currentItem()->type()?
+                                m_TreeView->currentItem() : (QTreeWidgetItem*)(0));
+        else
+            m_TreeView->addItem(str);
+    }
+}
+
 
 QStringList SettingPanel::getPlayList() const
 {
-    SqlInstance sql;
-    QStringList ipname = sql.GetColumnList("camera_settings","camera_name");
-//    sql.closedb();
 
+    QStringList ipname = SqlInstance::getColumnList("camera_settings","camera_verifyid");
     return ipname;
 
 }
