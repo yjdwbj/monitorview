@@ -28,6 +28,8 @@ public:
                                       const QString &expectation);
 
      static void addAlarmAction(QStringList &list);
+     static QStringList getRowFirst(const QString &table_name,const QString &filed,
+                             const QString &expectation);
 
      static void deleteCamera(const QString &name);
      static void deleteRecordByCondition(const QString &table_name ,const QString &field,

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     camera_setting.cpp \
     alarmaction.cpp \
     camera_settings.cpp \
-    sqldriver.cpp
+    sqldriver.cpp \
+    alarmtrapsettings.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     alarmaction.h \
     setting_trap_time.h \
     camera_settings.h \
-    sqldriver.h
+    sqldriver.h \
+    alarmtrapsettings.h
 
 
 INCLUDEPATH += $$PWD/sdk/include
@@ -58,5 +60,6 @@ RESOURCES += \
 FORMS += \
     lansearchcamera.ui \
     camera_settings.ui \
-    viewcameralist.ui
+    viewcameralist.ui \
+    alarmtrapsettings.ui
 

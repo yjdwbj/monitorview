@@ -22,19 +22,26 @@ signals:
 private slots:
     void on_btn_search_clicked();
 
-    void on_btn_add_clicked();
-
-    void on_btn_add_2_clicked();
-
     void on_pushButton_15_clicked();
 
     void on_cbox_enablerecord_toggled(bool checked);
 
     void on_rdb_specialtime_toggled(bool checked);
 
+    void on_btn_addtraptime_clicked();
+
+    void on_btn_addrecordtime_clicked();
+
+    void on_chbox_enableAlarm_toggled(bool checked);
+
+
 private:
     Ui::camera_settings *ui;
     QString m_verifyid,m_cameraName;
+
+
+    void setRecordTab();
+    QString getStringFromChar(unsigned char c, const QStringList &list);
 };
 
 #endif // CAMERA_SETTINGS_H

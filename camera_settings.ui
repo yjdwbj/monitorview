@@ -44,7 +44,7 @@
    <item>
     <widget class="QTabWidget" name="tab_Widget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_connect">
       <attribute name="title">
@@ -231,7 +231,7 @@
       <attribute name="title">
        <string>报警</string>
       </attribute>
-      <widget class="QCheckBox" name="cbox_enableAlarm">
+      <widget class="QCheckBox" name="chbox_enableAlarm">
        <property name="geometry">
         <rect>
          <x>9</x>
@@ -258,7 +258,19 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QTableWidget" name="tableWidget">
+         <widget class="QTableWidget" name="tableWidget_alarm">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
           <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
            <bool>false</bool>
           </attribute>
@@ -316,28 +328,40 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_add">
+           <widget class="QPushButton" name="btn_addtraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>添加</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_alter">
+           <widget class="QPushButton" name="btn_altertraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>修改</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_delete">
+           <widget class="QPushButton" name="btn_deletetraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>删除</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_clear">
+           <widget class="QPushButton" name="btn_cleartraptime">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>清除</string>
             </property>
@@ -365,7 +389,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="edt_group"/>
+         <widget class="QLineEdit" name="edt_group">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_6">
@@ -439,11 +467,11 @@
         </rect>
        </property>
        <property name="title">
-        <string>布防时间段</string>
+        <string>录像时间段</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="QTableWidget" name="tablewidget_traptime">
+         <widget class="QTableWidget" name="tablewidget_recordtime">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -504,7 +532,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_addtraptime">
+           <widget class="QPushButton" name="btn_addrecordtime">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -514,7 +542,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_altertraptime">
+           <widget class="QPushButton" name="btn_alterrecordtime">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -524,7 +552,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_deletetraptime">
+           <widget class="QPushButton" name="btn_deletetrecordtime">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -534,7 +562,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_cleartraptime">
+           <widget class="QPushButton" name="btn_clearrecordtime">
             <property name="enabled">
              <bool>false</bool>
             </property>

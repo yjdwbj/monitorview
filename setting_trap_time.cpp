@@ -17,8 +17,13 @@ RecordTime::RecordTime(QWidget *parent)
     QVBoxLayout *main_layout = new QVBoxLayout;
     QGroupBox *gbox_week = new QGroupBox("星期");
     QVBoxLayout *lay_week = new QVBoxLayout(gbox_week);
-    lay_week->addWidget(new GroupBtnWidget(choices.split(",")));
-    lay_week->addWidget(new GroupChecBox(weekNum.split(","),"星期"));
+
+    GroupBtnWidget *w = new GroupBtnWidget(choices.split(","));
+    lay_week->addWidget(w);
+    cboxlist = new GroupChecBox(weekNum.split(","),"星期");
+    connect(w,SIGNAL(SignalById(int)),cboxlist,SLOT(slot_ToggleAll(int)));
+
+    lay_week->addWidget(cboxlist);
 
 
 
@@ -67,10 +72,14 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
 
     QVBoxLayout *lay_week = new QVBoxLayout(gbox_week);
     lay_week->setSpacing(3);
+    lay_week->setMargin(2);
 //    GroupBtnWidget *btn_week = new GroupBtnWidget(choices.split(","));
 //    GroupChecBox *week_box = new GroupChecBox(week.split(","),"星期");
-    lay_week->addWidget(new GroupBtnWidget(choices.split(",")));
-    lay_week->addWidget(new GroupChecBox(weekNum.split(","),"星期"));
+    GroupBtnWidget *AllorNone = new GroupBtnWidget(choices.split(","));
+    lay_week->addWidget(AllorNone);
+    GroupChecBox *week = new GroupChecBox(weekNum.split(","),"星期");
+    lay_week->addWidget(week);
+    connect(AllorNone,SIGNAL(SignalById(int)),week,SLOT(slot_ToggleAll(int)));
 
 
     main_layout->addWidget(gbox_week);
@@ -100,14 +109,15 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
     QGroupBox *gbox_trigger = new QGroupBox("触发条件");
     gbox_trigger->adjustSize();
     QGridLayout *lay_trigger = new QGridLayout(gbox_trigger);
+    lay_trigger->setMargin(2);
     lay_trigger->setSpacing(3);
-    lay_trigger->addWidget(new GroupBtnWidget(choices.split(",")),0,0,1,2);
+    GroupBtnWidget *trigAllOrNone = new GroupBtnWidget(choices.split(","));
+    lay_trigger->addWidget(trigAllOrNone,0,0,1,2);
     int i = 0;
-    foreach(const QString &str,triggerTerm.split(","))
-    {
-        QCheckBox *cbox = new QCheckBox(str);
-        lay_trigger->addWidget(cbox,1,i++);
-    }
+     GroupChecBox *trigger = new GroupChecBox(triggerTerm.split(","));
+     connect(trigAllOrNone,SIGNAL(SignalById(int)),trigger,SLOT(slot_ToggleAll(int)));
+
+     lay_trigger->addWidget(trigger);
     main_layout->addWidget(gbox_trigger);
     main_layout->addWidget(new AlarmAction);
 
@@ -115,10 +125,8 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
     connect(btn_dialog,SIGNAL(SignalById(int)),SLOT(slot_Btn_Dialog(int)));
     main_layout->addWidget(btn_dialog);
     this->setFixedWidth(500);
-
     setLayout(main_layout);
-    this->hide();
-    this->raise();
+
 
 }
 

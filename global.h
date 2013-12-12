@@ -32,9 +32,10 @@ static const int othermenu =10;
 static const int fullscreen = 11;
 //static bool fullscreentoggle = false;
 
-static QString choices("全选,全不选");
+static QString choices("全不选,全选");
 static QString yesorno("提交,取消");
 static QString weekNum("一,二,三,四,五,六,日");
+static QString alarmCondition("移动侦测,报警输入1,报警输入2,报警输入3,报警输入4");
 enum LayoutOriant {
     Horizontal,
     Vertical
@@ -80,6 +81,12 @@ public:
     explicit GroupChecBox(const QStringList &list,const QString &prefix="",
                           LayoutOriant form = Horizontal,QWidget *parent=0);
     ~GroupChecBox(){}
+//    void setToggleAll(bool);
+    QList<QCheckBox*> getWidgetList() {return m_list;}
+public slots:
+    void slot_ToggleAll(int);
+private:
+    QList<QCheckBox*> m_list;
 };
 
 

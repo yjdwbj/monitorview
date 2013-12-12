@@ -5,6 +5,7 @@
 #include "sqldriver.h"
 #include "setting_panel.h"
 #include "viewframe.h"
+#include "alarmtrapsettings.h"
 class ViewFrame;
 class CameraView;
 
@@ -21,7 +22,8 @@ camera_settings::camera_settings(int index, const QString &name, QWidget *parent
     {
 
 
-        QStringList camera = SqlInstance::getRowList("camera_settings","camera_name",name);
+        QStringList camera = SqlInstance::getRowFirst("camera_settings","camera_name",name);
+
         m_verifyid = camera.at(3);
         if(!camera.isEmpty())
         {
@@ -34,13 +36,60 @@ camera_settings::camera_settings(int index, const QString &name, QWidget *parent
                 ui->edt_ipaddress->setText("http://" + l.first().replace(",",":"));
             }
         }
+         ui->chbox_enableAlarm->setChecked(!camera.at(12).compare("0") ? false:true );
     }
-
+    setRecordTab();
 }
 
 camera_settings::~camera_settings()
 {
     delete ui;
+}
+
+
+void camera_settings::setRecordTab()
+{
+
+   QStringList alarmlist =  SqlInstance::getRowList("alarm","verifyid",m_verifyid);
+   if(alarmlist.count() <1)
+       return;
+   foreach(const QString &line,alarmlist)
+   {
+       int row = ui->tableWidget_alarm->rowCount();
+       ui->tableWidget_alarm->insertRow(row);
+
+       QStringList record = line.split(',');
+
+       QString wek;
+       unsigned char c;
+       memcpy(&c,record.at(1).toLocal8Bit().data(),1);
+       wek =  c == 254 ?  QString("每天"): getStringFromChar(c,weekNum.split(','));
+
+       ui->tableWidget_alarm->setItem(row,0,new QTableWidgetItem(wek));
+
+       ui->tableWidget_alarm->setItem(row,1,new QTableWidgetItem(record.at(2)));
+       ui->tableWidget_alarm->setItem(row,2,new QTableWidgetItem(record.at(3)));
+       memcpy(&c,record.at(5).toLocal8Bit().data(),1);
+       ui->tableWidget_alarm->setItem(row,3,
+                                      new QTableWidgetItem(getStringFromChar(c,alarmCondition.split(','))));
+
+
+
+
+   }
+
+}
+
+QString camera_settings::getStringFromChar(unsigned char c, const QStringList &list)
+{
+    QStringList t;
+    int n = list.count();
+    foreach(const QString &str,list)
+    {
+        if (c & (1 << n--))
+            t.append(str);
+    }
+    return t.join(',');
 }
 
 
@@ -51,19 +100,8 @@ void camera_settings::on_btn_search_clicked()
     delete lan;
 }
 
-void camera_settings::on_btn_add_clicked()
-{
-    AddTrapTimeDialog *a = new AddTrapTimeDialog;
-    a->exec();
-    delete a;
-}
 
-void camera_settings::on_btn_add_2_clicked()
-{
-    RecordTime *d = new RecordTime;
-    d->exec();
-    delete d;
-}
+
 
 void camera_settings::on_pushButton_15_clicked()
 {
@@ -75,6 +113,9 @@ void camera_settings::on_pushButton_15_clicked()
                             ui->edt_passwd->text(),"camera_verifyid",m_verifyid);
     SqlInstance::updateItem("camera_settings","camera_login_name",
                             ui->edt_user->text(),"camera_verifyid",m_verifyid);
+    SqlInstance::updateItem("camera_settings","camera_alarm",
+                            ui->chbox_enableAlarm->isChecked() ? "1" : "0",
+                            "camera_verifyid",m_verifyid);
 
 
 
@@ -115,8 +156,53 @@ void camera_settings::on_cbox_enablerecord_toggled(bool checked)
 
 void camera_settings::on_rdb_specialtime_toggled(bool checked)
 {
-        ui->tablewidget_traptime->setEnabled(checked);
-        ui->btn_addtraptime->setEnabled(checked);
-        ui->btn_altertraptime->setEnabled(checked);
+     ui->tablewidget_recordtime->setEnabled(checked);
+     ui->btn_addrecordtime->setEnabled(checked);
+     ui->btn_alterrecordtime->setEnabled(checked);
+     ui->btn_clearrecordtime->setEnabled(checked);
+     ui->btn_deletetrecordtime->setEnabled(checked);
+}
 
+
+
+void camera_settings::on_btn_addtraptime_clicked()
+{
+
+//    AddTrapTimeDialog *a = new AddTrapTimeDialog;
+//    a->exec();
+//    delete a;
+    AlarmTrapSettings *al = new AlarmTrapSettings(m_verifyid);
+    if(al->exec())
+    {
+        int num = ui->tableWidget_alarm->rowCount();
+        ui->tableWidget_alarm->insertRow(num);
+        int col = 0;
+        foreach(const QString &str,al->getAlarmList())
+        {
+            QTableWidgetItem *n = new QTableWidgetItem(str);
+            ui->tableWidget_alarm->setItem(num,col++,n);
+        }
+    }
+
+}
+
+void camera_settings::on_btn_addrecordtime_clicked()
+{
+    RecordTime *d = new RecordTime;
+    d->exec();
+    delete d;
+
+}
+
+
+
+void camera_settings::on_chbox_enableAlarm_toggled(bool checked)
+{
+    ui->tableWidget_alarm->setEnabled(checked);
+    ui->btn_addtraptime->setEnabled(checked);
+    ui->btn_addtraptime->setEnabled(checked);
+    ui->btn_cleartraptime->setEnabled(checked);
+    ui->btn_deletetraptime->setEnabled(checked);
+    ui->btn_altertraptime->setEnabled(checked);
+    ui->edt_group->setEnabled(checked);
 }

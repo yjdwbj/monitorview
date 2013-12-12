@@ -1,0 +1,1594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AlarmTrapSettings</class>
+ <widget class="QDialog" name="AlarmTrapSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>560</width>
+    <height>639</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>星期</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="6">
+       <widget class="QCheckBox" name="cbox_w7">
+        <property name="text">
+         <string>星期日</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="cbox_w3">
+        <property name="text">
+         <string>星期三</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QCheckBox" name="cbox_w6">
+        <property name="text">
+         <string>星期六</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="cbox_w1">
+        <property name="text">
+         <string>星期一</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="cbox_w2">
+        <property name="text">
+         <string>星期二</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QCheckBox" name="cbox_w4">
+        <property name="text">
+         <string>星期四</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QCheckBox" name="cbox_w5">
+        <property name="text">
+         <string>星期五</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="btn_weekSelectAll">
+        <property name="text">
+         <string>全选</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="btn_weekSelectNone">
+        <property name="text">
+         <string>全不选</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="4">
+       <widget class="QTimeEdit" name="tedt_endtime">
+        <property name="time">
+         <time>
+          <hour>23</hour>
+          <minute>59</minute>
+          <second>59</second>
+         </time>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>持续报警时间(秒)：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>终止时间：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="ledt_continue">
+        <property name="inputMethodHints">
+         <set>Qt::ImhDigitsOnly</set>
+        </property>
+        <property name="inputMask">
+         <string>999</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QTimeEdit" name="tedt_starttime"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>起始时间：</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_8">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>触发条件</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="2" colspan="2">
+       <widget class="QCheckBox" name="cbox_condition2">
+        <property name="text">
+         <string>报警输入1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QCheckBox" name="cbox_condition3">
+        <property name="text">
+         <string>报警输入2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="cbox_codition1">
+        <property name="text">
+         <string>移动侦测</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QCheckBox" name="cbox_condition4">
+        <property name="text">
+         <string>报警输入3</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QCheckBox" name="cbox_condition5">
+        <property name="text">
+         <string>报警输入4</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="btn_coditionSelectAll">
+        <property name="text">
+         <string>全选</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="btn_conditionSelectNone">
+        <property name="text">
+         <string>全不选</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>报警动作</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>121</width>
+          <height>281</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>121</width>
+          <height>300</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>121</width>
+          <height>281</height>
+         </size>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="showGrid">
+         <bool>true</bool>
+        </property>
+        <property name="gridStyle">
+         <enum>Qt::SolidLine</enum>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="cornerButtonEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="rowCount">
+         <number>11</number>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <row/>
+        <column>
+         <property name="text">
+          <string>checkbox</string>
+         </property>
+        </column>
+        <item row="0" column="0">
+         <property name="text">
+          <string>声音</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="1" column="0">
+         <property name="text">
+          <string>录像</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="2" column="0">
+         <property name="text">
+          <string>拍照</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="3" column="0">
+         <property name="text">
+          <string>FTP上传</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="4" column="0">
+         <property name="text">
+          <string>电子邮件</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="5" column="0">
+         <property name="text">
+          <string>短信猫</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="6" column="0">
+         <property name="text">
+          <string>拨打电话</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="7" column="0">
+         <property name="text">
+          <string>Skype</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="8" column="0">
+         <property name="text">
+          <string>调用预置位</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="9" column="0">
+         <property name="text">
+          <string>网页链接</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+        <item row="10" column="0">
+         <property name="text">
+          <string>应用程序</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>361</width>
+          <height>281</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="currentIndex">
+         <number>5</number>
+        </property>
+        <widget class="QWidget" name="audio">
+         <widget class="QGroupBox" name="groupBox_5">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>331</width>
+            <height>261</height>
+           </rect>
+          </property>
+          <property name="title">
+           <string>声音</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="rad_audio">
+             <property name="text">
+              <string>声音</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QPushButton" name="btn_openaudiofile">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QRadioButton" name="rad_audiofile">
+             <property name="text">
+              <string>声音文件</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="3">
+            <widget class="QComboBox" name="cbbox_audiotype">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>声音:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" colspan="3">
+            <widget class="QComboBox" name="cbbox_audio"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QCheckBox" name="chbox_audioreadtxt">
+             <property name="text">
+              <string>朗读文本</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QPushButton" name="btn_audioTest">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>测试</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1" colspan="2">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>*当发现异常情况时，会播放上面选择的声音</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0" colspan="3">
+            <widget class="QTextEdit" name="tedt_audioText">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="2">
+            <widget class="QLineEdit" name="ledt_audiofile">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="page">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QGroupBox" name="groupBox_6">
+            <property name="title">
+             <string>录像</string>
+            </property>
+            <widget class="QLabel" name="label_6">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>30</y>
+               <width>231</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>在发生异常情况时，会自动保存录像</string>
+             </property>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_3">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QGroupBox" name="groupBox_7">
+            <property name="title">
+             <string>拍照</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="2">
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QLabel" name="label_9">
+               <property name="text">
+                <string>*在发生异常情况时，会自动拍摄照片。</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>每隔多少秒拍一张：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="sbox_photocount">
+               <property name="value">
+                <number>30</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>拍照张数：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSpinBox" name="sbox_photogap">
+               <property name="value">
+                <number>1</number>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <spacer name="verticalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="4" column="0">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="2" column="0">
+              <spacer name="verticalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_4">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QGroupBox" name="groupBox_8">
+            <property name="title">
+             <string>FTP上传</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_7">
+             <item row="4" column="0">
+              <widget class="QLineEdit" name="ledt_ftpuser"/>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="ledt_ftpport"/>
+             </item>
+             <item row="7" column="0">
+              <widget class="QCheckBox" name="chbox_pasvmode">
+               <property name="text">
+                <string>*PASV模式：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>用户名：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QPushButton" name="btn_ftptest">
+               <property name="maximumSize">
+                <size>
+                 <width>60</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>测试登录</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="ledt_ftppasswd"/>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_18">
+               <property name="text">
+                <string>上传存放目录：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>上传文件:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="label_17">
+               <property name="text">
+                <string>密码：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" colspan="2">
+              <widget class="QLineEdit" name="ledt_ftphomeDir"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLineEdit" name="ledt_ftphost"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>FTP上传主机地址：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="cbbox_ftpuploadtype">
+               <item>
+                <property name="text">
+                 <string>报警触发时的前后2张图片</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>所有报警图片</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>报警录像</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>所有报警图片和录像</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>FTP 端口</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QLineEdit" name="ledt_ftpecho">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_5">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QGroupBox" name="groupBox_9">
+            <property name="title">
+             <string>电子邮件</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_9">
+             <item row="0" column="0" colspan="2">
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>收件人：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLineEdit" name="ledt_mailreceiver"/>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QLabel" name="label_20">
+               <property name="text">
+                <string>附带文件：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QComboBox" name="cbbox_mailfiletype">
+               <item>
+                <property name="text">
+                 <string>不附带文件</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>报警触发时的前后2张图片</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>所有报警图片</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>报警录像</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>所有报警图片和录像</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="3">
+              <widget class="QGroupBox" name="groupBox_10">
+               <property name="title">
+                <string>服务器设置</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_8">
+                <item row="1" column="6" colspan="2">
+                 <widget class="QCheckBox" name="chbox_mailauth">
+                  <property name="text">
+                   <string>服务器需要安全认证</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2" colspan="3">
+                 <widget class="QLineEdit" name="ledt_mailuser"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_23">
+                  <property name="text">
+                   <string>端口：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="4" colspan="4">
+                 <widget class="QLineEdit" name="ledt_mailsmtphost"/>
+                </item>
+                <item row="0" column="0" colspan="4">
+                 <widget class="QLabel" name="label_21">
+                  <property name="text">
+                   <string>SMTP服务器地址：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="7">
+                 <widget class="QLineEdit" name="ledt_mailpasswd"/>
+                </item>
+                <item row="2" column="1" colspan="4">
+                 <widget class="QComboBox" name="cbbox_mailssl">
+                  <item>
+                   <property name="text">
+                    <string>None</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>STARTTLS</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>TLS</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="3" column="0" colspan="2">
+                 <widget class="QLabel" name="label_25">
+                  <property name="text">
+                   <string>用户名：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2" colspan="3">
+                 <widget class="QLineEdit" name="ledt_mailport"/>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_24">
+                  <property name="text">
+                   <string>SSL</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="6">
+                 <widget class="QLabel" name="label_26">
+                  <property name="text">
+                   <string>密码：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="3" colspan="5">
+                 <widget class="QLineEdit" name="ledt_mailsendbox"/>
+                </item>
+                <item row="4" column="0" colspan="3">
+                 <widget class="QLabel" name="label_22">
+                  <property name="text">
+                   <string>发送邮箱：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="5">
+                 <spacer name="horizontalSpacer_9">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QPushButton" name="btn_mailtest">
+               <property name="text">
+                <string>测试</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" colspan="2">
+              <widget class="QLineEdit" name="ledt_mailecho">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_6">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QGroupBox" name="groupBox_11">
+            <property name="title">
+             <string>短信猫</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_10">
+             <item row="0" column="4">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="7" column="0">
+              <widget class="QPushButton" name="btn_msgtest">
+               <property name="text">
+                <string>测试</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" colspan="2">
+              <widget class="QCheckBox" name="chbox_msggap">
+               <property name="text">
+                <string>两条短信的间隔要大于</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_28">
+               <property name="text">
+                <string>初始化失败</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="5">
+              <widget class="QLineEdit" name="ledt_msgphone"/>
+             </item>
+             <item row="0" column="1" colspan="2">
+              <widget class="QComboBox" name="cbbox_msgcom"/>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_27">
+               <property name="text">
+                <string>短信猫端口：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QLabel" name="label_30">
+               <property name="text">
+                <string>*多个手机号用逗号隔开</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QLabel" name="label_29">
+               <property name="text">
+                <string>接收短信的手机号码：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <spacer name="verticalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="4" column="0">
+              <spacer name="verticalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="5" column="4">
+              <widget class="QSpinBox" name="sbox_msgtime">
+               <property name="value">
+                <number>15</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_7">
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QGroupBox" name="groupBox_12">
+            <property name="title">
+             <string>拨打电话</string>
+            </property>
+            <layout class="QFormLayout" name="formLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_32">
+               <property name="text">
+                <string>拨号设备 ：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="cbbox_dialtype">
+               <item>
+                <property name="text">
+                 <string>WAN微型端口(L2TP)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>LPT</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>H323线路</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_31">
+               <property name="text">
+                <string>呼机号码：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="ledt_dialphone">
+               <property name="inputMethodHints">
+                <set>Qt::ImhDigitsOnly</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="btn_dialtest">
+               <property name="text">
+                <string>测试</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QLabel" name="label_33">
+               <property name="text">
+                <string>*该功能需要你的计算机上安装拨号调制解调器</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_8">
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <item>
+           <widget class="QGroupBox" name="groupBox_13">
+            <property name="title">
+             <string>Skype</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_11">
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="chbox_enablesky">
+               <property name="text">
+                <string>发送Skype消息</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_34">
+               <property name="text">
+                <string>接收方的Skype帐号：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label_36">
+               <property name="text">
+                <string>信息内容：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLineEdit" name="ledt_skyacct">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="chbox_skysendmsg">
+               <property name="text">
+                <string>发送短信：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_35">
+               <property name="text">
+                <string>接收方的手机号码：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QCheckBox" name="chbox_enablecall">
+               <property name="text">
+                <string>呼叫</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0" colspan="2">
+              <widget class="QLabel" name="label_37">
+               <property name="text">
+                <string>被呼叫的Skype或手机号码：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="0">
+              <widget class="QPushButton" name="btn_skytest">
+               <property name="text">
+                <string>测试</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="1">
+              <widget class="QLabel" name="label_38">
+               <property name="text">
+                <string>*需要安装Skype软件</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0" colspan="2">
+              <widget class="QLineEdit" name="ledt_skycallphone">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" rowspan="3">
+              <widget class="QTextEdit" name="txt_skymsg">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" colspan="2">
+              <widget class="QLineEdit" name="ledt_skyphonenumber">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="inputMethodHints">
+                <set>Qt::ImhDigitsOnly</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_9">
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <widget class="QGroupBox" name="groupBox_14">
+            <property name="title">
+             <string>调用预置位</string>
+            </property>
+            <widget class="QSpinBox" name="sbox_prepostionnum">
+             <property name="geometry">
+              <rect>
+               <x>77</x>
+               <y>23</y>
+               <width>171</width>
+               <height>20</height>
+              </rect>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_39">
+             <property name="geometry">
+              <rect>
+               <x>11</x>
+               <y>23</y>
+               <width>60</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>预置位号：</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_40">
+             <property name="geometry">
+              <rect>
+               <x>11</x>
+               <y>60</y>
+               <width>282</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>*当发生异常情况时，会调用预置位，转动到指定位置</string>
+             </property>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_10">
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QGroupBox" name="groupBox_15">
+            <property name="title">
+             <string>网页链接</string>
+            </property>
+            <widget class="QLabel" name="label_41">
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>28</y>
+               <width>108</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>访问网页地址：</string>
+             </property>
+            </widget>
+            <widget class="QLineEdit" name="ledt_weblink">
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>60</y>
+               <width>321</width>
+               <height>20</height>
+              </rect>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="btn_webtest">
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>90</y>
+               <width>78</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>测试</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_42">
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>130</y>
+               <width>311</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>*当发生异常情况时会访问指定网页地址（不会打开网页）</string>
+             </property>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_11">
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <widget class="QGroupBox" name="groupBox_16">
+            <property name="title">
+             <string>应用程序</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_12">
+             <item row="5" column="0">
+              <spacer name="verticalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>应用程序：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="4">
+              <widget class="QLineEdit" name="ledt_program"/>
+             </item>
+             <item row="6" column="0">
+              <widget class="QPushButton" name="btn_programtest">
+               <property name="text">
+                <string>测试</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="3" colspan="2">
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>207</width>
+                 <height>17</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="chbox_programonce">
+               <property name="text">
+                <string>只运行一次</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QPushButton" name="btn_programopen">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="4">
+              <widget class="QLineEdit" name="ledt_programarg"/>
+             </item>
+             <item row="4" column="1">
+              <spacer name="horizontalSpacer_11">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_44">
+               <property name="text">
+                <string>运行参数：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <spacer name="horizontalSpacer_12">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_2"/>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_14">
+       <property name="text">
+        <string>提交</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_7">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_15">
+       <property name="text">
+        <string>取消</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_6">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_14</sender>
+   <signal>clicked()</signal>
+   <receiver>AlarmTrapSettings</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>628</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>182</x>
+     <y>661</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_15</sender>
+   <signal>clicked()</signal>
+   <receiver>AlarmTrapSettings</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>390</x>
+     <y>609</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>390</x>
+     <y>638</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

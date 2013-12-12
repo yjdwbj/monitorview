@@ -186,6 +186,30 @@ QString SqlInstance::getColumnFirst(const QString &table_name, const QString &fi
 }
 
 
+QStringList SqlInstance::getRowFirst(const QString &table_name,const QString &filed,
+                                     const QString &expectation)
+{
+    QString select("select * from ");
+    select.append(table_name);
+    select.append(" where ");
+    select.append(filed);
+    select.append(" == ?");
+    QSqlQuery query(openDB());
+    query.prepare(select);
+    query.addBindValue(expectation);
+    query.exec();
+    QSqlRecord record = query.record();
+    QStringList list;
+    query.first();
+    for( int i = 0 ; i  < record.count() ;i++)
+    {
+        list << query.value(i).toString();
+    }
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+   return list;
+}
+
+
 QStringList SqlInstance::getRowList(const QString &table_name,const QString &filed,
                                               const QString &expectation)
 {
@@ -198,17 +222,23 @@ QStringList SqlInstance::getRowList(const QString &table_name,const QString &fil
     select.append(table_name);
     select.append(" where ");
     select.append(filed);
-    select.append(" == ");
-    select.append(appendSingleQuotationMarks(expectation));
-    QSqlQuery query(select,openDB());
+    select.append(" == ?");
+    QSqlQuery query(openDB());
+    query.prepare(select);
+    query.addBindValue(expectation);
     query.exec();
     QSqlRecord record = query.record();
     QStringList list;
-    query.first();
-    for( int i = 0 ; i  < record.count() ;i++)
+    while(query.next())
     {
-        list << query.value(i).toString();
+        QStringList t;
+        for( int i = 0 ; i  < record.count() ;i++)
+        {
+            t << query.value(i).toString();
+        }
+        list << t.join(',');
     }
+
 
      QSqlDatabase::removeDatabase("qt_sql_default_connection");
     return list;

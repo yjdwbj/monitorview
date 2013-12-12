@@ -26,8 +26,18 @@ GroupChecBox::GroupChecBox(const QStringList &list,const QString &prefix,
     {
         QCheckBox *cbox = new QCheckBox(prefix+str);
         layout->addWidget(cbox);
+        m_list.append(cbox);
     }
     setLayout(layout);
+}
+
+void GroupChecBox::slot_ToggleAll(int checked)
+{
+
+   foreach(QCheckBox *cbox , m_list)
+   {
+       cbox->setChecked(checked);
+   }
 }
 
 
