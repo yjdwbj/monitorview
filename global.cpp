@@ -1,6 +1,30 @@
 #include "global.h"
 
 
+
+void setCharToList(unsigned char c, QList<QCheckBox *> &list)
+{
+
+    int n = list.size();
+    foreach(QCheckBox *b , list)
+    {
+        b->setChecked(c & (1 << n--));
+    }
+}
+
+unsigned char getCharFromList(const QList<QCheckBox*> &list)
+{
+    unsigned char c = 0;
+    int n = list.size();
+    foreach(QCheckBox *b , list)
+    {
+        c |= (b->isChecked() ? 1 : 0) << n--;
+    }
+    return c;
+}
+
+
+
 LabelBtn::LabelBtn(const QPixmap &pix, const QString &tip, QWidget *parent)
     :QLabel(parent)
 {
@@ -16,7 +40,7 @@ void LabelBtn::mousePressEvent(QMouseEvent *ev)
 }
 
 
-GroupChecBox::GroupChecBox(const QStringList &list,const QString &prefix,
+GroupCheckBox::GroupCheckBox(const QStringList &list,const QString &prefix,
                            LayoutOriant form,QWidget *parent)
     :QWidget(parent)
 {
@@ -31,7 +55,7 @@ GroupChecBox::GroupChecBox(const QStringList &list,const QString &prefix,
     setLayout(layout);
 }
 
-void GroupChecBox::slot_ToggleAll(int checked)
+void GroupCheckBox::slot_ToggleAll(int checked)
 {
 
    foreach(QCheckBox *cbox , m_list)
@@ -209,7 +233,7 @@ ListView::ListView(const QStringList &list,QWidget *parent)
     orglist = list;
     setContentsMargins(1,1,1,1);
     setShowGrid(false);
-    setColumnCount(orglist.count());
+    setColumnCount(orglist.size());
 //    setFixedWidth(700);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -249,7 +273,9 @@ QStringList ListView::getViewCountList() const
         if(!box->isChecked())
             continue;
         QStringList t;
-        for(int j = 1 ; j < orglist.count();j++)
+        int count = orglist.count();
+        int size = orglist.size();
+        for(int j = 1 ; j < count ;j++)
         {
             t << item(i,j)->text();
         }

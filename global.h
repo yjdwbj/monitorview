@@ -41,6 +41,9 @@ enum LayoutOriant {
     Vertical
 };
 
+unsigned char getCharFromList(const QList<QCheckBox*> &list);
+void setCharToList(unsigned char c, QList<QCheckBox*> &list);
+
 
 typedef struct {
     int id;
@@ -74,13 +77,13 @@ signals:
 };
 
 
-class GroupChecBox : public QWidget
+class GroupCheckBox : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GroupChecBox(const QStringList &list,const QString &prefix="",
+    explicit GroupCheckBox(const QStringList &list,const QString &prefix="",
                           LayoutOriant form = Horizontal,QWidget *parent=0);
-    ~GroupChecBox(){}
+    ~GroupCheckBox(){}
 //    void setToggleAll(bool);
     QList<QCheckBox*> getWidgetList() {return m_list;}
 public slots:

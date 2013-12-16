@@ -20,7 +20,7 @@ RecordTime::RecordTime(QWidget *parent)
 
     GroupBtnWidget *w = new GroupBtnWidget(choices.split(","));
     lay_week->addWidget(w);
-    cboxlist = new GroupChecBox(weekNum.split(","),"星期");
+    cboxlist = new GroupCheckBox(weekNum.split(","),"星期");
     connect(w,SIGNAL(SignalById(int)),cboxlist,SLOT(slot_ToggleAll(int)));
 
     lay_week->addWidget(cboxlist);
@@ -77,7 +77,7 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
 //    GroupChecBox *week_box = new GroupChecBox(week.split(","),"星期");
     GroupBtnWidget *AllorNone = new GroupBtnWidget(choices.split(","));
     lay_week->addWidget(AllorNone);
-    GroupChecBox *week = new GroupChecBox(weekNum.split(","),"星期");
+    GroupCheckBox *week = new GroupCheckBox(weekNum.split(","),"星期");
     lay_week->addWidget(week);
     connect(AllorNone,SIGNAL(SignalById(int)),week,SLOT(slot_ToggleAll(int)));
 
@@ -114,7 +114,7 @@ AddTrapTimeDialog::AddTrapTimeDialog(QWidget *parent)
     GroupBtnWidget *trigAllOrNone = new GroupBtnWidget(choices.split(","));
     lay_trigger->addWidget(trigAllOrNone,0,0,1,2);
     int i = 0;
-     GroupChecBox *trigger = new GroupChecBox(triggerTerm.split(","));
+     GroupCheckBox *trigger = new GroupCheckBox(triggerTerm.split(","));
      connect(trigAllOrNone,SIGNAL(SignalById(int)),trigger,SLOT(slot_ToggleAll(int)));
 
      lay_trigger->addWidget(trigger);

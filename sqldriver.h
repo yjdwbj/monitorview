@@ -26,6 +26,7 @@ public:
                             const QString &expectation);
      static QStringList getRowList(const QString &table_name,const QString &filed,
                                       const QString &expectation);
+     static QStringList QuerySqlFromString(const QString &sql, const QStringList &bindVaule);
 
      static void addAlarmAction(QStringList &list);
      static QStringList getRowFirst(const QString &table_name,const QString &filed,
@@ -39,6 +40,7 @@ public:
                             const QString &newValue, const QString &condition,
                             const QString &expectation);
      static int  getMaximumId(const QString &table_name,const QString &filed);
+     static int  getMinimumId(const QString &table_name,const QString &filed);
 
 private:
     static QString appendSingleQuotationMarks(const QString &s);

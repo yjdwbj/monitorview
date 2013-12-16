@@ -13,7 +13,7 @@ private slots:
     void slot_signalbyid(int);
 //    void slot_choicebyid(int);
 private:
-    GroupChecBox *cboxlist;
+    GroupCheckBox *cboxlist;
 };
 
 

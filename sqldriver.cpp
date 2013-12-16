@@ -94,7 +94,25 @@ int SqlInstance::getMaximumId(const QString &table_name,const QString &filed)
     QSqlQuery query(select,openDB());
     query.exec();
     query.first();
-    int n = query.value(0).toInt();
+    int n = query.value(0).toString().isEmpty() ? -1 : query.value(0).toInt();
+     QSqlDatabase::removeDatabase("qt_sql_default_connection");
+    return n;
+}
+
+int SqlInstance::getMinimumId(const QString &table_name, const QString &filed)
+{
+    /* SELECT row from table ORDER BY id DESC LIMIT 1;*/
+    QString select("select ");
+    select.append(filed);
+    select.append(" from ");
+    select.append(table_name);
+    select.append(" ORDER BY ");
+    select.append(filed);
+    select.append(" ASC LIMIT 1");
+    QSqlQuery query(select,openDB());
+    query.exec();
+    query.first();
+    int n = query.value(0).toString().isEmpty() ? -1 : query.value(0).toInt();
      QSqlDatabase::removeDatabase("qt_sql_default_connection");
     return n;
 }
@@ -128,7 +146,8 @@ QStringList SqlInstance::getColumnsList(const QString &table_name, const QString
    while(query.next())
    {
        QStringList r;
-       for(int i = 0 ; i < fileds.count() ;i++)
+       int count = fileds.count();
+       for(int i = 0 ; i < count ;i++)
        {
           r << query.value(i).toString();;
        }
@@ -201,7 +220,8 @@ QStringList SqlInstance::getRowFirst(const QString &table_name,const QString &fi
     QSqlRecord record = query.record();
     QStringList list;
     query.first();
-    for( int i = 0 ; i  < record.count() ;i++)
+    int count = record.count();
+    for(int i = 0 ; i < count ;i++)
     {
         list << query.value(i).toString();
     }
@@ -215,8 +235,6 @@ QStringList SqlInstance::getRowList(const QString &table_name,const QString &fil
 {
 
     /* exmaple : select *  from table_name where filed == condition */
-
-
 
     QString select("select * from ");
     select.append(table_name);
@@ -232,7 +250,9 @@ QStringList SqlInstance::getRowList(const QString &table_name,const QString &fil
     while(query.next())
     {
         QStringList t;
-        for( int i = 0 ; i  < record.count() ;i++)
+        int count = record.count();
+
+        for(int i = 0 ; i < count ;i++)
         {
             t << query.value(i).toString();
         }
@@ -246,12 +266,38 @@ QStringList SqlInstance::getRowList(const QString &table_name,const QString &fil
 
 
 
+QStringList SqlInstance::QuerySqlFromString(const QString &sql,const QStringList &bindVaule)
+{
+      QSqlQuery query(openDB());
+      query.prepare(sql);
+      int n = 0;
+      foreach(const QString &str,bindVaule)
+      {
+          query.bindValue(n++,str);
+      }
+
+      query.exec();
+      QSqlRecord record = query.record();
+      QStringList t;
+      query.first();
+
+      int count = record.count();
+      for(int i = 0 ; i < count ;i++)
+      {
+              t << query.value(i).toString();
+          }
+
+      QSqlDatabase::removeDatabase("qt_sql_default_connection");
+      return t;
+}
+
+
 void SqlInstance::insertItem(const QString &table, const QStringList &itemlist)
 {
     QString select("insert into ");
     select.append(table);
     select.append(" values (");
-    int num = itemlist.count();
+    int num = itemlist.size();
     for(int i = 0; i < num ; i++)
     {
         select.append("?,");

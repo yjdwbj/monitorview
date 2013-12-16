@@ -13,11 +13,13 @@ class AlarmTrapSettings;
 class AlarmTrapSettings : public QDialog
 {
     Q_OBJECT
-    
+
 public:
-    explicit AlarmTrapSettings(const QString &verifyid,QWidget *parent = 0);
+    explicit AlarmTrapSettings(const QString &verifyid,const QString &id,
+                               QWidget *parent = 0);
     ~AlarmTrapSettings();
     QStringList getAlarmList() const {return m_alarmlist;}
+    QStringList getAlarmSql() const {return m_alarmsql;}
     
 private slots:
     void on_tableWidget_itemClicked(QTableWidgetItem *item);
@@ -53,10 +55,11 @@ private:
 
     QString m_verifyid;
     QStringList m_alarmlist;
+    QStringList m_alarmsql;
 
-    QString getCharFromList(const QList<QCheckBox*> &list);
-    void setCharToList(const QString &str, QList<QCheckBox*> &list);
-    void readDataToWidget();
+//    unsigned char getCharFromList(const QList<QCheckBox*> &list);
+//    void setCharToList(unsigned char c, QList<QCheckBox*> &list);
+    void readDataToWidget(const QString &id);
 
 };
 

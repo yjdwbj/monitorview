@@ -21,8 +21,6 @@ SOURCES += main.cpp\
     system_setting.cpp \
     control_widget.cpp \
     lansearchcamera.cpp \
-    setting_trap_time.cpp \
-    camera_setting.cpp \
     alarmaction.cpp \
     camera_settings.cpp \
     sqldriver.cpp \
@@ -37,9 +35,7 @@ HEADERS  += mainwindow.h \
     system_setting.h \
     control_widget.h \
     lansearchcamera.h \
-    camera_setting.h \
     alarmaction.h \
-    setting_trap_time.h \
     camera_settings.h \
     sqldriver.h \
     alarmtrapsettings.h
@@ -61,5 +57,6 @@ FORMS += \
     lansearchcamera.ui \
     camera_settings.ui \
     viewcameralist.ui \
-    alarmtrapsettings.ui
+    alarmtrapsettings.ui \
+    record_time.ui
 

@@ -82,7 +82,7 @@ QLayout *SystemSetting::ViewPanel()
     QVBoxLayout *main_lay = new QVBoxLayout;
     main_lay->addWidget(gbox_view);
     static QString cboxs("视频窗口显示标题栏|视频窗口显示状态栏|画面显示保持原始比例|平时不显示实时画面，可以降低性能使用");
-    GroupChecBox *misc_cbox = new GroupChecBox(cboxs.split("|"),"",Vertical);
+    GroupCheckBox *misc_cbox = new GroupCheckBox(cboxs.split("|"),"",Vertical);
     main_lay->addWidget(misc_cbox);
     return main_lay;
 

@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="gbox_week">
      <property name="title">
       <string>星期</string>
      </property>
@@ -178,7 +178,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QGroupBox" name="gbox_triggeraction">
      <property name="title">
       <string>触发条件</string>
      </property>
@@ -198,7 +198,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QCheckBox" name="cbox_codition1">
+       <widget class="QCheckBox" name="cbox_condition1">
         <property name="text">
          <string>移动侦测</string>
         </property>
@@ -249,7 +249,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_4">
+    <widget class="QGroupBox" name="gbox_alarmaction">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -1556,6 +1556,85 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btn_weekSelectNone</tabstop>
+  <tabstop>btn_weekSelectAll</tabstop>
+  <tabstop>cbox_w1</tabstop>
+  <tabstop>cbox_w2</tabstop>
+  <tabstop>cbox_w3</tabstop>
+  <tabstop>cbox_w4</tabstop>
+  <tabstop>cbox_w5</tabstop>
+  <tabstop>cbox_w6</tabstop>
+  <tabstop>cbox_w7</tabstop>
+  <tabstop>tedt_starttime</tabstop>
+  <tabstop>tedt_endtime</tabstop>
+  <tabstop>ledt_continue</tabstop>
+  <tabstop>btn_conditionSelectNone</tabstop>
+  <tabstop>btn_coditionSelectAll</tabstop>
+  <tabstop>cbox_condition1</tabstop>
+  <tabstop>cbox_condition2</tabstop>
+  <tabstop>cbox_condition3</tabstop>
+  <tabstop>cbox_condition4</tabstop>
+  <tabstop>cbox_condition5</tabstop>
+  <tabstop>rad_audio</tabstop>
+  <tabstop>btn_openaudiofile</tabstop>
+  <tabstop>rad_audiofile</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>cbbox_audiotype</tabstop>
+  <tabstop>cbbox_audio</tabstop>
+  <tabstop>chbox_audioreadtxt</tabstop>
+  <tabstop>btn_audioTest</tabstop>
+  <tabstop>tedt_audioText</tabstop>
+  <tabstop>ledt_audiofile</tabstop>
+  <tabstop>sbox_photocount</tabstop>
+  <tabstop>sbox_photogap</tabstop>
+  <tabstop>ledt_ftpuser</tabstop>
+  <tabstop>ledt_ftpport</tabstop>
+  <tabstop>chbox_pasvmode</tabstop>
+  <tabstop>btn_ftptest</tabstop>
+  <tabstop>ledt_ftppasswd</tabstop>
+  <tabstop>ledt_ftphomeDir</tabstop>
+  <tabstop>ledt_ftphost</tabstop>
+  <tabstop>cbbox_ftpuploadtype</tabstop>
+  <tabstop>ledt_ftpecho</tabstop>
+  <tabstop>ledt_mailreceiver</tabstop>
+  <tabstop>cbbox_mailfiletype</tabstop>
+  <tabstop>chbox_mailauth</tabstop>
+  <tabstop>ledt_mailuser</tabstop>
+  <tabstop>ledt_mailsmtphost</tabstop>
+  <tabstop>ledt_mailpasswd</tabstop>
+  <tabstop>cbbox_mailssl</tabstop>
+  <tabstop>ledt_mailport</tabstop>
+  <tabstop>ledt_mailsendbox</tabstop>
+  <tabstop>btn_mailtest</tabstop>
+  <tabstop>ledt_mailecho</tabstop>
+  <tabstop>btn_msgtest</tabstop>
+  <tabstop>chbox_msggap</tabstop>
+  <tabstop>ledt_msgphone</tabstop>
+  <tabstop>cbbox_msgcom</tabstop>
+  <tabstop>sbox_msgtime</tabstop>
+  <tabstop>cbbox_dialtype</tabstop>
+  <tabstop>ledt_dialphone</tabstop>
+  <tabstop>btn_dialtest</tabstop>
+  <tabstop>chbox_enablesky</tabstop>
+  <tabstop>ledt_skyacct</tabstop>
+  <tabstop>chbox_skysendmsg</tabstop>
+  <tabstop>chbox_enablecall</tabstop>
+  <tabstop>btn_skytest</tabstop>
+  <tabstop>ledt_skycallphone</tabstop>
+  <tabstop>txt_skymsg</tabstop>
+  <tabstop>ledt_skyphonenumber</tabstop>
+  <tabstop>sbox_prepostionnum</tabstop>
+  <tabstop>ledt_weblink</tabstop>
+  <tabstop>btn_webtest</tabstop>
+  <tabstop>ledt_program</tabstop>
+  <tabstop>btn_programtest</tabstop>
+  <tabstop>chbox_programonce</tabstop>
+  <tabstop>btn_programopen</tabstop>
+  <tabstop>ledt_programarg</tabstop>
+  <tabstop>pushButton_14</tabstop>
+  <tabstop>pushButton_15</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

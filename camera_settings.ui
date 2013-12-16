@@ -44,7 +44,7 @@
    <item>
     <widget class="QTabWidget" name="tab_Widget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_connect">
       <attribute name="title">
@@ -441,7 +441,7 @@
       <attribute name="title">
        <string>录像</string>
       </attribute>
-      <widget class="QCheckBox" name="cbox_enablerecord">
+      <widget class="QCheckBox" name="chbox_enablerecord">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -489,16 +489,6 @@
           <column>
            <property name="text">
             <string>时间</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>触发方式</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>报警动作</string>
            </property>
           </column>
          </widget>

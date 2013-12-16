@@ -1,47 +1,68 @@
 #include "alarmtrapsettings.h"
 #include "ui_alarmtrapsettings.h"
 #include "sqldriver.h"
+#include "global.h"
+#include <QtAlgorithms>
 
-AlarmTrapSettings::AlarmTrapSettings(const QString &verifyid, QWidget *parent) :
+AlarmTrapSettings::AlarmTrapSettings(const QString &verifyid, const QString &id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AlarmTrapSettings)
 {
     ui->setupUi(this);
     m_verifyid = verifyid;
     setWindowTitle("添加布防时间段");
-    ui->stackedWidget->currentWidget()->setEnabled(false);ui->stackedWidget->currentWidget()->setEnabled(false);
-    weeklist << ui->cbox_w1 << ui->cbox_w2 << ui->cbox_w2 << ui->cbox_w3 << ui->cbox_w4
-                << ui->cbox_w5 << ui->cbox_w6 << ui->cbox_w7;
-    conditionlist << ui->cbox_codition1 << ui->cbox_condition2 << ui->cbox_condition3
-                     << ui->cbox_condition4 << ui->cbox_condition5;
+    ui->stackedWidget->currentWidget()->setEnabled(false);
+    ui->stackedWidget->currentWidget()->setEnabled(false);
+    for(int i = 1 ; i < 8;i++)
+        weeklist << ui->gbox_week->findChild<QCheckBox*>("cbox_w"+QString::number(i));
+
+//    int count = weeklist.count();
+//    int size = weeklist.size();
 
 
-    readDataToWidget();
+
+    for(int i = 1 ; i < 6;i++)
+        conditionlist << ui->gbox_triggeraction->findChild<QCheckBox*>("cbox_condition"+QString::number(i));
+
+    readDataToWidget(id);
 }
 
-void AlarmTrapSettings::readDataToWidget()
+void AlarmTrapSettings::readDataToWidget(const QString &id)
 {
-    QStringList list = SqlInstance::getRowFirst("alarm","verifyid",m_verifyid);
-    setCharToList(list.at(1),weeklist);
-    ui->tedt_starttime->setTime(QTime::fromString(list.at(2)));
-    ui->tedt_endtime->setTime(QTime::fromString(list.at(3)));
-    ui->ledt_continue->setText(list.at(4));
-    setCharToList(list.at(5),conditionlist);
+    QStringList list = SqlInstance::QuerySqlFromString(
+                "select * from alarm where verifyid == ? and sort_id == ?",
+                QStringList() << m_verifyid << id);
+    setCharToList(list.at(2).toInt(),weeklist);
+    ui->tedt_starttime->setTime(QTime::fromString(list.at(3),"hh:mm:ss"));
+    ui->tedt_endtime->setTime(QTime::fromString(list.at(4),"hh:mm:ss"));
+    ui->ledt_continue->setText(list.at(5));
+    setCharToList(list.at(6).toInt(),conditionlist);
 
 
 }
 
 
-void AlarmTrapSettings::setCharToList(const QString &str, QList<QCheckBox *> &list)
-{
-    char c = 0;
-    memcpy(&c,str.toLocal8Bit().data(),1);
-    int n = list.count();
-    foreach(QCheckBox *b , list)
-    {
-        b->setChecked(c & (1 << n--));
-    }
-}
+//void AlarmTrapSettings::setCharToList(unsigned char c, QList<QCheckBox *> &list)
+//{
+
+//    int n = list.size();
+//    foreach(QCheckBox *b , list)
+//    {
+//        b->setChecked(c & (1 << n--));
+//    }
+//}
+
+//unsigned char  AlarmTrapSettings::getCharFromList(const QList<QCheckBox*> &list)
+//{
+//    unsigned char c = 0;
+//    int n = list.size();
+//    foreach(QCheckBox *b , list)
+//    {
+//        c |= (b->isChecked() ? 1 : 0) << n--;
+//    }
+//    return c;
+//}
+
 
 AlarmTrapSettings::~AlarmTrapSettings()
 {
@@ -127,16 +148,18 @@ void AlarmTrapSettings::on_chbox_enablecall_toggled(bool checked)
 
 void AlarmTrapSettings::on_pushButton_14_clicked()
 {
-    QString w = getCharFromList(weeklist);
-    SqlInstance::insertItem("alarm",QStringList() <<
-                            m_verifyid << w
-                            << ui->tedt_starttime->text() << ui->tedt_endtime->text()
-                            << ui->ledt_continue->text()
-                            << getCharFromList(conditionlist));
+    int w = getCharFromList(weeklist);
+//    int count = SqlInstance::getMaximumId("alarm","id");
+//    SqlInstance::insertItem("alarm",QStringList() << QString::number(count+1) <<
+//                            m_verifyid << w
+//                            << ui->tedt_starttime->text() << ui->tedt_endtime->text()
+//                            << ui->ledt_continue->text()
+//                            << getCharFromList(conditionlist));
+
+
     QString wek;
-    unsigned char c;
-    memcpy(&c,w.toLocal8Bit().data(),1);
-    if(c == 254)
+
+    if(w == 254)   // 254 == 11111110
     {
         wek.append("每天");
     }
@@ -157,22 +180,16 @@ void AlarmTrapSettings::on_pushButton_14_clicked()
         d.append(s->text());
     }
 
-
+    m_alarmsql <<
+                  m_verifyid << QString::number(w)
+                  << ui->tedt_starttime->text() << ui->tedt_endtime->text()
+                  << ui->ledt_continue->text()
+                  << QString::number(getCharFromList(conditionlist));
     m_alarmlist << wek << ui->tedt_starttime->text() << ui->tedt_endtime->text() << d.join(',');
 
 
 }
 
-QString AlarmTrapSettings::getCharFromList(const QList<QCheckBox*> &list)
-{
-    char c = 0;
-    int n = list.count();
-    foreach(QCheckBox *b , list)
-    {
-        c |= (b->isChecked() ? 1 : 0) << n--;
-    }
-    return QString::fromLocal8Bit(&c);
-}
 
 
 
