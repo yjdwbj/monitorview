@@ -24,10 +24,12 @@
 #include <QMouseEvent>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
+#include <QSettings>
 
 
 
 typedef QPair<int,QString> itemWidget;
+typedef QPair<QString,QVariant> iniPair;
 static const int othermenu =10;
 static const int fullscreen = 11;
 //static bool fullscreentoggle = false;
@@ -35,7 +37,16 @@ static const int fullscreen = 11;
 static QString choices("全不选,全选");
 static QString yesorno("提交,取消");
 static QString weekNum("一,二,三,四,五,六,日");
+static QString weekDNum("1,2,3,4,5,6,7");
 static QString alarmCondition("移动侦测,报警输入1,报警输入2,报警输入3,报警输入4");
+
+static QString actionMapList("#01,#02,#03,#04,#05,#06,#07,#08,#09,#10,#11");
+
+
+
+
+
+
 enum LayoutOriant {
     Horizontal,
     Vertical

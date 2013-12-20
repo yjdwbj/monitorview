@@ -289,6 +289,12 @@
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
         <property name="showGrid">
          <bool>true</bool>
         </property>
@@ -443,123 +449,125 @@
          <number>1</number>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="audio">
-         <widget class="QGroupBox" name="groupBox_5">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>331</width>
-            <height>261</height>
-           </rect>
-          </property>
-          <property name="title">
-           <string>声音</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="rad_audio">
-             <property name="text">
-              <string>声音</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <widget class="QPushButton" name="btn_openaudiofile">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>...</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QRadioButton" name="rad_audiofile">
-             <property name="text">
-              <string>声音文件</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="3">
-            <widget class="QComboBox" name="cbbox_audiotype">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>声音:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="0" colspan="3">
-            <widget class="QComboBox" name="cbbox_audio"/>
-           </item>
-           <item row="4" column="0">
-            <widget class="QCheckBox" name="chbox_audioreadtxt">
-             <property name="text">
-              <string>朗读文本</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0">
-            <widget class="QPushButton" name="btn_audioTest">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>60</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>测试</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="1" colspan="2">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>*当发现异常情况时，会播放上面选择的声音</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0" colspan="3">
-            <widget class="QTextEdit" name="tedt_audioText">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0" colspan="2">
-            <widget class="QLineEdit" name="ledt_audiofile">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
+          <item>
+           <widget class="QGroupBox" name="gbox_audio">
+            <property name="title">
+             <string>声音</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_4">
+             <item row="0" column="0">
+              <widget class="QRadioButton" name="rad_audio">
+               <property name="text">
+                <string>声音</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QPushButton" name="btn_openaudiofile">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QRadioButton" name="rad_audiofile">
+               <property name="text">
+                <string>声音文件</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="3">
+              <widget class="QComboBox" name="cbbox_audiotype">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>声音:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0" colspan="3">
+              <widget class="QComboBox" name="cbbox_voice"/>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="chbox_speech">
+               <property name="text">
+                <string>朗读文本</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QPushButton" name="btn_audioTest">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>60</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>测试</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1" colspan="2">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>*当发现异常情况时，会播放上面选择的声音</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" colspan="3">
+              <widget class="QTextEdit" name="txt_speechText">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QLineEdit" name="ledt_audiofile">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QGroupBox" name="groupBox_6">
+           <widget class="QGroupBox" name="gbox_record">
             <property name="title">
              <string>录像</string>
             </property>
@@ -583,7 +591,7 @@
         <widget class="QWidget" name="page_3">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QGroupBox" name="groupBox_7">
+           <widget class="QGroupBox" name="gbox_photo">
             <property name="title">
              <string>拍照</string>
             </property>
@@ -630,7 +638,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QSpinBox" name="sbox_photogap">
+              <widget class="QSpinBox" name="sbox_Interval">
                <property name="value">
                 <number>1</number>
                </property>
@@ -683,7 +691,7 @@
         <widget class="QWidget" name="page_4">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QGroupBox" name="groupBox_8">
+           <widget class="QGroupBox" name="gbox_ftp">
             <property name="title">
              <string>FTP上传</string>
             </property>
@@ -691,22 +699,41 @@
              <item row="4" column="0">
               <widget class="QLineEdit" name="ledt_ftpuser"/>
              </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>FTP上传主机地址：</string>
+               </property>
+              </widget>
+             </item>
              <item row="2" column="1">
               <widget class="QLineEdit" name="ledt_ftpport"/>
              </item>
-             <item row="7" column="0">
-              <widget class="QCheckBox" name="chbox_pasvmode">
-               <property name="text">
-                <string>*PASV模式：</string>
+             <item row="8" column="1">
+              <widget class="QLineEdit" name="ledt_ftpecho">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="label_16">
+             <item row="3" column="1">
+              <widget class="QLabel" name="label_17">
                <property name="text">
-                <string>用户名：</string>
+                <string>密码：</string>
                </property>
               </widget>
+             </item>
+             <item row="6" column="0" colspan="2">
+              <widget class="QLineEdit" name="ledt_ftphomeDir"/>
              </item>
              <item row="8" column="0">
               <widget class="QPushButton" name="btn_ftptest">
@@ -721,8 +748,12 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="1">
-              <widget class="QLineEdit" name="ledt_ftppasswd"/>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>上传文件:</string>
+               </property>
+              </widget>
              </item>
              <item row="5" column="0">
               <widget class="QLabel" name="label_18">
@@ -731,32 +762,8 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>上传文件:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QLabel" name="label_17">
-               <property name="text">
-                <string>密码：</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0" colspan="2">
-              <widget class="QLineEdit" name="ledt_ftphomeDir"/>
-             </item>
              <item row="2" column="0">
               <widget class="QLineEdit" name="ledt_ftphost"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_14">
-               <property name="text">
-                <string>FTP上传主机地址：</string>
-               </property>
-              </widget>
              </item>
              <item row="0" column="1">
               <widget class="QComboBox" name="cbbox_ftpuploadtype">
@@ -789,19 +796,24 @@
                </property>
               </widget>
              </item>
-             <item row="8" column="1">
-              <widget class="QLineEdit" name="ledt_ftpecho">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="ledt_ftppasswd">
+               <property name="echoMode">
+                <enum>QLineEdit::Password</enum>
                </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>用户名：</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QCheckBox" name="chbox_pasvmode">
+               <property name="text">
+                <string>*PASV模式：</string>
                </property>
               </widget>
              </item>
@@ -813,7 +825,7 @@
         <widget class="QWidget" name="page_5">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QGroupBox" name="groupBox_9">
+           <widget class="QGroupBox" name="gbox_email">
             <property name="title">
              <string>电子邮件</string>
             </property>
@@ -836,7 +848,7 @@
               </widget>
              </item>
              <item row="1" column="2">
-              <widget class="QComboBox" name="cbbox_mailfiletype">
+              <widget class="QComboBox" name="cbbox_mailAttach">
                <item>
                 <property name="text">
                  <string>不附带文件</string>
@@ -875,6 +887,9 @@
                   <property name="text">
                    <string>服务器需要安全认证</string>
                   </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="3" column="2" colspan="3">
@@ -898,7 +913,11 @@
                  </widget>
                 </item>
                 <item row="3" column="7">
-                 <widget class="QLineEdit" name="ledt_mailpasswd"/>
+                 <widget class="QLineEdit" name="ledt_mailpasswd">
+                  <property name="echoMode">
+                   <enum>QLineEdit::Password</enum>
+                  </property>
+                 </widget>
                 </item>
                 <item row="2" column="1" colspan="4">
                  <widget class="QComboBox" name="cbbox_mailssl">
@@ -994,7 +1013,7 @@
         <widget class="QWidget" name="page_6">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QGroupBox" name="groupBox_11">
+           <widget class="QGroupBox" name="gbox_msgModern">
             <property name="title">
              <string>短信猫</string>
             </property>
@@ -1088,6 +1107,9 @@
              </item>
              <item row="5" column="4">
               <widget class="QSpinBox" name="sbox_msgtime">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="value">
                 <number>15</number>
                </property>
@@ -1101,7 +1123,7 @@
         <widget class="QWidget" name="page_7">
          <layout class="QHBoxLayout" name="horizontalLayout_8">
           <item>
-           <widget class="QGroupBox" name="groupBox_12">
+           <widget class="QGroupBox" name="gbox_dial">
             <property name="title">
              <string>拨打电话</string>
             </property>
@@ -1168,13 +1190,13 @@
         <widget class="QWidget" name="page_8">
          <layout class="QHBoxLayout" name="horizontalLayout_9">
           <item>
-           <widget class="QGroupBox" name="groupBox_13">
+           <widget class="QGroupBox" name="gbox_skype">
             <property name="title">
              <string>Skype</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_11">
              <item row="0" column="0">
-              <widget class="QCheckBox" name="chbox_enablesky">
+              <widget class="QCheckBox" name="chbox_skyenable">
                <property name="text">
                 <string>发送Skype消息</string>
                </property>
@@ -1216,7 +1238,7 @@
               </widget>
              </item>
              <item row="6" column="0">
-              <widget class="QCheckBox" name="chbox_enablecall">
+              <widget class="QCheckBox" name="chbox_skycall">
                <property name="text">
                 <string>呼叫</string>
                </property>
@@ -1275,7 +1297,7 @@
         <widget class="QWidget" name="page_9">
          <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>
-           <widget class="QGroupBox" name="groupBox_14">
+           <widget class="QGroupBox" name="gbox_preposition">
             <property name="title">
              <string>调用预置位</string>
             </property>
@@ -1322,7 +1344,7 @@
         <widget class="QWidget" name="page_10">
          <layout class="QHBoxLayout" name="horizontalLayout_11">
           <item>
-           <widget class="QGroupBox" name="groupBox_15">
+           <widget class="QGroupBox" name="gbox_web">
             <property name="title">
              <string>网页链接</string>
             </property>
@@ -1382,7 +1404,7 @@
         <widget class="QWidget" name="page_11">
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <item>
-           <widget class="QGroupBox" name="groupBox_16">
+           <widget class="QGroupBox" name="gbox_application">
             <property name="title">
              <string>应用程序</string>
             </property>
@@ -1408,7 +1430,7 @@
               </widget>
              </item>
              <item row="1" column="0" colspan="4">
-              <widget class="QLineEdit" name="ledt_program"/>
+              <widget class="QLineEdit" name="ledt_appPath"/>
              </item>
              <item row="6" column="0">
               <widget class="QPushButton" name="btn_programtest">
@@ -1431,7 +1453,7 @@
               </spacer>
              </item>
              <item row="4" column="0">
-              <widget class="QCheckBox" name="chbox_programonce">
+              <widget class="QCheckBox" name="chbox_apponce">
                <property name="text">
                 <string>只运行一次</string>
                </property>
@@ -1451,7 +1473,7 @@
               </widget>
              </item>
              <item row="3" column="0" colspan="4">
-              <widget class="QLineEdit" name="ledt_programarg"/>
+              <widget class="QLineEdit" name="ledt_apparg"/>
              </item>
              <item row="4" column="1">
               <spacer name="horizontalSpacer_11">
@@ -1569,69 +1591,69 @@
   <tabstop>tedt_starttime</tabstop>
   <tabstop>tedt_endtime</tabstop>
   <tabstop>ledt_continue</tabstop>
-  <tabstop>btn_conditionSelectNone</tabstop>
   <tabstop>btn_coditionSelectAll</tabstop>
+  <tabstop>btn_conditionSelectNone</tabstop>
   <tabstop>cbox_condition1</tabstop>
   <tabstop>cbox_condition2</tabstop>
   <tabstop>cbox_condition3</tabstop>
   <tabstop>cbox_condition4</tabstop>
   <tabstop>cbox_condition5</tabstop>
-  <tabstop>rad_audio</tabstop>
-  <tabstop>btn_openaudiofile</tabstop>
-  <tabstop>rad_audiofile</tabstop>
   <tabstop>tableWidget</tabstop>
+  <tabstop>rad_audio</tabstop>
   <tabstop>cbbox_audiotype</tabstop>
-  <tabstop>cbbox_audio</tabstop>
-  <tabstop>chbox_audioreadtxt</tabstop>
-  <tabstop>btn_audioTest</tabstop>
-  <tabstop>tedt_audioText</tabstop>
+  <tabstop>rad_audiofile</tabstop>
   <tabstop>ledt_audiofile</tabstop>
+  <tabstop>btn_openaudiofile</tabstop>
+  <tabstop>chbox_speech</tabstop>
+  <tabstop>txt_speechText</tabstop>
+  <tabstop>cbbox_voice</tabstop>
+  <tabstop>btn_audioTest</tabstop>
   <tabstop>sbox_photocount</tabstop>
-  <tabstop>sbox_photogap</tabstop>
-  <tabstop>ledt_ftpuser</tabstop>
+  <tabstop>sbox_Interval</tabstop>
+  <tabstop>cbbox_ftpuploadtype</tabstop>
+  <tabstop>ledt_ftphost</tabstop>
   <tabstop>ledt_ftpport</tabstop>
-  <tabstop>chbox_pasvmode</tabstop>
-  <tabstop>btn_ftptest</tabstop>
+  <tabstop>ledt_ftpuser</tabstop>
   <tabstop>ledt_ftppasswd</tabstop>
   <tabstop>ledt_ftphomeDir</tabstop>
-  <tabstop>ledt_ftphost</tabstop>
-  <tabstop>cbbox_ftpuploadtype</tabstop>
+  <tabstop>chbox_pasvmode</tabstop>
+  <tabstop>btn_ftptest</tabstop>
   <tabstop>ledt_ftpecho</tabstop>
   <tabstop>ledt_mailreceiver</tabstop>
-  <tabstop>cbbox_mailfiletype</tabstop>
-  <tabstop>chbox_mailauth</tabstop>
-  <tabstop>ledt_mailuser</tabstop>
+  <tabstop>cbbox_mailAttach</tabstop>
   <tabstop>ledt_mailsmtphost</tabstop>
-  <tabstop>ledt_mailpasswd</tabstop>
-  <tabstop>cbbox_mailssl</tabstop>
   <tabstop>ledt_mailport</tabstop>
+  <tabstop>chbox_mailauth</tabstop>
+  <tabstop>cbbox_mailssl</tabstop>
+  <tabstop>ledt_mailuser</tabstop>
+  <tabstop>ledt_mailpasswd</tabstop>
   <tabstop>ledt_mailsendbox</tabstop>
   <tabstop>btn_mailtest</tabstop>
   <tabstop>ledt_mailecho</tabstop>
-  <tabstop>btn_msgtest</tabstop>
-  <tabstop>chbox_msggap</tabstop>
-  <tabstop>ledt_msgphone</tabstop>
   <tabstop>cbbox_msgcom</tabstop>
+  <tabstop>ledt_msgphone</tabstop>
+  <tabstop>chbox_msggap</tabstop>
   <tabstop>sbox_msgtime</tabstop>
+  <tabstop>btn_msgtest</tabstop>
   <tabstop>cbbox_dialtype</tabstop>
   <tabstop>ledt_dialphone</tabstop>
   <tabstop>btn_dialtest</tabstop>
-  <tabstop>chbox_enablesky</tabstop>
+  <tabstop>chbox_skyenable</tabstop>
   <tabstop>ledt_skyacct</tabstop>
-  <tabstop>chbox_skysendmsg</tabstop>
-  <tabstop>chbox_enablecall</tabstop>
-  <tabstop>btn_skytest</tabstop>
-  <tabstop>ledt_skycallphone</tabstop>
   <tabstop>txt_skymsg</tabstop>
+  <tabstop>chbox_skysendmsg</tabstop>
   <tabstop>ledt_skyphonenumber</tabstop>
+  <tabstop>chbox_skycall</tabstop>
+  <tabstop>ledt_skycallphone</tabstop>
+  <tabstop>btn_skytest</tabstop>
   <tabstop>sbox_prepostionnum</tabstop>
   <tabstop>ledt_weblink</tabstop>
   <tabstop>btn_webtest</tabstop>
-  <tabstop>ledt_program</tabstop>
-  <tabstop>btn_programtest</tabstop>
-  <tabstop>chbox_programonce</tabstop>
+  <tabstop>ledt_appPath</tabstop>
   <tabstop>btn_programopen</tabstop>
-  <tabstop>ledt_programarg</tabstop>
+  <tabstop>ledt_apparg</tabstop>
+  <tabstop>chbox_apponce</tabstop>
+  <tabstop>btn_programtest</tabstop>
   <tabstop>pushButton_14</tabstop>
   <tabstop>pushButton_15</tabstop>
  </tabstops>

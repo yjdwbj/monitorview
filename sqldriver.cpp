@@ -297,12 +297,14 @@ void SqlInstance::insertItem(const QString &table, const QStringList &itemlist)
     QString select("insert into ");
     select.append(table);
     select.append(" values (");
+
     int num = itemlist.size();
+    QStringList l;
     for(int i = 0; i < num ; i++)
     {
-        select.append("?,");
+        l << "?";
     }
-    select.remove(select.length()-1,1);
+    select.append(l.join(','));
     select.append(")");
 
      QSqlQuery query(openDB());
@@ -314,6 +316,7 @@ void SqlInstance::insertItem(const QString &table, const QStringList &itemlist)
      }
 
      query.exec();
+//     QSqlError err = query.lastError();
      QSqlDatabase::removeDatabase("qt_sql_default_connection");
 
 }

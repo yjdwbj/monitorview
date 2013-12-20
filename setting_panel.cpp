@@ -5,6 +5,7 @@
 #include "camera_settings.h"
 #include "sqldriver.h"
 #include <QMap>
+#include "settingfile.h"
 
 
 static QString allbutton("开始所有|停止所有|系统设置|录像记录|报警记录|其它");
@@ -346,6 +347,8 @@ void SettingPanel::slot_searchCamera()
         int num = SqlInstance::getMaximumId("camera_settings","camera_id");
         QStringList org;
 
+        QString path(qApp->applicationDirPath()+"/devs/");
+
         foreach(const QString &str,playlist) // insert record to sql db;
         {
             QString v = QString::number(++num)+","+str;
@@ -361,6 +364,9 @@ void SettingPanel::slot_searchCamera()
                     << org.at(6) << "" << org.at(7) <<  org.at(8);
           SqlInstance::insertItem("hostinfo",hostinfo);
 
+          initalDevSettings(path+org.at(1));
+
+
         }
 
         addCameraFromSql();
@@ -372,6 +378,31 @@ void SettingPanel::slot_searchCamera()
     delete  search;
 
 }
+
+
+
+void SettingPanel::initalDevSettings(const QString &name)
+{
+    QSettings set(name,QSettings::IniFormat);
+    QString global("Global/");
+    set.setValue(global+"DevType",QString());
+    set.setValue(global+"AlarmGroup",QString());
+    set.setValue(global+"MainType",QString());
+    set.setValue(global+"TurnImage",false);
+    set.setValue(global+"AlarmTimeSec",QString());
+    set.setValue(global+"RecordTimeSec",QString());
+    set.setValue(global+"EnableAlrm",false);
+    QString attrinfo("Info/");
+    set.setValue(attrinfo+"User",QString());
+    set.setValue(attrinfo+"Tel",QString());
+    set.setValue(attrinfo+"Addr",QString());
+    set.setValue(attrinfo+"Commit",QString());
+    set.setValue("RecVideo/RecType",0);
+    QSettings::Status s = set.status();
+    set.sync();
+    s = set.status();
+}
+
 
 void SettingPanel::addCameraFromSql()
 {

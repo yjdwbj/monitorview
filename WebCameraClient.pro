@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql
+QT       += core gui sql serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     alarmaction.cpp \
     camera_settings.cpp \
     sqldriver.cpp \
-    alarmtrapsettings.cpp
+    alarmtrapsettings.cpp \
+    settingfile.cpp
 
 HEADERS  += mainwindow.h \
     setting_panel.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     alarmaction.h \
     camera_settings.h \
     sqldriver.h \
-    alarmtrapsettings.h
+    alarmtrapsettings.h \
+    settingfile.h
 
 
 INCLUDEPATH += $$PWD/sdk/include

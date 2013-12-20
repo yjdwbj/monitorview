@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>501</width>
-    <height>468</height>
+    <width>447</width>
+    <height>449</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
    <item>
     <widget class="QTabWidget" name="tab_Widget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_connect">
       <attribute name="title">
@@ -249,8 +249,8 @@
         <rect>
          <x>9</x>
          <y>60</y>
-         <width>459</width>
-         <height>181</height>
+         <width>401</width>
+         <height>191</height>
         </rect>
        </property>
        <property name="title">
@@ -444,8 +444,8 @@
       <widget class="QCheckBox" name="chbox_enablerecord">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>19</y>
+         <x>9</x>
+         <y>9</y>
          <width>72</width>
          <height>17</height>
         </rect>
@@ -460,10 +460,10 @@
       <widget class="QGroupBox" name="groupBox_2">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>100</y>
-         <width>459</width>
-         <height>181</height>
+         <x>9</x>
+         <y>78</y>
+         <width>401</width>
+         <height>197</height>
         </rect>
        </property>
        <property name="title">
@@ -474,6 +474,12 @@
          <widget class="QTableWidget" name="tablewidget_recordtime">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
           </property>
           <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
            <bool>false</bool>
@@ -571,9 +577,9 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>89</width>
+         <x>9</x>
+         <y>32</y>
+         <width>131</width>
          <height>17</height>
         </rect>
        </property>
@@ -590,9 +596,9 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>70</y>
-         <width>161</width>
+         <x>9</x>
+         <y>55</y>
+         <width>155</width>
          <height>17</height>
         </rect>
        </property>
@@ -600,31 +606,31 @@
         <string>只在下列时间段进行录制</string>
        </property>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QPushButton" name="pushButton_13">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>300</y>
-         <width>110</width>
-         <height>58</height>
+         <x>10</x>
+         <y>282</y>
+         <width>108</width>
+         <height>25</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <item>
-         <widget class="QPushButton" name="pushButton_13">
-          <property name="text">
-           <string>应用到所有摄像机</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_14">
-          <property name="text">
-           <string>应用到同组摄像机</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <property name="text">
+        <string>应用到所有摄像机</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_14">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>313</y>
+         <width>108</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>应用到同组摄像机</string>
+       </property>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_append">
@@ -642,7 +648,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_6"/>
+          <widget class="QLineEdit" name="edt_info_user"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_7">
@@ -682,7 +688,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_7"/>
+          <widget class="QLineEdit" name="edt_info_tel">
+           <property name="inputMethodHints">
+            <set>Qt::ImhDigitsOnly</set>
+           </property>
+          </widget>
          </item>
          <item>
           <spacer name="horizontalSpacer_14">
@@ -722,7 +732,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_8"/>
+          <widget class="QLineEdit" name="edt_info_addr"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_11">
@@ -749,7 +759,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_9"/>
+          <widget class="QLineEdit" name="edt_info_commit"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_12">

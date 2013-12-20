@@ -99,10 +99,21 @@ private slots:
 
     void on_chbox_enablerecord_toggled(bool checked);
 
+    void on_btn_alterrecordtime_clicked();
+
+    void on_btn_deletetrecordtime_clicked();
+
+    void on_btn_clearrecordtime_clicked();
+
+    void on_tableWidget_alarm_doubleClicked(const QModelIndex &index);
+
+    void on_tablewidget_recordtime_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::camera_settings *ui;
     Ui::record_time *record;
-    QString m_verifyid,m_cameraName;
+    QString m_verifyid,m_cameraName,m_inifname;
+    QSettings *set;
 
 
     void setRecordTab();

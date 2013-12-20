@@ -6,11 +6,13 @@
 #include "setting_panel.h"
 #include "viewframe.h"
 #include "alarmtrapsettings.h"
+
 class ViewFrame;
 class CameraView;
 
 
-
+static const QString AlarmTimeSec("Global/AlarmTimeSec");
+static const QString EnableAlarm("Global/EnableAlarm");
 
 RecordTime::RecordTime(const QString &verifyid, const QString &id,QWidget *parent)
     :QDialog(parent),
@@ -22,7 +24,7 @@ RecordTime::RecordTime(const QString &verifyid, const QString &id,QWidget *paren
         weeklist << ui->gbox_week->findChild<QCheckBox*>("cbox_w"+QString::number(i));
 
     QStringList list = SqlInstance::QuerySqlFromString(
-                "select * from alarm where verifyid == ? and sort_id == ?",
+                "select * from record where record_verifyid == ? and record_sort_id == ?",
                 QStringList() << m_verifyid << id);
     setCharToList(list.at(2).toInt(),weeklist);
     ui->tedt_starttime->setTime(QTime::fromString(list.at(3)));
@@ -72,7 +74,7 @@ void RecordTime::on_btn_accept_clicked()
     }
 
     m_viewItem << wek << QString(ui->tedt_starttime->text() + " - " + ui->tedt_endtime->text());
-    m_sqlItem << m_verifyid << wek <<  ui->tedt_starttime->text() << ui->tedt_endtime->text();
+    m_sqlItem << m_verifyid << QString::number(w) <<  ui->tedt_starttime->text() << ui->tedt_endtime->text() ;
 }
 
 
@@ -80,10 +82,10 @@ void RecordTime::on_btn_accept_clicked()
 
 camera_settings::camera_settings(int index, const QString &name, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::camera_settings)
+    ui(new Ui::camera_settings),
+    m_inifname(qApp->applicationDirPath()+"/devs/"+name)
 {
     ui->setupUi(this);
-
     this->setWindowTitle("摄像机设置");
     ui->edt_cameraName->setText(name);
     ui->tab_Widget->setCurrentIndex(index);
@@ -91,8 +93,9 @@ camera_settings::camera_settings(int index, const QString &name, QWidget *parent
     {
 
 
-        QStringList camera = SqlInstance::getRowFirst("camera_settings","camera_name",name);
+          set = new QSettings(m_inifname,QSettings::IniFormat);
 
+        QStringList camera = SqlInstance::getRowFirst("camera_settings","camera_name",name);
         m_verifyid = camera.at(3);
         if(!camera.isEmpty())
         {
@@ -105,24 +108,31 @@ camera_settings::camera_settings(int index, const QString &name, QWidget *parent
                 ui->edt_ipaddress->setText("http://" + l.first().replace(",",":"));
             }
         }
-         ui->chbox_enableAlarm->setChecked(!camera.at(12).compare("0") ? false:true );
+//         ui->chbox_enableAlarm->setChecked(!camera.at(12).compare("0") ? false:true );
+//         ui->chbox_enablerecord->setChecked(!camera.at(13).compare("0") ? false:true );
+        ui->chbox_enableAlarm->setChecked(set->value("Global/AlarmEnable").toBool());
+        ui->chbox_enablerecord->setChecked(set->value("RecVideo/RecType").toInt() > 0 ? true : false);
     }
     setRecordTab();
     setAlarmTab();
+
+    ui->edt_info_user->setText(set->value("Info/User").toString());
+    ui->edt_info_tel->setText(set->value("Info/Tel").toString());
+    ui->edt_info_addr->setText(set->value("Info/Addr").toString());
+    ui->edt_info_commit->setText(set->value("Info/Commit").toString());
 }
 
 camera_settings::~camera_settings()
 {
     delete ui;
-    delete record;
 }
 
 void camera_settings::setRecordTab()
 {
-     QStringList recordlist =  SqlInstance::getRowList("record","verifyid",m_verifyid);
+     QStringList recordlist =  SqlInstance::getRowList("record","record_verifyid",m_verifyid);
      if(recordlist.size() < 1)
          return;
-
+     bool flag = false;
      foreach( const QString &line,recordlist)
      {
          int row = ui->tablewidget_recordtime->rowCount();
@@ -131,45 +141,77 @@ void camera_settings::setRecordTab()
 
          QString wek;
 
-         int c = record.at(3).toInt();
+         unsigned char c = record.at(2).toInt();
          wek =  c == 254 ?  QString("每天"): getStringFromChar(c,weekNum.split(','));
-         ui->tableWidget_alarm->setItem(row,0,new QTableWidgetItem(wek));
+         ui->tablewidget_recordtime->setItem(row,0,new QTableWidgetItem(wek));
          ui->tablewidget_recordtime->setItem(row,1,
                                              new QTableWidgetItem(record.at(4) + " - " + record.at(5)));
-
-
+         if(!record.at(6).compare("1"))
+             flag = true;
      }
+         ui->rdb_specialtime->setChecked(flag);
 }
 
 
 void camera_settings::setAlarmTab()
 {
 
-   QStringList alarmlist =  SqlInstance::getRowList("alarm","verifyid",m_verifyid);
-   if(alarmlist.size() <1)
-       return;
-   foreach(const QString &line,alarmlist)
-   {
-       int row = ui->tableWidget_alarm->rowCount();
-       ui->tableWidget_alarm->insertRow(row);
+//   QStringList alarmlist =  SqlInstance::getRowList("alarm","verifyid",m_verifyid);
+//   if(alarmlist.size() <1)
+//       return;
+//   foreach(const QString &line,alarmlist)
+//   {
+//       int row = ui->tableWidget_alarm->rowCount();
+//       ui->tableWidget_alarm->insertRow(row);
 
-       QStringList record = line.split(',');
+//       QStringList record = line.split(',');
 
-       QString wek;
+//       QString wek;
 
-       int c = record.at(2).toInt();
-       wek =  c == 254 ?  QString("每天"): getStringFromChar(c,weekNum.split(','));
+//       unsigned char c = record.at(2).toInt();
+//       wek =  c == 254 ?  QString("每天"): getStringFromChar(c,weekNum.split(','));
 
-       ui->tableWidget_alarm->setItem(row,0,new QTableWidgetItem(wek));
+//       ui->tableWidget_alarm->setItem(row,0,new QTableWidgetItem(wek));
 
-       ui->tableWidget_alarm->setItem(row,1,new QTableWidgetItem(record.at(3)));
-       ui->tableWidget_alarm->setItem(row,2,new QTableWidgetItem(record.at(4)));
+//       ui->tableWidget_alarm->setItem(row,1,new QTableWidgetItem(record.at(3)));
+//       ui->tableWidget_alarm->setItem(row,2,new QTableWidgetItem(record.at(4)));
 
-        c = record.at(6).toInt();
-       ui->tableWidget_alarm->setItem(row,3,
-                                      new QTableWidgetItem(getStringFromChar(c,alarmCondition.split(','))));
+//        c = record.at(6).toInt();
+//       ui->tableWidget_alarm->setItem(row,3,
+//                                      new QTableWidgetItem(getStringFromChar(c,alarmCondition.split(','))));
 
-   }
+//   }
+    QString iniValue = set->value(AlarmTimeSec).toString();
+    ui->chbox_enableAlarm->setChecked(set->value(EnableAlarm).toBool());
+
+    QStringList inilist = iniValue.split('|',QString::SkipEmptyParts);
+    if(inilist.first().isEmpty())
+        return;
+    foreach(const QString &str,inilist)
+    {
+        QStringList tmlist = str.split('?',QString::SkipEmptyParts);
+        int row = ui->tableWidget_alarm->rowCount();
+        ui->tableWidget_alarm->insertRow(row);
+
+        QString wek;
+
+        unsigned char c = tmlist.at(0).toInt();
+        wek =  c == 254 ?  QString("每天"): getStringFromChar(c,weekNum.split(','));
+        ui->tableWidget_alarm->setItem(row,0,new QTableWidgetItem(wek));
+        ui->tableWidget_alarm->setItem(row,1,
+                                       new QTableWidgetItem(tmlist.at(1).section('~',0,0)));
+        ui->tableWidget_alarm->setItem(row,2,
+                                       new QTableWidgetItem(tmlist.at(1).section('~',1,1)));
+        c = tmlist.at(2).toInt();
+        ui->tableWidget_alarm->setItem(row,3,
+        new QTableWidgetItem(getStringFromChar(c,alarmCondition.split(','))));
+
+    }
+
+
+
+
+
 
 }
 
@@ -206,12 +248,20 @@ void camera_settings::on_pushButton_15_clicked()
                             ui->edt_passwd->text(),"camera_verifyid",m_verifyid);
     SqlInstance::updateItem("camera_settings","camera_login_name",
                             ui->edt_user->text(),"camera_verifyid",m_verifyid);
-    SqlInstance::updateItem("camera_settings","camera_alarm",
-                            ui->chbox_enableAlarm->isChecked() ? "1" : "0",
-                            "camera_verifyid",m_verifyid);
-    SqlInstance::updateItem("camera_settings","camera_record",
-                            ui->chbox_enablerecord->isChecked() ? "1" : "0",
-                            "camera_verifyid",m_verifyid);
+//    SqlInstance::updateItem("camera_settings","camera_alarm",
+//                            ui->chbox_enableAlarm->isChecked() ? "1" : "0",
+//                            "camera_verifyid",m_verifyid);
+//    SqlInstance::updateItem("camera_settings","camera_record",
+//                            ui->chbox_enablerecord->isChecked() ? "1" : "0",
+//                            "camera_verifyid",m_verifyid);
+    set->setValue("Global/EnableAlarm",ui->chbox_enableAlarm->isChecked()? 1 : 0);
+    set->setValue("Info/User",ui->edt_info_user->text());
+    set->setValue("Info/Tel",ui->edt_info_tel->text());
+    set->setValue("Info/Addr",ui->edt_info_addr->text());
+    set->setValue("Info/Commit",ui->edt_info_commit->text());
+
+    set->sync();
+
 
 
 
@@ -243,6 +293,7 @@ void camera_settings::on_chbox_enablerecord_toggled(bool checked)
 {
     ui->rdb_alltimerecord->setEnabled(checked);
     ui->rdb_specialtime->setEnabled(checked);
+    on_rdb_specialtime_toggled(checked);
 }
 
 
@@ -250,11 +301,11 @@ void camera_settings::on_chbox_enablerecord_toggled(bool checked)
 
 void camera_settings::on_rdb_specialtime_toggled(bool checked)
 {
-     ui->tablewidget_recordtime->setEnabled(checked);
-     ui->btn_addrecordtime->setEnabled(checked);
-     ui->btn_alterrecordtime->setEnabled(checked);
-     ui->btn_clearrecordtime->setEnabled(checked);
-     ui->btn_deletetrecordtime->setEnabled(checked);
+     ui->tablewidget_recordtime->setEnabled(ui->rdb_specialtime->isChecked() & checked);
+     ui->btn_addrecordtime->setEnabled(ui->rdb_specialtime->isChecked() & checked);
+     ui->btn_alterrecordtime->setEnabled(ui->rdb_specialtime->isChecked() & checked);
+     ui->btn_clearrecordtime->setEnabled(ui->rdb_specialtime->isChecked() & checked);
+     ui->btn_deletetrecordtime->setEnabled(ui->rdb_specialtime->isChecked() & checked);
 }
 
 
@@ -263,45 +314,61 @@ void camera_settings::on_btn_addtraptime_clicked() // add new item
 {
 
 
-    AlarmTrapSettings *al = new AlarmTrapSettings(m_verifyid,
+    AlarmTrapSettings *al = new AlarmTrapSettings(m_inifname,m_verifyid,
                                                   QString::number(ui->tableWidget_alarm->currentRow()));
     if(al->exec())
     {
         int num = ui->tableWidget_alarm->rowCount();
         ui->tableWidget_alarm->insertRow(num);
         int col = 0;
-        QStringList llist = al->getAlarmSql();
-        QString id = QString::number(SqlInstance::getMaximumId("alarm","id")+1);
-        llist.prepend(id);
-        llist.append(QString::number(num));
-        SqlInstance::insertItem("alarm",llist);
+//        QStringList llist = al->getAlarmSql();
+//        QString id = QString::number(SqlInstance::getMaximumId("alarm","id")+1);
+//        llist.prepend(id);
+//        llist.append(QString::number(num));
+//        SqlInstance::insertItem("alarm",llist);
+         QString oldAlarm = set->value(AlarmTimeSec).toString();
+         oldAlarm.append('|');
+         oldAlarm.append(al->getIniItem().join('?'));
+         set->setValue("Global/AlarmTimeSec",oldAlarm);
         foreach(const QString &str,al->getAlarmList())
         {
             QTableWidgetItem *n = new QTableWidgetItem(str);
             ui->tableWidget_alarm->setItem(num,col++,n);
         }
+
+
     }
 
 }
 
 void camera_settings::on_btn_altertraptime_clicked() // alter item
 {
-    AlarmTrapSettings *al = new AlarmTrapSettings(m_verifyid,
-                                                  QString::number(ui->tableWidget_alarm->currentRow()));
+     QString oldAlarm = set->value(AlarmTimeSec).toString();
+     QStringList tlist = oldAlarm.split('|',QString::SkipEmptyParts);
+     while(tlist.size() < ui->tableWidget_alarm->rowCount())
+         tlist.append("");
+
+    AlarmTrapSettings *al = new AlarmTrapSettings(m_inifname,m_verifyid,
+                                                  QString::number(ui->tableWidget_alarm->currentRow()),
+                                                  tlist.at(ui->tableWidget_alarm->currentRow()));
     if(al->exec())
     {
         int num = ui->tableWidget_alarm->currentRow();
-        QString nstr = QString::number(num);
-        QStringList llist =  al->getAlarmSql();
+//        QString nstr = QString::number(num);
+//        QStringList llist =  al->getAlarmSql();
 
 
-        QStringList idl = SqlInstance::QuerySqlFromString("select id from alarm where verifyid == ? and sort_id == ?",
-                                                          QStringList () << m_verifyid << nstr);
-        llist.prepend(idl.first());
-        llist.append(nstr);
+//        QStringList idl = SqlInstance::QuerySqlFromString("select id from alarm where verifyid == ? and sort_id == ?",
+//                                                          QStringList () << m_verifyid << nstr);
+//        llist.prepend(idl.first());
+//        llist.append(nstr);
 
-        SqlInstance::deleteRecordByCondition("alarm","id",idl.first());
-        SqlInstance::insertItem("alarm",llist);
+//        SqlInstance::deleteRecordByCondition("alarm","id",idl.first());
+//        SqlInstance::insertItem("alarm",llist);
+
+
+        tlist.replace(num,al->getIniItem().join('?'));
+        set->setValue(AlarmTimeSec,tlist.join('|'));
         int col = 0;
         foreach(const QString &str,al->getAlarmList())
         {
@@ -336,7 +403,7 @@ void camera_settings::on_btn_cleartraptime_clicked()   // clear all item
     }
 }
 
-void camera_settings::on_btn_addrecordtime_clicked()
+void camera_settings::on_btn_addrecordtime_clicked() // add record time
 {
     RecordTime *record = new RecordTime(m_verifyid,
                                        QString::number(ui->tablewidget_recordtime->currentRow()));
@@ -349,6 +416,7 @@ void camera_settings::on_btn_addrecordtime_clicked()
         QString id = QString::number(SqlInstance::getMaximumId("record","record_id")+1);
         llist.prepend(id);
         llist.append(QString::number(num));
+        llist.append("1");
         SqlInstance::insertItem("record",llist);
         foreach(const QString &str,record->m_viewItem)
         {
@@ -358,6 +426,57 @@ void camera_settings::on_btn_addrecordtime_clicked()
 
     }
 
+}
+
+
+void camera_settings::on_btn_alterrecordtime_clicked() // alter record time
+{
+
+    RecordTime *record = new RecordTime(m_verifyid,
+                                       QString::number(ui->tablewidget_recordtime->currentRow()));
+    if(record->exec())
+    {
+        int num = ui->tablewidget_recordtime->currentRow();
+        QString nstr = QString::number(num);
+        QStringList llist =  record->m_sqlItem;
+        QStringList idl = SqlInstance::QuerySqlFromString("select record_id from record where record_verifyid == ? and record_sort_id == ?",
+                                                          QStringList () << m_verifyid << nstr);
+        llist.prepend(idl.first());
+        llist.append(nstr);
+        llist.append("1");
+
+        SqlInstance::deleteRecordByCondition("record","record_id",idl.first());
+        SqlInstance::insertItem("record",llist);
+        int col = 0;
+        foreach(const QString &str,record->m_viewItem)
+        {
+            QTableWidgetItem *n = new QTableWidgetItem(str);
+            ui->tablewidget_recordtime->setItem(num,col++,n);
+        }
+    }
+}
+
+void camera_settings::on_btn_deletetrecordtime_clicked() // delete record time
+{
+    int row = ui->tablewidget_recordtime->currentRow();
+    QStringList idl = SqlInstance::QuerySqlFromString("select record_id from record where record_verifyid == ? and record_sort_id == ?",
+                                                      QStringList () << m_verifyid << QString::number(row));
+
+    SqlInstance::deleteRecordByCondition("record","record_id",idl.first());
+    ui->tablewidget_recordtime->removeRow(row);
+}
+
+void camera_settings::on_btn_clearrecordtime_clicked()    // clear record time
+{
+    ui->tablewidget_recordtime->setCurrentItem(ui->tablewidget_recordtime->item(0,0));
+    int row ;
+    while( (row = ui->tablewidget_recordtime->currentRow()) >= 0)
+    {
+        QStringList idl = SqlInstance::QuerySqlFromString("select record_id from record where record_verifyid == ? and record_sort_id == ?",
+                                                          QStringList () << m_verifyid << QString::number(row));
+        SqlInstance::deleteRecordByCondition("record","record_id",idl.first());
+        ui->tablewidget_recordtime->removeRow(row);
+    }
 }
 
 
@@ -371,4 +490,16 @@ void camera_settings::on_chbox_enableAlarm_toggled(bool checked)
     ui->btn_deletetraptime->setEnabled(checked);
     ui->btn_altertraptime->setEnabled(checked);
     ui->edt_group->setEnabled(checked);
+}
+
+
+
+void camera_settings::on_tableWidget_alarm_doubleClicked(const QModelIndex &index)
+{
+    on_btn_altertraptime_clicked();
+}
+
+void camera_settings::on_tablewidget_recordtime_doubleClicked(const QModelIndex &index)
+{
+    on_btn_alterrecordtime_clicked();
 }
