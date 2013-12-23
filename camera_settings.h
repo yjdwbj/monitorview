@@ -15,10 +15,11 @@ class RecordTime : public QDialog
     Q_OBJECT
 
 public:
-    RecordTime(const QString &verifyid, const QString &id,QWidget *parent = 0 );
+    RecordTime(const QString &verifyid, const QString &init, QWidget *parent = 0 );
     ~RecordTime(){delete ui;}
     QStringList m_viewItem;
     QStringList m_sqlItem;
+    QStringList m_iniConf;
 private slots:
     void on_btn_weekSelectNone_clicked();
 
@@ -119,6 +120,7 @@ private:
     void setRecordTab();
     void setAlarmTab();
     QString getStringFromChar(unsigned char c, const QStringList &list);
+    QString getRecordIniConfig();
 };
 
 #endif // CAMERA_SETTINGS_H

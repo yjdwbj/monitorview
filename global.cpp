@@ -69,7 +69,7 @@ GroupBtnWidget::GroupBtnWidget(const QStringList &list,const LayoutForm form,
                                const int width,QWidget *parent)
     :QWidget(parent)
 {
-    QBoxLayout *layout = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
+    layout = new QBoxLayout(form ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight );
     QSignalMapper *signalmap = new QSignalMapper(this);
     int i = 0;
     foreach(const QString &str,list)

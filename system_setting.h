@@ -19,6 +19,22 @@ private:
     QSignalMapper *signalmap;
     QListWidget *pathText;
     QPushButton *btn_addPath ;
+    QCheckBox *cbox_viewname;
+    QCheckBox *cbox_viewtimestamp;
+    QCheckBox *StartAfterBoot;
+    LabAndWidget *user;
+    LabAndWidget *pass;
+    QCheckBox *tray;
+    QCheckBox *autoconnect;
+    LabAndWidget *srvaddr;
+    LabAndWidget *page_up;
+    LabAndWidget *loss_camera;
+    QCheckBox *log_img;
+    QCheckBox *check_version;
+
+
+    void closeEvent(QCloseEvent *e);
+    void accept();
 
     QLayout *ViewPanel();
     QLayout *StoragePanel();
@@ -30,6 +46,8 @@ private slots:
     void slot_ListRowChanged(int);
     void slot_yesornocommit(int);
     void slot_addORdeleteStoragePath(int);
+    void on_Yes_clicked();
+    void on_StartAfterBoot_toggled(bool checked);
 
 };
 

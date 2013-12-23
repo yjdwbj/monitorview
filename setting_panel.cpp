@@ -355,8 +355,7 @@ void SettingPanel::slot_searchCamera()
             org = v.split(',');
            QStringList cameraset;
            cameraset << org.at(0) << org.at(1) << org.at(0) << org.at(3)
-           << "admin" << "admin" << "0" << "0" << "" << "" << "" << ""
-                         << org.at(0) << org.at(0);
+           << "admin" << "admin" << "" << "" << "" << "";
            SqlInstance::insertItem("camera_settings",cameraset);
            QStringList hostinfo;
 
@@ -392,11 +391,11 @@ void SettingPanel::initalDevSettings(const QString &name)
     set.setValue(global+"AlarmTimeSec",QString());
     set.setValue(global+"RecordTimeSec",QString());
     set.setValue(global+"EnableAlrm",false);
-    QString attrinfo("Info/");
-    set.setValue(attrinfo+"User",QString());
-    set.setValue(attrinfo+"Tel",QString());
-    set.setValue(attrinfo+"Addr",QString());
-    set.setValue(attrinfo+"Commit",QString());
+//    QString attrinfo("Info/");
+//    set.setValue(attrinfo+"User",QString());
+//    set.setValue(attrinfo+"Tel",QString());
+//    set.setValue(attrinfo+"Addr",QString());
+//    set.setValue(attrinfo+"Commit",QString());
     set.setValue("RecVideo/RecType",0);
     QSettings::Status s = set.status();
     set.sync();

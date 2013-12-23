@@ -36,14 +36,40 @@ AlarmTrapSettings::AlarmTrapSettings(const QString &filename,
           ui->cbbox_msgcom->addItem(info.portName());
       }
       initalThisWidget(oldvalue);
+      if(ui->ledt_continue->text().isEmpty())
+          ui->ledt_continue->setText("30");
 
 }
+void AlarmTrapSettings::accept()
+{
+    close();
+}
 
+void AlarmTrapSettings::closeEvent(QCloseEvent *e)
+{
+
+
+    if(!getCharFromList(conditionlist))
+    {
+        QMessageBox::warning(this,"出错啦","请选择一个触发条件");
+        e->ignore();
+        return;
+    }
+    if(ui->stackedWidget->currentWidget()->isEnabled())
+    {
+        if(checkItemEmpty(ui->stackedWidget->currentIndex()))
+        {
+            e->ignore();
+            return;
+        }
+    }
+    e->accept();
+}
 
 void AlarmTrapSettings::initalThisWidget(const QString &value)
 {
     QStringList tlist = value.split('?',QString::SkipEmptyParts);
-    if(tlist.first().isEmpty())
+    if(tlist.isEmpty())
         return;
     setCharToList(tlist.first().toInt(),weeklist);
     ui->tedt_starttime->setTime(QTime::fromString(tlist.at(1).section('~',0,0)));
@@ -62,6 +88,7 @@ void AlarmTrapSettings::initalThisWidget(const QString &value)
     {
         ui->ledt_continue->setText(tlist.at(3));
     }
+
 
 
 
@@ -357,6 +384,8 @@ void AlarmTrapSettings::initalPairValue()
 
 void AlarmTrapSettings::on_tableWidget_itemClicked(QTableWidgetItem *item)
 {
+
+
     ui->stackedWidget->setCurrentIndex(item->row());
     if(Qt::Unchecked == item->checkState())
         ui->stackedWidget->currentWidget()->setEnabled(false);
@@ -509,20 +538,118 @@ void AlarmTrapSettings::writeSettings(int id)
     default:
         break;
     }
-
     set->sync();
+}
 
 
+bool AlarmTrapSettings::checkItemEmpty(int id)
+{
+    switch (id) {
 
+    case E_Ftp:
+        if(ui->ledt_ftphost->text().isEmpty()||
+                ui->ledt_ftpport->text().isEmpty()||
+                ui->ledt_ftpuser->text().isEmpty()||
+                ui->ledt_ftphomeDir->text().isEmpty())
+        {
+            QMessageBox::warning(this,"出错啦","FTP设置信息不完整！");
+            return -1;
 
+        }
+
+        break;
+    case E_Email:
+        if(ui->ledt_mailreceiver->text().isEmpty()||
+                ui->ledt_mailport->text().isEmpty()||
+                ui->ledt_mailsendbox->text().isEmpty()||
+                ui->ledt_mailsmtphost->text().isEmpty()||
+                ui->ledt_mailuser->text().isEmpty())
+        {
+            QMessageBox::warning(this,"出错啦","邮件设置信息不完整!");
+            return -1;
+
+        }
+        break;
+    case E_Msg:
+        if(ui->ledt_msgphone->text().isEmpty())
+        {
+            QMessageBox::warning(this,"出错啦","短信设置不完整");
+            return -1;
+
+        }
+        break;
+    case E_DialUp:
+        if(ui->ledt_dialphone->text().isEmpty())
+        {
+            QMessageBox::warning(this,"出错啦","拨号设置不完整");
+            return -1;
+
+        }
+        break;
+
+    case E_Skype:
+        if(ui->chbox_skyenable->isChecked())
+        {
+            if(ui->ledt_skyacct->text().isEmpty())
+            {
+                QMessageBox::warning(this,"出错啦","请填写skype帐号");
+                return -1;
+
+            }
+
+        }
+
+        if(ui->chbox_skysendmsg->isChecked() ||ui->chbox_skycall->isChecked())
+        {
+            QMessageBox::warning(this,"出错啦","请填写被呼叫的号码");
+            return -1;
+
+        }
+        break;
+    case E_Web:
+        if(ui->ledt_weblink->text().isEmpty())
+        {
+            QMessageBox::warning(this,"出错啦","请填写一个网址");
+            return -1;
+
+        }
+
+        break;
+
+    case E_App:
+        if(ui->ledt_appPath->text().isEmpty())
+        {
+
+            QMessageBox::warning(this,"出错啦","请选择一个程序");
+            return -1;
+
+        }
+
+        break;
+    default:
+        break;
+    }
+    return 0;
 
 
 }
 
-
-
 void AlarmTrapSettings::on_pushButton_14_clicked()
 {
+    int count = ui->tableWidget->rowCount();
+//    for(int i = 0 ; i < count ;i++)
+//    {
+//        if(ui->tableWidget->item(i,0)->checkState() == Qt::Checked)
+//        {
+
+//            if(checkItemEmpty(i))
+//            {
+//                ui->stackedWidget->setCurrentIndex(i);
+//                return;
+//            }
+
+//        }
+//    }
     initalPairValue();
     int w = getCharFromList(weeklist);
 //    int count = SqlInstance::getMaximumId("alarm","id");
@@ -531,14 +658,14 @@ void AlarmTrapSettings::on_pushButton_14_clicked()
 //                            << ui->tedt_starttime->text() << ui->tedt_endtime->text()
 //                            << ui->ledt_continue->text()
 //                            << getCharFromList(conditionlist));
-    for(int i = 0 ; i < ui->tableWidget->rowCount();i++)
-    {
-        QTableWidgetItem *item =    ui->tableWidget->item(i,0);
-        if(item->isSelected())
-        {
+//    for(int i = 0 ; i < ui->tableWidget->rowCount();i++)
+//    {
+//        QTableWidgetItem *item =    ui->tableWidget->item(i,0);
+//        if(item->isSelected())
+//        {
 
-        }
-    }
+//        }
+//    }
 
 
     QString wek;
@@ -564,7 +691,7 @@ void AlarmTrapSettings::on_pushButton_14_clicked()
         d.append(s->text());
     }
 
-    int count = ui->tableWidget->rowCount();
+
     QStringList mlist = actionMapList.split(',');
     QString actions;
     for(int i = 0 ; i < count ;i++)
@@ -577,8 +704,7 @@ void AlarmTrapSettings::on_pushButton_14_clicked()
     }
     m_iniArg  << QString::number(w) << ui->tedt_starttime->text()+"~"+ui->tedt_endtime->text()
     << QString::number(getCharFromList(conditionlist)) << actions << ui->ledt_continue->text();
-     set->setValue(tr("Global/AlarmTimeSec"),QVariant(m_iniArg.join("?")));
-     set->sync();
+;
 
     m_alarmsql <<
                   m_verifyid << QString::number(w)
@@ -586,9 +712,6 @@ void AlarmTrapSettings::on_pushButton_14_clicked()
                   << ui->ledt_continue->text()
                   << QString::number(getCharFromList(conditionlist));
     m_alarmlist << wek << ui->tedt_starttime->text() << ui->tedt_endtime->text() << d.join(',');
-
-
-
 
 }
 
@@ -607,3 +730,33 @@ void AlarmTrapSettings::on_chbox_msggap_toggled(bool checked)
 }
 
 
+
+
+
+void AlarmTrapSettings::on_tableWidget_currentItemChanged(QTableWidgetItem *current,
+                                                          QTableWidgetItem *previous)
+{
+    if(previous)
+    {
+        if(previous->checkState() == Qt::Checked)
+        {
+            if(checkItemEmpty(previous->row()))
+            {
+                current->setSelected(false);
+                ui->tableWidget->clearSelection();
+                ui->tableWidget->setCurrentItem(previous);
+                ui->stackedWidget->setCurrentIndex(previous->row());
+                return;
+
+            }
+        }
+    }
+//    ui->stackedWidget->setCurrentIndex(current->row());
+//    if(Qt::Unchecked == current->checkState())
+//        ui->stackedWidget->currentWidget()->setEnabled(false);
+//    else
+//    {
+//         ui->stackedWidget->currentWidget()->setEnabled(true);
+//    }
+
+}

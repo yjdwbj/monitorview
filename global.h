@@ -116,6 +116,8 @@ public:
     };
     explicit GroupBtnWidget(const QStringList &list,const LayoutForm form = Horizontal,const int width=60,QWidget *parent=0);
     ~GroupBtnWidget(){}
+    QWidget *getItemByid(const int id) {layout->itemAt(id)->widget();}
+    QBoxLayout *layout;
 signals:
     void SignalById(int);
 };

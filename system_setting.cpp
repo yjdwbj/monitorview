@@ -3,6 +3,7 @@
 #include <QTextEdit>
 #include <QFontDialog>
 #include <QFileDialog>
+#include <QSettings>
 
 static QString items("存储|显示|自动运行|其它");
 static QString btns("添加|删除");
@@ -65,8 +66,8 @@ QLayout *SystemSetting::ViewPanel()
 {
     QGroupBox *gbox_view = new QGroupBox("视频上显示的内容");
     QVBoxLayout *lay_view = new QVBoxLayout(gbox_view);
-    QCheckBox *cbox_name = new QCheckBox("显示摄像机名称");
-    QCheckBox *cbox_time = new QCheckBox("显示时间戳");
+    cbox_viewname = new QCheckBox("显示摄像机名称");
+    cbox_viewtimestamp = new QCheckBox("显示时间戳");
     QPushButton *btn_font = new QPushButton("字体");
     btn_font->setFixedWidth(40);
     QLineEdit *txt_view  = new QLineEdit("Sample Text");
@@ -74,8 +75,8 @@ QLayout *SystemSetting::ViewPanel()
     txt_view->setEnabled(false);
     txt_view->setObjectName("text");
     QObject::connect(btn_font,SIGNAL(clicked()),this,SLOT(slot_fontdialog()));
-    lay_view->addWidget(cbox_name);
-    lay_view->addWidget(cbox_time);
+    lay_view->addWidget(cbox_viewname);
+    lay_view->addWidget(cbox_viewtimestamp);
     lay_view->addWidget(btn_font,Qt::AlignLeft);
     lay_view->addWidget(txt_view);
 
@@ -108,6 +109,10 @@ SystemSetting::SystemSetting(QWidget *parent)
     signalmap(new QSignalMapper(this))
 {
     this->setWindowTitle("系统设置");
+
+    this->setObjectName("SystemSettings");
+    StartAfterBoot = new QCheckBox("系统启动时自动运行程序");
+    StartAfterBoot->setObjectName("StartAfterBoot");
     QGridLayout *main_layout = new QGridLayout;
     listwidget->addItems(items.split("|"));
     connect(listwidget,SIGNAL(currentRowChanged(int)),SLOT(slot_ListRowChanged(int)));
@@ -120,29 +125,79 @@ SystemSetting::SystemSetting(QWidget *parent)
     main_layout->addWidget(listwidget,0,0);
     main_layout->addLayout(stackLayout,0,1);
     GroupBtnWidget *btn = new GroupBtnWidget(yesorno.split(","));
+    btn->getItemByid(0)->setObjectName("Yes");
     connect(btn,SIGNAL(SignalById(int)),SLOT(slot_yesornocommit(int)));
+
+//    connect(listwidget,SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*))
+    connect(StartAfterBoot,SIGNAL(toggled(bool)),SLOT(on_StartAfterBoot_toggled(bool)));
+
     main_layout->addWidget(btn,1,1,1,2);
     setLayout(main_layout);
+    QMetaObject::connectSlotsByName(this);
+
 }
+
+void SystemSetting::on_StartAfterBoot_toggled(bool checked)
+{
+    user->setEnabled(checked);
+    pass->setEnabled(checked);
+    tray->setEnabled(checked);
+}
+
 
 void SystemSetting::slot_yesornocommit(int id)
 {
     id ? reject() : accept();
 }
 
+
+void SystemSetting::on_Yes_clicked()
+{
+    QSettings set(qApp->applicationFilePath()+tr("options.ini"),QSettings::IniFormat);
+
+    QString g("global/");
+    set.setValue(g+"Layout",QString());
+    set.setValue(g+"AutoTurn",StartAfterBoot->isChecked());
+    set.setValue(g+"WindowsState",QVariant());
+    set.setValue(g+"SaveRecDay",QVariant());
+    set.setValue(g+"SaveAlarmDay",QVariant());
+    set.setValue(g+"RecSecTime",QVariant());
+    set.setValue(g+"ProxyIP",QVariant());
+    set.setValue(g+"AutoTray",tray->isChecked());
+    set.setValue(g+"AutoTurn_Time",QVariant());
+    set.setValue(g+"ErrAlarm_Time",QVariant());
+    set.setValue(g+"AlarmSnd",QVariant());
+    set.setValue(g+"AutoStartDev",autoconnect->isChecked());
+    set.setValue(g+"AutoDecRate",QVariant());
+    set.setValue(g+"AutoDecRateNum",QVariant());
+    set.setValue(g+"VideoCache",QVariant());
+    set.setValue(g+"ShowKey",QVariant());
+    set.setValue(g+"Paint_ShowTitle",QVariant());
+    set.setValue(g+"Paint_ShowStatus",QVariant());
+    set.setValue(g+"VideoFixRatio",QVariant());
+    set.setValue(g+"CheckUpate",QVariant());
+    set.setValue(g+"Screen",QVariant());
+    set.setValue(g+"ShowVideo",QVariant());
+
+
+}
+
 QLayout *SystemSetting::AutoRunning()
 {
-    QCheckBox *StartAfterBoot = new QCheckBox("系统启动时自动运行程序");
+
     QGroupBox *gbox_login = new QGroupBox("自动使用下面操作员");
-    LabAndWidget *user = new LabAndWidget("操作员:",new QLineEdit);
-    LabAndWidget *pass = new LabAndWidget("密码:",new QLineEdit);
-    QCheckBox *tray = new QCheckBox("程序自动启动后进入系统托盘区");
+    user = new LabAndWidget("操作员:",new QLineEdit);
+    pass = new LabAndWidget("密码:",new QLineEdit);
+    user->setEnabled(false);
+    pass->setEnabled(false);
+    tray = new QCheckBox("程序自动启动后进入系统托盘区");
+    tray->setEnabled(false);
     QVBoxLayout *lay_login = new QVBoxLayout(gbox_login);
     lay_login->addWidget(user);
     lay_login->addWidget(pass);
     lay_login->addWidget(tray);
 
-    QCheckBox *autoconnect = new QCheckBox("程序启动时自动连接所有摄像机");
+    autoconnect = new QCheckBox("程序启动时自动连接所有摄像机");
 
     QVBoxLayout *main_layout = new QVBoxLayout;
     main_layout->addWidget(StartAfterBoot);
@@ -156,14 +211,14 @@ QLayout *SystemSetting::AutoRunning()
 QLayout* SystemSetting::OtherPanel()
 {
     QVBoxLayout *main_layout = new QVBoxLayout();
-    LabAndWidget *srvaddr = new LabAndWidget("服务器地址:",
+    srvaddr = new LabAndWidget("服务器地址:",
                                              new QLineEdit("video.zh-jl.com"));
-    LabAndWidget *page_up = new LabAndWidget("自动翻页时间间隔(秒):",
+    page_up = new LabAndWidget("自动翻页时间间隔(秒):",
                                              new QSpinBox,10);
-    LabAndWidget *loss_camera = new LabAndWidget("摄像机丢失图像后多少时间触发报警(秒):",
+    loss_camera = new LabAndWidget("摄像机丢失图像后多少时间触发报警(秒):",
                                           new QSpinBox,60);
-    QCheckBox *log_img = new  QCheckBox("图像丢失后进行声音报警");
-    QCheckBox *check_version = new QCheckBox("启动时检测是否有新版本");
+    log_img = new  QCheckBox("图像丢失后进行声音报警");
+    check_version = new QCheckBox("启动时检测是否有新版本");
 
     main_layout->addWidget(srvaddr);
     main_layout->addWidget(page_up);
@@ -177,4 +232,25 @@ QLayout* SystemSetting::OtherPanel()
 void SystemSetting::slot_ListRowChanged(int id)
 {
     stackLayout->setCurrentIndex(id);
+}
+
+void SystemSetting::accept()
+{
+    close();
+}
+
+void SystemSetting::closeEvent(QCloseEvent *e)
+{
+    if(StartAfterBoot->isChecked())
+    {
+        QLineEdit *u = (QLineEdit*)user->getTwoObj();
+        QLineEdit *p = (QLineEdit*)pass->getTwoObj();
+        if(u->text().isEmpty() || p->text().isEmpty())
+        {
+            QMessageBox::warning(this,"出错啦",
+                                 "请输入自动运行时的用户名与正解的密码,否则不用运行.");
+            e->ignore();
+        }
+    }
+    e->accept();
 }

@@ -59,13 +59,17 @@ private slots:
 
     void on_pushButton_14_clicked();
 
-    void writeSettings(int id);
+
 
     void on_chbox_speech_toggled(bool checked);
 
     void on_chbox_msggap_toggled(bool checked);
 
     void on_chbox_skyenable_toggled(bool checked);
+
+
+
+    void on_tableWidget_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
 
 private:
     Ui::AlarmTrapSettings *ui;
@@ -176,6 +180,8 @@ private:
 
     QSettings *set;
     void initalPairValue();
+    void closeEvent(QCloseEvent *);
+    void accept();
 
     template <typename Tf, typename Ts>
     Q_INLINE_TEMPLATE void setPairValue(const QPair<Tf, Ts> &p) {set->setValue(p.first,p.second);}
@@ -189,6 +195,8 @@ private:
     void readDataToWidget(const QString &id);
     void readINIConfig(int id);
     void initalThisWidget(const QString &value);
+    void writeSettings(int id);
+    bool checkItemEmpty(int id);
 
 
 };

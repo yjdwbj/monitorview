@@ -60,5 +60,6 @@ FORMS += \
     camera_settings.ui \
     viewcameralist.ui \
     alarmtrapsettings.ui \
-    record_time.ui
+    record_time.ui \
+    systemdialog.ui
 
