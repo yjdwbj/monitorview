@@ -56,11 +56,15 @@ void SearchCamera::addNewLine(QStringList list)
     int count = ui->tableWidget->rowCount();
     ui->tableWidget->insertRow(count);
     int num =0;
-    QCheckBox *box= new QCheckBox(QString::number(count+1));
-    box->setChecked(true);
-    ui->tableWidget->setCellWidget(count,num++,box);
     foreach(const QString &str, list)
     {
+        QTableWidgetItem *i = new QTableWidgetItem(str);
+        i->setCheckState(Qt::Checked);
+        if(num==0)
+        {
+            ui->tableWidget->setItem(count,num++,i);
+        }
+        else
         ui->tableWidget->setItem(count,num++,new QTableWidgetItem(str));
     }
 }
@@ -71,11 +75,10 @@ QStringList SearchCamera::getVaildCameraList() const
     QStringList list;
     for(int i = 0 ; i < rcout ;i++ )
     {
-        QCheckBox *box = qobject_cast<QCheckBox *>(ui->tableWidget->cellWidget(i,0));
-        if(!box->isChecked())
+        if(ui->tableWidget->item(i,0)->checkState() == Qt::Unchecked)
             continue;
         QStringList t;
-        for(int j = 1 ; j < ui->tableWidget->columnCount();j++)
+        for(int j = 0 ; j < ui->tableWidget->columnCount();j++)
         {
             if(ui->tableWidget->item(i,j))
             t << ui->tableWidget->item(i,j)->text();
@@ -104,11 +107,15 @@ void SearchCamera::Switch_CheckBox(bool f)
     int count = ui->tableWidget->rowCount();
     for(int i = 0 ; i  < count;i++)
     {
-        QCheckBox *box = qobject_cast<QCheckBox *>(ui->tableWidget->cellWidget(i,0));
-        box->setChecked(f);
+    ui->tableWidget->item(i,0)->setCheckState(f ? Qt::Checked : Qt::Unchecked);
     }
 }
 
 
 
 
+
+void SearchCamera::on_pushButton_4_clicked()
+{
+
+}

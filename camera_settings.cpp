@@ -123,7 +123,7 @@ camera_settings::camera_settings(int index, const QString &name, QWidget *parent
         {
             ui->edt_user->setText(camera.at(4));
             ui->edt_passwd->setText(camera.at(5));
-            QStringList l = SqlInstance::getColumnsList("hostinfo",QStringList() << "address" << "port",
+            QStringList l = SqlInstance::getColumnsList("hostinfo",QStringList() << "addrport",
                               "host_id",camera.at(2));
             if(!l.isEmpty())
             {

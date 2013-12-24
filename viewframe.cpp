@@ -268,7 +268,8 @@ void WindowFrame::paintEvent(QPaintEvent *e)
 
 ViewFrame::ViewFrame(QWidget *parent)
     :QGroupBox(parent),
-      lay(new QGridLayout)
+      lay(new QGridLayout),
+      m_GridNumber("1x1")
 //      FSWidget(new QWidget),
 //      toggleFS(new ToggleButton)
 
@@ -333,6 +334,8 @@ void ViewFrame::setGridnumber(int row, int col)
         }
 
     }
+
+    m_GridNumber = QString::number(row)+"x"+QString::number(col);
 }
 
 //void ViewFrame::slot_testsignals(int p)
@@ -373,6 +376,7 @@ void ViewFrame::setOnePlusSeven()
     lay->addWidget(m_list.at(5),3,1);
     lay->addWidget(m_list.at(6),3,2);
     lay->addWidget(m_list.at(7),3,3);
+    m_GridNumber = QString::number(1)+"x"+QString::number(7);
 
 }
 

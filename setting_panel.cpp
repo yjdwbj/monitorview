@@ -21,8 +21,51 @@ CameraView::CameraView(QWidget *parent)
     this->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     this->header()->hide();
     oldlist = QStringList();
+
 //    connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),SLOT(slot_itemclicked(QTreeWidgetItem*,int)));
 }
+
+
+void CameraView::initGroupMenu()
+{
+    QList<QAction*> list;
+    QMenu* m = new QMenu();
+        foreach(const QString &str,GroupMenu.split("|"))
+        {
+            if(str.startsWith("-"))
+            {
+                list.append(m->addSeparator());
+            }
+            else
+                list << new QAction(str,m);
+        }
+
+        connect(m,SIGNAL(triggered(QAction*)),SIGNAL(triggerViewMenu(QAction*)));
+        m->addActions(list);
+        gmenulist << m;
+}
+
+void CameraView::initItemMenu()
+{
+    QList<QAction*> list;
+    QMenu* m = new QMenu();
+    foreach(const QString &str,CameraMenu.split("|"))  // here is camera menu
+    {
+        if(str.startsWith("-"))
+        {
+            list.append(m->addSeparator());
+        }
+        else
+            list << new QAction(str,m);
+    }
+
+    connect(m,SIGNAL(triggered(QAction*)),SIGNAL(triggerViewMenu(QAction*)));
+    m->addActions(list);
+    list.at(1)->setEnabled(false);
+    cmenulist << m;
+}
+
+
 
 void CameraView::slot_itemclicked(QTreeWidgetItem *w, int c)
 {
@@ -40,6 +83,7 @@ void CameraView::addItem(const QString &nameid, QTreeWidgetItem *root)
 
         mapVerifyId[key]=value;
         QTreeWidgetItem *w = new QTreeWidgetItem(root,QStringList(value),1000);
+        initItemMenu();
         w->setIcon(0,CameraIcon);
         this->addTopLevelItem(w);
 }
@@ -70,6 +114,7 @@ void CameraView::updateItem(const QString &key, const QString &value)
 void CameraView::addGroup(const QString &name, QTreeWidgetItem *root)
 {
     QTreeWidgetItem *w = new QTreeWidgetItem(root,QStringList(name));
+    initGroupMenu();
     w->setIcon(0,GroupIcon);
     this->addTopLevelItem(w);
 }
@@ -94,60 +139,21 @@ void CameraView::mouseDoubleClickEvent(QMouseEvent *event)
 
 void CameraView::mousePressEvent(QMouseEvent *event)
 {
-
-
     QTreeWidgetItem *w = this->currentItem();
-
     if(event->button() == Qt::RightButton)
-        {
+    {
 
             if(w)
             {
-                QMenu *menu = new QMenu();
-                QList<QAction*> list;
+
+                int n = this->indexOfTopLevelItem(this->currentItem());
                  this->clearSelection();
                 this->setCurrentItem(w);
                 w->setSelected(true);
-
-                if(!w->type())  // here is group menu
-                {
-
-                    foreach(const QString &str,GroupMenu.split("|"))
-                    {
-                        if(str.startsWith("-"))
-                        {
-                            list.append(menu->addSeparator());
-                        }
-                        else
-                            list << new QAction(str,menu);
-                    }
-
-                    connect(menu,SIGNAL(triggered(QAction*)),SIGNAL(triggerViewMenu(QAction*)));
-                    menu->addActions(list);
-
-                    menu->exec(this->mapToGlobal( event->pos()));
-                }
-                else
-                {
-                    foreach(const QString &str,CameraMenu.split("|"))
-                    {
-                        if(str.startsWith("-"))
-                        {
-                            list.append(menu->addSeparator());
-                        }
-                        else
-                            list << new QAction(str,menu);
-                    }
-
-                    connect(menu,SIGNAL(triggered(QAction*)),SIGNAL(triggerViewMenu(QAction*)));
-                    menu->addActions(list);
-
-                    menu->exec(this->mapToGlobal( event->pos()));
-                }
-
-
+                !w->type() ? gmenulist.at(n)->exec(this->mapToGlobal( event->pos()))
+                           :cmenulist.at(n)->exec(this->mapToGlobal( event->pos()));
             }
-        }
+    }
     else if(event->button() == Qt::LeftButton )
     {
         QTreeWidgetItem *ww = itemAt(event->pos());
@@ -156,7 +162,7 @@ void CameraView::mousePressEvent(QMouseEvent *event)
         {
             this->clearSelection();
             this->setCurrentItem(ww);
-           ww->setSelected(true);
+            ww->setSelected(true);
 
         }
     }
@@ -168,9 +174,21 @@ void SettingPanel::slot_ProcessMenuAction(QAction *act)
     const QStringList actions(MenuAction.split("|"));
     switch(actions.indexOf(act->text()))
     {
-    case 0:
+    case 0:   // entre work mode
+    {
+        QMenu *menu =(QMenu*)act->parentWidget();
+        menu->actions().at(1)->setEnabled(true);
+        act->setEnabled(false);
+        emit gotoWorkState(m_TreeView->currentIndex().row());
+    }
         break;
     case 1:
+    {
+        QMenu *menu =(QMenu*)act->parentWidget();
+        menu->actions().at(0)->setEnabled(true);
+        act->setEnabled(false);
+        emit outofWorkState(m_TreeView->currentIndex().row());
+    }
         break;
     case 2:
         break;
@@ -197,10 +215,21 @@ void SettingPanel::slot_ProcessMenuAction(QAction *act)
                                                  "camera_name",m_TreeView->currentItem()->text(0));
         SqlInstance::deleteCamera(m_TreeView->currentItem()->text(0));
         m_TreeView->takeTopLevelItem(m_TreeView->indexOfTopLevelItem(m_TreeView->currentItem()));
+        if(m_TreeView->currentItem()->type() == 1000)
+        {
+            m_TreeView->cmenulist.removeAt(m_TreeView->currentIndex().row());
+        }
+        else
+        {
+           m_TreeView->gmenulist.removeAt(m_TreeView->currentIndex().row());
+        }
         if(!m_TreeView->topLevelItemCount())
            {
             m_TreeView->hide();
             gbox_addnew->show();
+            m_TreeView->gmenulist.clear();
+            m_TreeView->cmenulist.clear();
+
            }
         emit deleteCamera(id);
     }
@@ -352,15 +381,17 @@ void SettingPanel::slot_searchCamera()
         foreach(const QString &str,playlist) // insert record to sql db;
         {
             QString v = QString::number(++num)+","+str;
-            org = v.split(',');
+            org = v.split(',',QString::SkipEmptyParts);
+            if(org.isEmpty())
+                continue;
            QStringList cameraset;
            cameraset << org.at(0) << org.at(1) << org.at(0) << org.at(3)
            << "admin" << "admin" << "" << "" << "" << "";
            SqlInstance::insertItem("camera_settings",cameraset);
            QStringList hostinfo;
 
-           hostinfo << org.at(0)  << org.at(2) << org.at(4) << org.at(5)
-                    << org.at(6) << "" << org.at(7) <<  org.at(8);
+           hostinfo << org.at(0)  << org.at(2)+":"+org.last() << org.at(4) << org.at(5)
+                    << org.at(6) << "" << org.at(7) ;
           SqlInstance::insertItem("hostinfo",hostinfo);
 
           initalDevSettings(path+org.at(1));
@@ -397,9 +428,8 @@ void SettingPanel::initalDevSettings(const QString &name)
 //    set.setValue(attrinfo+"Addr",QString());
 //    set.setValue(attrinfo+"Commit",QString());
     set.setValue("RecVideo/RecType",0);
-    QSettings::Status s = set.status();
     set.sync();
-    s = set.status();
+
 }
 
 

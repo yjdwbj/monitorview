@@ -241,6 +241,7 @@ public:
      QList<WindowFrame*> getPlayFrame() const {return  m_list;}
      WId getPlayFrameWId(const QString &id);
      void updateItem(const QString &id, const QString &newName);
+     QString getGridnumber() const { return m_GridNumber;}
 
 public slots:
     void swapFullScreenOrNormal(bool flag);
@@ -262,6 +263,7 @@ private:
     QTimer *timer1;
     QGridLayout *lay;
     QList<WindowFrame*> m_list;
+    QString m_GridNumber;
 
 };
 #endif // VIEWFRAME_H

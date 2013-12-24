@@ -44,7 +44,7 @@
    <item>
     <widget class="QTabWidget" name="tab_Widget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_connect">
       <attribute name="title">
@@ -790,7 +790,6 @@
         </spacer>
        </item>
       </layout>
-      <zorder>verticalSpacer_4</zorder>
      </widget>
     </widget>
    </item>

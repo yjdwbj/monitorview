@@ -27,6 +27,8 @@ private slots:
     void slot_SwitchCheckedAll();
     void slot_SwitchCheckedNone();
 
+    void on_pushButton_4_clicked();
+
 private:
     void emulator_readfile();
     void Switch_CheckBox(bool);

@@ -11,6 +11,8 @@
 typedef struct {
     libvlc_instance_t *_vlcInstance;
     libvlc_media_player_t *_vlcMediaPlayer;
+//    QString camera_name;
+    int order;
 }
 vlcItem;
 
@@ -32,6 +34,8 @@ private slots:
     void slot_StartPlay();
     void slot_StopPlay();
     void slot_viewCtrolWidget(int);
+    void slot_playById(int);
+    void slot_stopById(int);
 
 private:
 
@@ -42,8 +46,10 @@ private:
 
     void updateViewFrame();
     bool eventFilter(QObject *, QEvent *);
+    void closeEvent(QCloseEvent *);
 
     void ReadQss();
+    void readLayout();
 
     QList<vlcItem> vlcItemList;
 

@@ -48,6 +48,8 @@ public:
     void updateItem(const QString &key,const QString &value);
 
     ~CameraView(){}
+    QList<QMenu *> gmenulist;
+    QList<QMenu *> cmenulist;
 
 
 private slots:
@@ -58,7 +60,11 @@ private:
     QIcon CameraIcon;
     QIcon GroupIcon;
 
+
     QMap<QString,QString> mapVerifyId;
+
+    void initGroupMenu();
+    void initItemMenu();
 
 signals:
     void this_is_empty();
@@ -80,6 +86,7 @@ public:
     ~SettingPanel();
 //    void setViewFrame(ViewFrame *e) { vf =e;}
       QStringList getPlayList() const ;
+      CameraView *m_TreeView;
 private slots:
     void slot_addnewCamera();
     void slot_searchCamera();
@@ -90,7 +97,7 @@ private slots:
 private:
     QVBoxLayout *main_layout;
     QStringList playlist;
-    CameraView *m_TreeView;
+
     QGroupBox *gbox_addnew;
 
     void addCameraFromSql();
@@ -98,13 +105,13 @@ private:
     void initalDevSettings(const QString &name);
 signals:
     void sig_gridofnumber(int);
+    void gotoWorkState(int);
+    void outofWorkState(int);
     void StartPlay();
     void StopPlay();
     void addedNewCamera(int);
     void updateItemValue(QString);
     void deleteCamera(QString);
-
-
 };
 
 #endif // SETTING_PANEL_H

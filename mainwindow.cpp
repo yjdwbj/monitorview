@@ -21,6 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(panel,SIGNAL(StopPlay()),SLOT(slot_StopPlay()));
     connect(panel,SIGNAL(deleteCamera(QString)),view,SLOT(slot_deleteCamera(QString)));
     connect(panel,SIGNAL(addedNewCamera(int)),SLOT(slot_viewCtrolWidget(int)));
+    connect(panel,SIGNAL(gotoWorkState(int)),SLOT(slot_playById(int)));
+    connect(panel,SIGNAL(outofWorkState(int)),SLOT(slot_stopById(int)));
+
+
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
 
@@ -31,6 +35,26 @@ MainWindow::MainWindow(QWidget *parent) :
     resize(QSize(800,400));
 
     setCentralWidget(w);
+    readLayout();
+
+}
+
+void MainWindow::readLayout()
+{
+
+    QSettings set(qApp->applicationDirPath()+"/options.ini",QSettings::IniFormat);
+    QString lay = set.value("global/Layout").toString();
+
+    if(!lay.compare("1x7"))
+    {
+        view->setOnePlusSeven();
+    }
+    else
+    {
+        int x = lay.section('x',0,0).toInt();
+//        int y = lay.section('x',1,1).toInt();
+        slot_GridNumberChanged(x);
+    }
 
 }
 
@@ -107,6 +131,23 @@ bool MainWindow::eventFilter(QObject *o, QEvent *e)
 
 }
 
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    int res = QMessageBox::question(this,"提示","你确定要退出吗?");
+    if(res== QMessageBox::Yes)
+    {
+        QSettings set(qApp->applicationDirPath()+"/options.ini",
+                      QSettings::IniFormat);
+        set.setValue("global/Layout",view->getGridnumber());
+        set.sync();
+        e->accept();
+    }
+    else
+    {
+        e->ignore();
+    }
+}
+
 
 void MainWindow::slot_StopPlay()
 {
@@ -122,6 +163,67 @@ void MainWindow::slot_StopPlay()
         libvlc_release(p._vlcInstance);
     }
     vlcItemList.clear();
+}
+
+void MainWindow::slot_playById(int id)
+{
+     QList<WindowFrame*> playframe = view->getPlayFrame();
+    QString  cameraname = panel->m_TreeView->topLevelItem(id)->text(0);
+
+    QString  verifyid = SqlInstance::getColumnFirst("camera_settings",
+                                                    "camera_verifyid","camera_name",cameraname);
+    QStringList l  = SqlInstance::getColumnList("hostinfo","addrport");
+    if(l.isEmpty())
+        return;
+    QString url = tr("rtsp://")+l.at(id)+"/"+verifyid;
+    QString fname =  url + tr(".mpg");
+    libvlc_instance_t *_vlc_inst = libvlc_new(0,NULL);
+    libvlc_media_t *_vlc_media  = libvlc_media_new_location(_vlc_inst,fname.toUtf8().data());
+    libvlc_media_player_t *_vlc_play=  libvlc_media_player_new_from_media(_vlc_media);
+    WId wid = view->getPlayFrameWId(verifyid);
+    if(wid == 0)
+        return;
+    libvlc_media_player_set_hwnd(_vlc_play,(void*)wid);
+    playframe.at(id)->frame->setPlaying(true);
+
+//    libvlc_media_add_option(_vlc_media,captureOption.toLocal8Bit().data());
+    libvlc_media_player_play(_vlc_play);
+    vlcItem tmp;
+    tmp._vlcInstance = _vlc_inst;
+    tmp._vlcMediaPlayer = _vlc_play;
+    tmp.order = id;
+
+    bool f = true;
+    for(int i = 0; i < vlcItemList.size();i++)
+    {
+        if(vlcItemList[i].order == id)
+        {
+            vlcItemList.replace(i,tmp);
+            f = false;
+            break;
+        }
+    }
+    if(f)
+        vlcItemList.append(tmp);
+
+
+}
+
+void MainWindow::slot_stopById(int id)
+{
+
+    foreach(vlcItem it,vlcItemList)
+    {
+        if(it.order == id)
+        {
+            libvlc_media_player_stop(it._vlcMediaPlayer);
+            libvlc_media_player_release(it._vlcMediaPlayer);
+            libvlc_release(it._vlcInstance);
+            break;
+        }
+    }
+
+
 }
 
 void MainWindow::slot_StartPlay()
