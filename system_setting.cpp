@@ -7,12 +7,17 @@
 #include "ui_systemdialog.h"
 #include <QStandardItem>
 
+
 SystemSetting::SystemSetting(QWidget *parent)
     :QDialog(parent),
     ui(new Ui::systemdialog),
     set(new QSettings(qApp->applicationDirPath()+tr("/options.ini"),QSettings::IniFormat))
 {
     ui->setupUi(this);
+
+    tw = ui->store_listwidget;
+
+
     this->setWindowTitle("系统设置");
 
     this->setObjectName("SystemSettings");
@@ -45,12 +50,14 @@ SystemSetting::SystemSetting(QWidget *parent)
     ui->view_chklow->setChecked(set->value(g+"RealTimeVideo").toBool());
     int n = 1;
 
-    set->beginGroup("datafolder");
+    set->beginGroup(datafolderGroup);
     QStringList dirlist = set->childKeys();
+
     foreach(const QString &s,dirlist)
     {
-        ui->treeWidget->addTopLevelItem(new QTreeWidgetItem(QStringList(set->value(s).toString())));
+      tw->addItem(set->value(s).toString());
     }
+
     set->endGroup();
 }
 
@@ -62,6 +69,12 @@ void SystemSetting::accept()
 
 void SystemSetting::closeEvent(QCloseEvent *e)
 {
+    if(!tw->count())
+    {
+        QMessageBox::warning(this,"提示","请选择一个存放报警与录像记录的目录");
+        e->ignore();
+    }
+    else
     e->accept();
 }
 
@@ -70,9 +83,7 @@ void SystemSetting::on_store_add_clicked()
     QString path = QFileDialog::getExistingDirectory(this,"选择录像存储目录");
     if(path.isEmpty())
         return;
-
-//    QTableWidgetItem *item = new QTableWidgetItem(path);
-    ui->treeWidget->addTopLevelItem(new QTreeWidgetItem(QStringList(path)));
+      tw->addItem(path);
 }
 
 void SystemSetting::on_auto_chkautorun_toggled(bool checked)
@@ -126,36 +137,20 @@ void SystemSetting::on_pushButton_3_clicked()
     QStringList dirlist = set->childKeys();
     foreach(const QString &s,dirlist)
     {
-        set->remove(s);
+        set->remove(s);   // remove old values.
     }
     set->sync();
-
-    int n = 1;
-    int c = ui->treeWidget->topLevelItemCount();
-    QStringList list;
-    for(int i = 0 ; i < c ; i++)
+    int c = tw->count();
+    for(int i = 0 ; i < c;i++)
     {
-        list << ui->treeWidget->topLevelItem(i)->text(0);
-    }
-    foreach(const QString &s,list)
-    {
-        set->setValue(QString::number(n++),s);
+        set->setValue(QString::number(i),tw->item(i)->text());
     }
     set->endGroup();
     set->sync();
 
 }
 
-QStringList SystemSetting::getTreeWidgetChildLst()
-{
-   int n = ui->treeWidget->topLevelItemCount();
-   QStringList list;
-   for(int i = 0 ; i < n ; i++)
-   {
-       list << ui->treeWidget->itemAt(i,0)->text(0);
-   }
-   return list;
-}
+
 
 void SystemSetting::on_tableWidget_itemClicked(QTableWidgetItem *item)
 {
@@ -164,6 +159,5 @@ void SystemSetting::on_tableWidget_itemClicked(QTableWidgetItem *item)
 
 void SystemSetting::on_store_del_clicked()
 {
-    QTreeWidget *w = ui->treeWidget;
-    w->takeTopLevelItem(w->indexOfTopLevelItem(w->currentItem()));
+    tw->takeItem(tw->currentRow());
 }

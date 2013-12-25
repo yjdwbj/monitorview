@@ -11,11 +11,7 @@ class ViewFrame;
 class CameraView;
 
 
-static const QString AlarmTimeSec("Global/AlarmTimeSec");
-static const QString EnableAlarm("Global/EnableAlarm");
-static const QString RecordTimeSec("Global/RecordTimeSec");
-static const QString RecordType("RecVideo/RecType");
-static const QString AlarmGroup("Global/AlarmGroup");
+
 
 
 RecordTime::RecordTime(const QString &verifyid, const QString &init,
@@ -316,7 +312,7 @@ void camera_settings::on_pushButton_15_clicked()
     SqlInstance::updateItem("camera_settings","camera_tel",
                             ui->edt_info_tel->text(),"camera_verifyid",m_verifyid);
 
-    set->setValue("Global/EnableAlarm",ui->chbox_enableAlarm->isChecked()? 1 : 0);
+    set->setValue("Global/EnableAlarm",ui->chbox_enableAlarm->isChecked());
     set->setValue(AlarmGroup,ui->edt_group->text());
 
 

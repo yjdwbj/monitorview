@@ -15,6 +15,7 @@
 
 
 
+class SettingPanel;
 
 static QString actlist ("进入工作状态,退出工作状态,-,截图,报警,录像,停止报警,暂停错误报警,-,摄像机设置");
 
@@ -158,7 +159,7 @@ public:
     ~Frame(){}
     QWidget *player;
     bool isPlaying()const {return m_playing;}
-    void setPlaying(bool f) {m_playing = f;}
+    void setPlaying(bool f) {m_playing = f; emit playStateChange(f);}
     void setCameraName(const QString &name ) { m_CameraName = name;}
     QString getCameraName() const{return m_CameraName;}
 
@@ -168,6 +169,7 @@ signals:
     void clicked_Frame(Frame*);
     void mouse_move();
     void show_camera_settings();
+    void playStateChange(bool);
 
 protected:
 //    void paintEvent(QPaintEvent *e);
@@ -200,15 +202,21 @@ public:
 
 private:
 
-    QLabel *lab_frameRate;
-//    QLabel *logo;
+    QLabel *workstate;
+    QList<QLabel*> m_lablist;
     QHBoxLayout *ctrl_layout;
     QSignalMapper *signalmap;
     QList<QPixmap> pixmaplist;
     CameraView *m_TreeView;
+    QSettings *setfd;
+
+    bool ctrlflag;
+
+
 
 protected:
      void paintEvent(QPaintEvent *e);
+
 
 
 //     bool eventFilter(QObject *obj, QEvent *e);
@@ -218,6 +226,10 @@ private slots:
      void slot_call_CameraSetting();
      void slot_call_ctlalarm_menu(QAction*);
      void slot_call_ctlrecord_menu(QAction*);
+     void slot_workStateChangeed(bool);
+
+public slots:
+     void slot_updateCtlState();
 
 
 };
@@ -242,11 +254,14 @@ public:
      WId getPlayFrameWId(const QString &id);
      void updateItem(const QString &id, const QString &newName);
      QString getGridnumber() const { return m_GridNumber;}
+     QList<WindowFrame*> m_list;
 
 public slots:
     void swapFullScreenOrNormal(bool flag);
 
     void slot_deleteCamera(QString id);
+    void slot_checkWorkState(QString n);
+
 
 private slots:
     void slot_clicked_this(Frame *);
@@ -256,13 +271,13 @@ private slots:
 
 private:
 
-
+    SettingPanel *setpanel;
     QSize screenSize;
     ToggleButton *toggleFS;
     FullScreen *FSWidget;
     QTimer *timer1;
     QGridLayout *lay;
-    QList<WindowFrame*> m_list;
+
     QString m_GridNumber;
 
 };

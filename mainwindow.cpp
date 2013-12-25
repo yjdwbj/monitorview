@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include <QThread>
 #include "sqldriver.h"
+#include <QDateTime>
+#include <QFileInfo>
+#include <QDir>
 
 
 
@@ -9,12 +12,12 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     main_layout(new QHBoxLayout),
-    view(new ViewFrame),
-    panel(new SettingPanel)
+     panel(new SettingPanel),
+    view(new ViewFrame)
 {
 
 //    ReadQss();
-
+    optionset = new QSettings(qApp->applicationDirPath()+"/options.ini",QSettings::IniFormat);
     main_layout = new QHBoxLayout;
     connect(panel,SIGNAL(sig_gridofnumber(int)),SLOT(slot_GridNumberChanged(int)));
     connect(panel,SIGNAL(StartPlay()),SLOT(slot_StartPlay()));
@@ -24,9 +27,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(panel,SIGNAL(gotoWorkState(int)),SLOT(slot_playById(int)));
     connect(panel,SIGNAL(outofWorkState(int)),SLOT(slot_stopById(int)));
 
-
+    readLayout();
     main_layout->addWidget(view);
     main_layout->addWidget(panel);
+
 
 
 
@@ -35,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     resize(QSize(800,400));
 
     setCentralWidget(w);
-    readLayout();
+
 
 }
 
@@ -98,6 +102,7 @@ void MainWindow::vlcPlayRtsp() // start play from rtsp service.
         libvlc_media_add_option(_vlc_media,captureOption.toLocal8Bit().data());
         libvlc_media_player_play(_vlc_play);
 
+        
 
         vlcItem tmp;
         tmp._vlcInstance = _vlc_inst;
@@ -151,18 +156,10 @@ void MainWindow::closeEvent(QCloseEvent *e)
 
 void MainWindow::slot_StopPlay()
 {
-    foreach(vlcItem p,vlcItemList)
+    for(int i = 0 ; i < panel->getPlayList().size();i++)
     {
-        if(p._vlcMediaPlayer)
-        {
-            libvlc_media_player_stop(p._vlcMediaPlayer);
-            libvlc_media_player_release(p._vlcMediaPlayer);
-        }
-
-        if(p._vlcInstance)
-        libvlc_release(p._vlcInstance);
+        slot_stopById(i);
     }
-    vlcItemList.clear();
 }
 
 void MainWindow::slot_playById(int id)
@@ -186,6 +183,39 @@ void MainWindow::slot_playById(int id)
     libvlc_media_player_set_hwnd(_vlc_play,(void*)wid);
     playframe.at(id)->frame->setPlaying(true);
 
+    QSettings set(qApp->applicationDirPath()+"/devs/"+cameraname,
+                  QSettings::IniFormat);
+     int n = set.value(RecordType).toInt();
+     if(n>0)
+     {
+         optionset->beginGroup(datafolderGroup);
+         QStringList l = optionset->childKeys();
+         if(l.isEmpty())
+         {
+             optionset->endGroup();
+             goto NOPATH;
+         }
+         QString savepath = optionset->value(l.first()).toString();
+
+         optionset->endGroup();
+         savepath.append("/video/");
+         savepath.append(cameraname);
+         savepath.append(QDateTime::currentDateTime().toString("/yyyy-MM-dd/hh.mm.ss"));
+         savepath.append(".avi");
+         QString dir = QFileInfo(savepath).absolutePath();
+         QDir td = QDir(dir);
+         td.mkpath(dir);
+         savepath.append("}}");
+
+         QString captureOption(":sout=#stream_out_duplicate{dst=display"
+                               ",dst=std{access=file,mux,ts,dst=");
+         QString savearg(captureOption+savepath);
+         libvlc_media_add_option(_vlc_media,savearg.toLocal8Bit().data());
+
+
+     }
+
+NOPATH:
 //    libvlc_media_add_option(_vlc_media,captureOption.toLocal8Bit().data());
     libvlc_media_player_play(_vlc_play);
     vlcItem tmp;
@@ -211,24 +241,35 @@ void MainWindow::slot_playById(int id)
 
 void MainWindow::slot_stopById(int id)
 {
-
-    foreach(vlcItem it,vlcItemList)
+    QList<WindowFrame*> playframe = view->getPlayFrame();
+    int n  = -1;
+    for(int i = 0 ; i <vlcItemList.size();i++)
     {
-        if(it.order == id)
+        if(vlcItemList.at(i).order == id)
         {
-            libvlc_media_player_stop(it._vlcMediaPlayer);
-            libvlc_media_player_release(it._vlcMediaPlayer);
-            libvlc_release(it._vlcInstance);
+
+            libvlc_media_player_stop(vlcItemList.at(i)._vlcMediaPlayer);
+            libvlc_media_player_release(vlcItemList.at(i)._vlcMediaPlayer);
+            libvlc_release(vlcItemList.at(i)._vlcInstance);
+            if(playframe.at(id)->frame->isPlaying())
+            playframe.at(id)->frame->setPlaying(false);
+            n = i;
             break;
         }
     }
-
+    if(n != -1)
+    vlcItemList.removeAt(n);
 
 }
 
 void MainWindow::slot_StartPlay()
 {
-    vlcPlayRtsp();
+//    vlcPlayRtsp();
+
+    for(int i = 0 ; i < panel->getPlayList().size();i++)
+    {
+        slot_playById(i);
+    }
 }
 
 
@@ -260,6 +301,7 @@ void MainWindow::slot_GridNumberChanged(int num)
         playframe[i]->toggle_ctrlWidget_view(1);
         playframe[i]->frame->setCameraName(l.at(i).split(',').first());
         playframe[i]->frame->setCameraVerifyId(l.at(i).split(',').last());
+        playframe[i]->slot_updateCtlState();
     }
 
 }
@@ -276,11 +318,12 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 MainWindow::~MainWindow()
 {
     delete view;
-    foreach(QProcess *p, plist)
-    {
-        p->terminate();
-        delete p;
-    }
+//    foreach(QProcess *p, plist)
+//    {
+//        p->terminate();
+//        delete p;
+//    }
     slot_StopPlay();
+
 
 }

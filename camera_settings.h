@@ -73,6 +73,7 @@ public:
     QString getVerifyId() const {return m_verifyid;}
 signals:
     void updateItemValue(QString);
+//    void somethingHasChanged();
     
 private slots:
     void on_btn_search_clicked();

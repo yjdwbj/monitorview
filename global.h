@@ -28,6 +28,17 @@
 
 
 
+static const QString AlarmTimeSec("Global/AlarmTimeSec");
+static const QString EnableAlarm("Global/EnableAlarm");
+static const QString RecordTimeSec("Global/RecordTimeSec");
+static const QString RecordType("RecVideo/RecType");
+static const QString AlarmGroup("Global/AlarmGroup");
+static const QString optionini(qApp->applicationDirPath()+"/options.ini");
+static const QString datafolderGroup("DataFolder");
+
+static QSettings *optionset;
+
+
 typedef QPair<int,QString> itemWidget;
 typedef QPair<QString,QVariant> iniPair;
 static const int othermenu =10;
@@ -116,7 +127,7 @@ public:
     };
     explicit GroupBtnWidget(const QStringList &list,const LayoutForm form = Horizontal,const int width=60,QWidget *parent=0);
     ~GroupBtnWidget(){}
-    QWidget *getItemByid(const int id) {layout->itemAt(id)->widget();}
+    QWidget *getItemByid(const int id) {return layout->itemAt(id)->widget();}
     QBoxLayout *layout;
 signals:
     void SignalById(int);

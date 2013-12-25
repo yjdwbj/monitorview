@@ -6,7 +6,6 @@
 #include <QListView>
 #include <QListWidget>
 #include <QStackedLayout>
-#include <QTreeWidgetItem>
 
 namespace Ui {
 class systemdialog;
@@ -37,7 +36,7 @@ private:
     QSettings *set;
     void closeEvent(QCloseEvent *e);
     void accept();
-    QStringList getTreeWidgetChildLst();
+    QListWidget *tw;
 
 
     Ui::systemdialog *ui;

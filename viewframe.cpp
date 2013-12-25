@@ -1,11 +1,8 @@
 #include "viewframe.h"
 #include "camera_settings.h"
 #include "sqldriver.h"
+
 static QString tips("报警通知|启动/停止录像|抓图|设置");
-
-
-
-
 
 
 
@@ -111,19 +108,19 @@ void Frame::slot_ProcessActions(QAction *p)
 
 WindowFrame::WindowFrame(const QString &str,QWidget *parent)
     :QWidget(parent),
-      lab_frameRate(new QLabel),
-
+      workstate(new QLabel),
       frame(new Frame(str)),
       signalmap(new QSignalMapper(this)),
-      ctrl_layout(new QHBoxLayout)
+      ctrl_layout(new QHBoxLayout),
+      ctrlflag(false)
 {
-
-
-    pixmaplist << QPixmap(":/lcy/images/state-16x16.png")
-              << QPixmap(":/lcy/images/waring-16x16.png")
+    pixmaplist   << QPixmap(":/lcy/images/waring-16x16.png")
               << QPixmap(":/lcy/images/record-state-16x16.png")
               << QPixmap(":/lcy/images/snapshot-16x16.png")
               << QPixmap(":/lcy/images/settings16x16.png");
+
+
+    connect(frame,SIGNAL(playStateChange(bool)),SLOT(slot_workStateChangeed(bool)));
 
 
 
@@ -134,17 +131,19 @@ WindowFrame::WindowFrame(const QString &str,QWidget *parent)
 
     ctrl_layout->setSpacing(2);
     ctrl_layout->setMargin(0);
-    ctrl_layout->addWidget(lab_frameRate);
-    lab_frameRate->setPixmap(pixmaplist.at(0).copy(0,0,16,16));
+    ctrl_layout->addWidget(workstate);
+    workstate->setPixmap(QPixmap(":/lcy/images/state-16x16.png").copy(0,0,16,16));
      ctrl_layout->addStretch();
 
 
 
     int pixnum =pixmaplist.size();
-    for(int i =1 ; i < pixnum;i++)
+
+    for(int i =0 ; i < pixnum;i++)
     {
         QPixmap p = pixmaplist.at(i).copy(0,0,16,16);
-        LabelBtn *btn = new LabelBtn(p,tips.section("|",i-1,i-1));
+        LabelBtn *btn = new LabelBtn(p,tips.section("|",i,i));
+        m_lablist.append(btn);
         ctrl_layout->addWidget(btn);
         signalmap->setMapping(btn,i);
         connect(btn,SIGNAL(mouse_pressed()),signalmap,SLOT(map()));
@@ -156,6 +155,14 @@ WindowFrame::WindowFrame(const QString &str,QWidget *parent)
     setLayout(main_layout);
     setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
     toggle_ctrlWidget_view(0);
+
+    setfd = new QSettings(qApp->applicationDirPath()+"/devs/"+frame->getCameraName(),
+          QSettings::IniFormat);
+}
+
+void WindowFrame::slot_workStateChangeed(bool f)
+{
+    workstate->setPixmap(QPixmap(":/lcy/images/state-16x16.png").copy(0,f ? 16 : 0,16,16));
 }
 
 
@@ -163,6 +170,7 @@ WindowFrame::WindowFrame(const QString &str,QWidget *parent)
 
 void WindowFrame::toggle_ctrlWidget_view(int flag)
 {
+    ctrlflag = flag;
     int n = ctrl_layout->count();
     for(int i = 0 ; i < n;i++)
     {
@@ -175,11 +183,35 @@ void WindowFrame::toggle_ctrlWidget_view(int flag)
 
 void WindowFrame::slot_call_ctlalarm_menu(QAction *act)
 {
+   if(!act->text().compare("启用报警"))
+    {
+        setfd->setValue(EnableAlarm,true);
+         setfd->sync();
+          QString tsec = setfd->value(AlarmTimeSec).toString();
+           m_lablist.at(0)->setPixmap(pixmaplist.at(0).copy(0,16,16,16));
+          if(tsec.isEmpty())
+          {
+              int n = QMessageBox::question(this,"提示","启用了报警,但是还没有设置报警,是否立即设置报警?");
+              if(n==QMessageBox::Yes)
+              {
+                  goto SET;
+              }
+          }
+
+
+    }
+    else if(!act->text().compare("不启用报警"))
+    {
+        setfd->setValue(EnableAlarm,false);
+         setfd->sync();
+        m_lablist.at(0)->setPixmap(pixmaplist.at(0).copy(0,0,16,16));
+    }
+
     if(!act->text().compare("设置"))
     {
+SET:
         camera_settings *cs = new camera_settings(2,frame->getCameraName());
         cs->exec();
-
         delete cs;
     }
 }
@@ -187,24 +219,81 @@ void WindowFrame::slot_call_ctlalarm_menu(QAction *act)
 
 void WindowFrame::slot_call_ctlrecord_menu(QAction *act)
 {
+
+    setfd = new QSettings(qApp->applicationDirPath()+"/devs/"+frame->getCameraName(),
+          QSettings::IniFormat);
+    if(!act->text().compare("不启用录像"))
+    {
+        m_lablist.at(1)->setPixmap(pixmaplist.at(1).copy(0,0,16,16));
+        setfd->setValue(RecordType,0);
+    }
+    else if(!act->text().compare("启用计划录像"))
+    {
+        setfd->setValue(RecordType,2);
+        setfd->sync();
+        QString tsec = setfd->value(RecordTimeSec).toString();
+         m_lablist.at(1)->setPixmap(pixmaplist.at(1).copy(0,16,16,16));
+        if(tsec.isEmpty())
+        {
+            int n = QMessageBox::question(this,"提示","启用的按计划录像,但是还没有设置录像计划,是否立即设置录像计划?");
+            if(n==QMessageBox::Yes)
+            {
+                goto SET;
+            }
+        }
+    }
+    else if(!act->text().compare("一直录像"))
+    {
+        setfd->setValue(RecordType,1);
+        m_lablist.at(1)->setPixmap(pixmaplist.at(1).copy(0,32,16,16));
+    }
+
+    setfd->sync();
+
     if(!act->text().compare("设置"))
     {
+SET:
         camera_settings *cs = new camera_settings(3,frame->getCameraName());
         cs->exec();
         delete cs;
     }
 }
 
+void WindowFrame::slot_updateCtlState()
+{
+    setfd = new QSettings(qApp->applicationDirPath()+"/devs/"+frame->getCameraName(),
+          QSettings::IniFormat);
+    bool f = setfd->value(EnableAlarm).toBool();  // update alarm icon.
+     m_lablist.at(0)->setPixmap(pixmaplist.at(0).copy(0,f ? 16 : 0,16,16));
+
+    int n  = setfd->value(RecordType).toInt();
+
+    if(n < 1)  //  不启用录像
+    {
+        m_lablist.at(1)->setPixmap(pixmaplist.at(1).copy(0,0,16,16));
+    }
+    else if ( n == 1) // 一直录像
+    {
+        m_lablist.at(1)->setPixmap(pixmaplist.at(1).copy(0,32,16,16));
+    }
+    else
+    {
+        m_lablist.at(1)->setPixmap(pixmaplist.at(1).copy(0,16,16,16));
+    }
+}
+
+
+
 void WindowFrame::slot_labelbtn_press(int id)
 {
     QAction *setting = new QAction(QString("设置"),this);
     switch(id)
     {
-    case 1:
+    case 0:
     {
         QMenu *pmenu = new QMenu();  // alarm settings
-        QAction *offalarm = new QAction(QIcon(pixmaplist.at(1).copy(0,0,16,16)),tr("不启用报警"),this);
-        QAction *onalarm = new QAction(QIcon(pixmaplist.at(1).copy(0,16,16,16)),tr("启用报警"),this);
+        QAction *offalarm = new QAction(QIcon(pixmaplist.at(id).copy(0,0,16,16)),tr("不启用报警"),this);
+        QAction *onalarm = new QAction(QIcon(pixmaplist.at(id).copy(0,16,16,16)),tr("启用报警"),this);
 
         pmenu->addAction(offalarm);
         pmenu->addAction(onalarm);
@@ -213,14 +302,14 @@ void WindowFrame::slot_labelbtn_press(int id)
         connect(pmenu,SIGNAL(triggered(QAction*)),SLOT(slot_call_ctlalarm_menu(QAction*)));
     }
         break;
-    case 2:
+    case 1:
     {
         QMenu *pmenu = new QMenu();
-        QAction *offrecord =  new QAction(QIcon(pixmaplist.at(2).copy(0,0,16,16)),
+        QAction *offrecord =  new QAction(QIcon(pixmaplist.at(id).copy(0,0,16,16)),
                                        QString("不启用录像"),this);
-        QAction *onplan = new QAction(QIcon(pixmaplist.at(2).copy(0,16,16,16)),
+        QAction *onplan = new QAction(QIcon(pixmaplist.at(id).copy(0,16,16,16)),
                                       QString("启用计划录像"),this);
-        QAction *always = new QAction(QIcon(pixmaplist.at(2).copy(0,32,16,16)),
+        QAction *always = new QAction(QIcon(pixmaplist.at(id).copy(0,32,16,16)),
                                       QString("一直录像"),this);
         pmenu->addAction(offrecord);
         pmenu->addAction(onplan);
@@ -230,9 +319,9 @@ void WindowFrame::slot_labelbtn_press(int id)
         connect(pmenu,SIGNAL(triggered(QAction*)),SLOT(slot_call_ctlrecord_menu(QAction*)));
     }
         break;
-    case 3:
+    case 2:
         break;
-    case 4:
+    case 3:
         slot_call_CameraSetting();
         break;
     }
@@ -284,14 +373,21 @@ ViewFrame::ViewFrame(QWidget *parent)
     this->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
 //    this->resize(QSize(540,540));
     this->setLayout(lay);
-
+//    setpanel = qApp->activeWindow()->findChild<SettingPanel*>("SettingPanel");
+//    connect(setpanel,SIGNAL(updateItemValue(QString)),SLOT(slot_checkWorkState(QString)));
 }
 
 
-
-
-
-
+void ViewFrame::slot_checkWorkState(QString str)
+{
+    foreach( WindowFrame *f, m_list )
+    {
+        if(!str.compare(f->frame->getCameraVerifyId()))
+        {
+            f->slot_updateCtlState();
+        }
+    }
+}
 
 void ViewFrame::setGridnumber(int row, int col)
 {
@@ -336,6 +432,7 @@ void ViewFrame::setGridnumber(int row, int col)
     }
 
     m_GridNumber = QString::number(row)+"x"+QString::number(col);
+
 }
 
 //void ViewFrame::slot_testsignals(int p)

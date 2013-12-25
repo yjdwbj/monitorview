@@ -11,6 +11,7 @@
 static QString allbutton("开始所有|停止所有|系统设置|录像记录|报警记录|其它");
 
 
+
 CameraView::CameraView(QWidget *parent)
     :QTreeWidget(parent)
 {
@@ -171,6 +172,8 @@ void CameraView::mousePressEvent(QMouseEvent *event)
 
 void SettingPanel::slot_ProcessMenuAction(QAction *act)
 {
+//     m_view = qApp->activeWindow()->findChild<ViewFrame*>("ViewFrame");
+//    QList<WindowFrame*> vlist =   m_view->getPlayFrame();
     const QStringList actions(MenuAction.split("|"));
     switch(actions.indexOf(act->text()))
     {
@@ -202,7 +205,9 @@ void SettingPanel::slot_ProcessMenuAction(QAction *act)
         if(cs->exec())
         {
             w->setText(0,cs->getCameraName());
-            emit updateItemValue(cs->getVerifyId());
+            ViewFrame *v = qApp->activeWindow()->findChild<ViewFrame*>("ViewFrame");
+            v->slot_checkWorkState(cs->getVerifyId());
+//            emit updateItemValue(cs->getVerifyId());
         }
         delete cs;
     }
@@ -254,6 +259,8 @@ SettingPanel::SettingPanel(QWidget *parent)
     :QWidget(parent),
       m_TreeView(new CameraView)
 {
+    addCameraFromSql();
+    this->setObjectName("SettingPanel");
     connect(m_TreeView,SIGNAL(triggerViewMenu(QAction*)),SLOT(slot_ProcessMenuAction(QAction*)));
     QGroupBox *gbox_main = new QGroupBox();
 
@@ -315,7 +322,7 @@ SettingPanel::SettingPanel(QWidget *parent)
     this->setLayout(main_layout);
     this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
     this->adjustSize();
-    addCameraFromSql();
+
 
     if(m_TreeView->topLevelItemCount() > 0)
     {
@@ -335,8 +342,27 @@ void SettingPanel::slot_Process_Ctrl_signals(int id)
 {
     switch(id)
     {
-    case 0:emit StartPlay();break;
-    case 1: emit StopPlay(); break;
+    case 0:
+    {
+
+        foreach(QMenu *m,m_TreeView->cmenulist)
+        {
+            m->actions().at(0)->setEnabled(false);
+            m->actions().at(1)->setEnabled(true);
+        }
+         emit StartPlay();
+    }
+        break;
+
+    case 1: {
+        foreach(QMenu *m,m_TreeView->cmenulist)
+        {
+            m->actions().at(0)->setEnabled(true);
+            m->actions().at(1)->setEnabled(false);
+        }
+        emit StopPlay();
+    }
+        break;
     case 2:
         SystemSetting *sys = new SystemSetting;
         sys->exec();
@@ -421,7 +447,7 @@ void SettingPanel::initalDevSettings(const QString &name)
     set.setValue(global+"TurnImage",false);
     set.setValue(global+"AlarmTimeSec",QString());
     set.setValue(global+"RecordTimeSec",QString());
-    set.setValue(global+"EnableAlrm",false);
+    set.setValue(global+"EnableAlarm",false);
 //    QString attrinfo("Info/");
 //    set.setValue(attrinfo+"User",QString());
 //    set.setValue(attrinfo+"Tel",QString());

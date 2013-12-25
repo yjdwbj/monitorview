@@ -100,6 +100,7 @@ private:
 
     QGroupBox *gbox_addnew;
 
+
     void addCameraFromSql();
 
     void initalDevSettings(const QString &name);
